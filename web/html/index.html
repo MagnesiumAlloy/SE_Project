@@ -1,0 +1,122 @@
+<head>
+    <meta name="referrer" content="no-referrer">
+    <link href="static/css/index.css" rel="stylesheet" type="text/css"/>
+</head>
+<meta charset="UTF-8">
+<html>
+<body>
+
+
+<div class="home">
+
+    <div class="content">
+        <div class="stars"></div>
+        <img class="bgc" src="static/img/22.png"  height="100%" width="100%" alt="图片1">
+        <h3 class="title">欢迎来到天空云盘</h3>
+        <h3 class="titles">今天也是努力的一天！</h3>
+        <img class="icon" src="static/img/212.png" alt="图片2">
+        <div class='ribbon'>
+            <a href='/'><span>用户主页</span></a>
+            <a href='/about'><span>关于我们</span></a>
+            <a href='../USER/login.html'><span>用户登录</span></a>
+            <a href='../USER/register.html'><span>用户注册</span></a>
+            <a href='../USER/adminLogin.html'><span>管理员登录</span></a>
+        </div>
+    </div>
+
+    <div class="photo" id="photo">
+        <!--//1-->
+        <input type="radio" name="btn" id="img1" checked/>
+        <div class="control">
+            <div class="image"><img src="static/img/11.png"/>
+                <div style="position:absolute; z-index:2; left:50px; top:50px;font-size:40px;color: #f44336"></div>
+            </div>
+            <div class="nav">
+                <label for="img6" class="up leftjianbian"><</label>
+                <label for="img2" class="down rightjianbian">></label>
+            </div>
+        </div>
+        <!--//2-->
+        <input type="radio" name="btn" id="img2"/>
+        <div class="control">
+            <div class="image"><img src="static/img/111.png"/>
+                <div style="position:absolute; z-index:2; left:50px; top:50px;font-size:40px;color: #f44336">年轻人的云盘</div>
+            </div>
+            <div class="nav">
+                <label for="img1" class="up leftjianbian"><</label>
+                <label for="img3" class="down rightjianbian">></label>
+            </div>
+        </div>
+        <!--//3-->
+        <input type="radio" name="btn" id="img3"/>
+        <div class="control">
+            <div class="image"><img src="static/img/111.png"/>
+                <div style="position:absolute; z-index:2; left:50px; top:50px;font-size:40px;color: #f44336">智能搜索</div>
+            </div>
+
+            <div class="nav">
+                <label for="img2" class="up leftjianbian"><</label>
+                <label for="img4" class="down rightjianbian">></label>
+            </div>
+        </div>
+        <!--//4-->
+        <input type="radio" name="btn" id="img4"/>
+        <div class="control">
+            <div class="image"><img src="static/img/333.png"/>
+                <div style="position:absolute; z-index:2; left:50px; top:50px;font-size:40px;color: #f44336">超大空间</div>
+            </div>
+            <div class="nav">
+                <label for="img3" class="up leftjianbian"><</label>
+                <label for="img5" class="down rightjianbian">></label>
+            </div>
+        </div>
+        <!--//5-->
+        <input type="radio" name="btn" id="img5"/>
+        <div class="control">
+            <div class="image"><img src="static/img/222.png"/>
+                <div style="position:absolute; z-index:2; left:50px; top:50px;font-size:40px;color: #f44336">留下美好瞬间</div>
+            </div>
+            <div class="nav">
+                <label for="img4" class="up leftjianbian"><</label>
+                <label for="img6" class="down rightjianbian">></label>
+            </div>
+        </div>
+        <!--//6-->
+        <input type="radio" name="btn" id="img6"/>
+        <div class="control">
+            <div class="image"><img src="static/img/111.png"/>
+                <div style="position:absolute; z-index:2; left:50px; top:50px ;font-size:40px;color: #f44336">留下美好</div>
+            </div>
+            <div class="nav">
+                <label for="img5" class="up leftjianbian"><</label>
+                <label for="img1" class="down rightjianbian">></label>
+            </div>
+        </div>
+        <div class="dots">
+            <label for="img1" class="dot" id="dot1"></label>
+            <label for="img2" class="dot" id="dot2"></label>
+            <label for="img3" class="dot" id="dot3"></label>
+            <label for="img4" class="dot" id="dot4"></label>
+            <label for="img5" class="dot" id="dot5"></label>
+            <label for="img6" class="dot" id="dot6"></label>
+        </div>
+    </div>
+
+    <audio autoplay="autoplay" id="audio" loop="loop">
+        <source src="static/video/114.mp3" type="audio/MP3">
+
+    </audio>
+    <img class="music_img" src="static/img/213.png" alt="图片1">
+</div>
+
+</body>
+<script>
+    let mucics = document.getElementById('audio')
+    document.body.addEventListener('mousemove', function() {
+        setTimeout(() => {
+            mucics.play();
+        }, 2000);
+    }, false);
+</script>
+
+</html>
