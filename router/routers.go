@@ -23,7 +23,21 @@ func SetupRouter() *gin.Engine {
 			"title": "about",
 		})
 	})
-
+	r.GET("/register", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "register.html", gin.H{
+			"title": "register",
+		})
+	})
+	r.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "login.html", gin.H{
+			"title": "login",
+		})
+	})
+	r.GET("/adminLogin", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "adminLogin.html", gin.H{
+			"title": "adminLogin",
+		})
+	})
 	r.POST("/Login", Controller.Login)
 	return r
 }

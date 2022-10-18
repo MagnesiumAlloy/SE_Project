@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<link rel="stylesheet" type="text/css" href="static/css/form.css" />
+<meta charset="UTF-8">
+<head>
+    <title>注册</title>
+</head>
+<body>
+<form action="${pageContext.request.contextPath}/RegisterServlet" method="post">
+
+    <div class="from">
+        <img class="bgc" src="static/img/214.jpg" alt="">
+        <div class="submit">
+            <span class="form_title">用户注册</span>
+            <div class="form_input">
+                <span>用户名：</span>
+                <input class="inputs" type="text" size="20" name="name" placeholder="用户名">
+            </div>
+            <div class="form_input">
+                <span>账号：</span>
+                <input class="inputs" type="text" size="20" name="UserId" placeholder="账号（仅为数字）">
+            </div>
+            <div class="form_input">
+                <span>密码：</span>
+                <input class="inputs" type="password" size="20" name="pwd" placeholder="密码">
+            </div>
+            <div class="form_input">
+                <span>确认密码：</span>
+                <input class="inputs" type="password" size="20" name="pwd_again" placeholder="确认密码">
+            </div>
+
+            <div class="btn_submit">
+                <a>
+                    <button type="submit" class="btn" value="注册">注册</button></a>
+                <a href="/" class="back"><button type="button"  class="home_href">回到首页</button></a>
+            </div>
+        </div>
+    </div>
+
+</form>
+</body>
+</html>
+
+
+
+
+
+
+
+
