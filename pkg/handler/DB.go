@@ -25,7 +25,7 @@ func dbConn(User, Password, Host, Db string, Port int) *gorm.DB {
 
 func GetDb() (conn *gorm.DB) {
 	for {
-		conn = dbConn("root", "admin123", "127.0.0.1", "mysql", 3306)
+		conn = dbConn("root", "123456", "127.0.0.1", "SE_DB", 3306)
 		if conn != nil {
 			break
 		}

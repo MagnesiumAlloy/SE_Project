@@ -4,8 +4,8 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	UserName   string
-	Password   string
+	UserName   string `form:"username"`
+	Password   string `form:"password"`
 	Salt       string
 	UserType   string
 	TotalSpace uint64

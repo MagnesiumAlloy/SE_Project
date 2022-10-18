@@ -17,7 +17,7 @@ func Login(c *gin.Context) {
 	//login
 	log.Println(loginForm.UserName)
 	log.Println(loginForm.Password)
-
+	log.Println(c.Param("username"))
 	svc.Login(&loginForm)
 
 	c.String(200, "Success")
