@@ -3,38 +3,62 @@
 <html>
 
 <head>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
     <title>管理员登录</title>
+
+    <script type="text/javascript">
+        function login(){
+            $.ajax({
+                //几个参数需要注意一下
+                dataType: "json",
+                url: "/Login" ,
+                type: "POST", 
+                data: $('#form1').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.status == 200) {
+                       location.href="/";
+                    } else {
+                        alert("错误");
+                    }
+                },
+                error : function() {
+                    console.log("failed");
+                    alert("异常！");
+                }
+            });
+        }
+    </script>
+    
 </head>
 
 <body>
-    <form action="/Login" method="post">
-
-        <form>
-            <div class="from">
-                <img class="bgc" src="static/img/213.jpg" alt="">
-                <div class="submit">
-                    <span class="form_title">管理员登录</span>
-                    <div class="form_input">
-                        <span>账号：</span>
-                        <input class="inputs" type="text" name="username" placeholder="账号">
-                    </div>
-                    <div class="form_input">
-                        <span>密码：</span>
-                        <input class="inputs" type="password" name="password" placeholder="密码">
-                    </div>
-                    <div type="hiddden">
-                        <input type="hidden" class="inputs" type="text" name="usertype" value="Admin">
-                    </div>
-                    <div class="btn_submit">
-                        <a>
-                            <button type="submit" class="btn">登录</button></a>
-                        <a href="/" class="back"><button type="button" class="home_href">回到首页</button></a>
-                    </div>
+    <form id="form1">
+        <div class="from">
+            <img class="bgc" src="static/img/213.jpg" alt="">
+            <div class="submit">
+                <span class="form_title">管理员登录</span>
+                <div class="form_input">
+                    <span>账号：</span>
+                    <input class="inputs" type="text" name="username" placeholder="账号">
+                </div>
+                <div class="form_input">
+                    <span>密码：</span>
+                    <input class="inputs" type="password" name="password" placeholder="密码">
+                </div>
+                <div type="hiddden">
+                    <input type="hidden" class="inputs" type="text" name="usertype" value="Admin">
+                </div>
+                <div class="btn_submit">
+                    <a>
+                        <button type="button" class="btn" onclick="login()">登录</button></a>
+                    <a href="/" class="back"><button type="button" class="home_href">回到首页</button></a>
                 </div>
             </div>
-        </form>
-
+        </div>
     </form>
+
 </body>
 
 </html>

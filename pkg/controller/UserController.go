@@ -3,6 +3,7 @@ package Controller
 import (
 	"SE_Project/pkg/model"
 	svc "SE_Project/pkg/service"
+	"net/http"
 
 	"log"
 
@@ -20,8 +21,13 @@ func Login(c *gin.Context) {
 	log.Println(loginForm.UserType)
 
 	if err := svc.Login(loginForm.UserName, loginForm.Password, loginForm.UserType); err != nil {
-		c.String(401, err.Error())
+		c.JSON(401, gin.H{
+			"status": 401,
+			"error":  err.Error(),
+		})
 		return
 	}
-	c.String(200, "Success")
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
 }
