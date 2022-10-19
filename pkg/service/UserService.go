@@ -5,15 +5,22 @@ import (
 	"SE_Project/pkg/model"
 	"errors"
 
-	"gorm.io/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func Login(loginForm *model.User) error {
-	if err := handler.NewUserHandler(loginForm).Login(); err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return errors.New("invalid user name or password")
-		}
+func Login(userName string, password string, userType string) error {
+	var salted_pwd string
+	var err error
+	if err = handler.NewUserHandler(&model.User{UserName: userName, UserType: userType}).CheckUserExist(); err != nil {
+		return errors.New("wrong user name or password")
+	}
+
+	if salted_pwd, err = handler.NewUserHandler(&model.User{UserName: userName, UserType: userType}).GetSaltedPassword(); err != nil {
 		return err
 	}
+	if err = bcrypt.CompareHashAndPassword([]byte(salted_pwd), []byte(password)); err != nil {
+		return errors.New("wrong user name or password")
+	}
+
 	return nil
 }

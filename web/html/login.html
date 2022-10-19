@@ -1,10 +1,12 @@
 <link rel="stylesheet" type="text/css" href="static/css/form.css" />
+
 <head>
     <meta charset="UTF-8">
     <title>用户登录</title>
 </head>
+
 <body>
-<form action="/Login" method="post">
+    <form action="/Login" method="post">
         <div class="from">
             <img class="bgc" src="static/img/214.jpg" alt="">
             <div class="submit">
@@ -17,15 +19,17 @@
                     <span>密码：</span>
                     <input class="inputs" type="password" name="password" placeholder="密码">
                 </div>
-
+                <div>
+                    <input type="hidden" class="inputs" type="text" name="usertype" value="Normal" placeholder="用户类型">
+                </div>
                 <div class="btn_submit">
                     <a>
                         <button type="submit" class="btn">登录</button></a>
-                    <a href="/" class="back"><button type="button"  class="home_href">回到首页</button></a>
+                    <a href="/" class="back"><button type="button" class="home_href">回到首页</button></a>
                 </div>
             </div>
         </div>
-</form>
+    </form>
 </body>
-</html>
 
+</html>

@@ -17,8 +17,11 @@ func Login(c *gin.Context) {
 	//login
 	log.Println(loginForm.UserName)
 	log.Println(loginForm.Password)
-	log.Println(c.Param("username"))
-	svc.Login(&loginForm)
+	log.Println(loginForm.UserType)
 
+	if err := svc.Login(loginForm.UserName, loginForm.Password, loginForm.UserType); err != nil {
+		c.String(401, err.Error())
+		return
+	}
 	c.String(200, "Success")
 }

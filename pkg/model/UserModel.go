@@ -6,8 +6,7 @@ type User struct {
 	gorm.Model
 	UserName   string `form:"username"`
 	Password   string `form:"password"`
-	Salt       string
-	UserType   string
+	UserType   string `form:"usertype"`
 	TotalSpace uint64
 	UsedSpace  uint64
 }

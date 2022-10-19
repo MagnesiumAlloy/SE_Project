@@ -7,16 +7,32 @@ import (
 )
 
 type UserHandler struct {
-	conn *gorm.DB
+	gorm.DB
 	User *model.User
 }
 
 func NewUserHandler(user *model.User) *UserHandler {
-	return &UserHandler{GetDb(), user}
+	return &UserHandler{*GetDb(), user}
 }
+
 func (userHandler *UserHandler) Login() error {
-	if err := userHandler.conn.Where(userHandler.User).First(&model.User{}).Error; err != nil {
+	if err := userHandler.Where(userHandler.User).First(&model.User{}).Error; err != nil {
 		return err
 	}
 	return nil
+}
+
+func (userHandler *UserHandler) CheckUserExist() error {
+	if err := userHandler.Where(userHandler.User).First(&model.User{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (userHandler *UserHandler) GetSaltedPassword() (string, error) {
+	var result model.User
+	if err := userHandler.Select("Password").Where(userHandler.User).First(&result).Error; err != nil {
+		return "", err
+	}
+	return result.Password, nil
 }
