@@ -36,3 +36,10 @@ func (userHandler *UserHandler) GetSaltedPassword() (string, error) {
 	}
 	return result.Password, nil
 }
+
+func (userHandler *UserHandler) Register() error {
+	if err := userHandler.Create(userHandler.User).Error; err != nil {
+		return err
+	}
+	return nil
+}

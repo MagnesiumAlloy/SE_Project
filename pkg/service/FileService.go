@@ -1,0 +1,36 @@
+package service
+
+import (
+	"SE_Project/pkg/model"
+	"errors"
+	"os"
+)
+
+func CheckIsDir(path string) error {
+	folderinfo, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	//log.Println(folderinfo)
+	//check is a dir
+	if !folderinfo.IsDir() {
+		return errors.New("target is not a dir")
+	}
+	return nil
+}
+
+func ReadDir(path string) ([]model.ObjectPointer, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	files, err := f.ReadDir(0)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	var result []model.ObjectPointer
+	for _, file := range files {
+
+	}
+}

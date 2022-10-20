@@ -13,6 +13,10 @@ import (
 func Login(c *gin.Context) {
 	var loginForm model.User
 	if err := c.ShouldBind(&loginForm); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
 		return
 	}
 	//login
@@ -27,6 +31,21 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
+}
+
+func Register(c *gin.Context) {
+	var user model.User
+	if err := c.ShouldBind(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
 	})
