@@ -1,0 +1,58 @@
+<link rel="stylesheet" type="text/css" href="static/css/main.css" />
+<meta charset="UTF-8">
+
+<head>
+    <title>管理员主页</title>
+</head>
+<body>
+
+
+<ul class="nav1" class="out">
+    <li class="border1">
+        <a class="li1" href="#">管理员首页</a>
+    </li>
+
+    <li class="border1">
+        <a href="#">基本数据维护</a>
+        <ul class="nav2">
+            <li>
+                <a href="#">用户信息管理</a>
+                <ul class="nav3">
+                    <li><a href="/ScanUser">用户浏览</a></li>
+                    <li><a href="/DeleteUser">用户删除</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">文件信息</a>
+                <ul class="nav3">
+                    <li>
+                        <form action="/DeleteFile" method="post">
+                            <input  class="kuang" type="submit"  name= "delete" value="文件删除" >
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+
+    <li class="border1">
+        <a href="/about">关于我们</a>
+    </li>
+
+    <li class="border1">
+        <a href="/">退出系统</a>
+    </li>
+
+</ul>
+
+        <div class="about">
+            <h3 class="about_tit">要不断的努力，才能成为更好的自己</h3>
+            <img class="about_bgc" src="static/img/211.jpg" alt="">
+        </div>
+
+
+</body>
+
+
+</html>
+

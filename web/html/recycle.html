@@ -1,0 +1,168 @@
+<link rel="stylesheet" type="text/css" href="static/css/main.css" />
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>我的回收</title>
+  <style>
+    table{
+      font-size: 1.5em;
+      margin: auto;
+    }
+    body{
+      background-image: linear-gradient(#e66465, #9198e5);
+      background-size: 100% 100%;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+    form.special{
+      width: 100%;
+      margin: auto;
+      margin-top: 40px;
+      font-size: 1.5em;
+      text-align: center;
+    }
+    table{
+      font-size: 1.5em;
+      margin: auto;
+      margin-bottom: 10em;
+    }
+    input.page{
+      border-radius: 7px;
+      padding: 5px;
+      margin-bottom: 4em;
+      margin-left: 1em;
+      font-size: 0.7em;
+    }
+    div.columns{
+      column-count:2;
+      column-gap:40px;
+      column-rule-style:dotted;
+    }
+    input.page[type=submit]{
+      background-color: #d44773;
+      transition-duration: 0.4s;
+      box-shadow: 0 6px #999;
+      font-weight:bold;
+      padding: 14px 20px;
+      margin: 8px 15px;
+      border:none;
+      border-radius: 6px;
+      clear: both;
+    }
+    input.page[type=submit]:hover{
+      background-color: #f1dd78;
+    }
+    *:focus{
+      background-color: #f6f607;
+    }
+    body{
+      background-image: linear-gradient(#e66465, #9198e5);
+      background-size: 100% 100%;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+  </style>
+</head>
+<body>
+
+
+<ul class="nav1" class="out">
+  <li class="border1">
+    <a class="li1" href="/zhuye">用户主界面</a>
+  </li>
+
+  <li class="border1">
+    <a href="#">基本功能</a>
+    <ul class="nav2">
+      <li>
+        <a href="#">我的文件</a>
+        <ul class="nav3">
+          <li>
+            <!--            根据当前用户的id，返回其仓库的文件-->
+            <form action="${pageContext.request.contextPath}/BorrowServlet" method="post">
+              <input class="kuang" type="submit"  name= "flag" value="文件浏览">
+            </form>
+          </li>
+          <li>
+            <form action="${pageContext.request.contextPath}/BHistoryServlet" method="post">
+              <input class="kuang" type="submit"  name= "flag" value="私密上传">
+            </form>
+          </li>
+
+          <li>
+            <form action="${pageContext.request.contextPath}/BHistoryServlet" method="post">
+              <input class="kuang" type="submit"  name= "flag" value="普通上传">
+            </form>
+          </li>
+
+          <li>
+            <form action="${pageContext.request.contextPath}/MyBookServlet" method="post">
+              <input class="kuang" type="submit"  name= "flag" value="我的回收">
+            </form>
+          </li>
+
+        </ul>
+      </li>
+      <li>
+        <a href="#">我的空间</a>
+        <ul class="nav3">
+          <li>
+            <form action="${pageContext.request.contextPath}/PreServlet" method="post">
+              <input class="kuang" type="submit"  name= "flag" value="共享文件">
+            </form>
+          </li>
+          <li>
+            <form action="${pageContext.request.contextPath}/SecServlet" method="post">
+              <input class="kuang" type="submit"  name= "flag" value="私密文件">
+            </form>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+
+  <li class="border1">
+    <a href="/Modify">修改密码</a>
+  </li>
+
+  <li class="border1">
+    <a href="/about">关于我们</a>
+  </li>
+
+  <li class="border1">
+    <a href="/">退出系统</a>
+  </li>
+
+</ul>
+<br>
+
+<div>
+  <% List<findAllRecycleFile> list= (List<findAllRecycleFile>) session.getAttribute("listFile");
+  out.println("<table id=\"recyclefile\" border=\"1\"> <caption>回收站</caption>");
+    out.println("<tr>\n" +
+      "  <th>序号</th>\n" +
+      "  <th>文件名</th>\n" +
+      "  <th>删除者</th>\n" +
+      "  <th>删除日期</th>\n" +
+      "</tr>");
+    for(int i=0;i< list.size();i++){
+    findAllRecycleFile temp=list.get(i);
+    out.println("<tr>" +
+      "<td>"+temp.getId()+"</td>" +
+      "<td>"+temp.getFileName()+"</td>" +
+      "<td>"+temp.getAuthor()+"</td>" +
+      "<td>"+temp.getRtime()+"</td>");
+      "</tr></br>");
+    }
+    out.println("</table>");
+  %>
+
+  <form class="special"action="${pageContext.request.contextPath}/PreServlet" method="post" >
+  <input class="page"type="submit" name="button" value="恢复" onclick="return window.confirm('确定要恢复吗')">
+  </form>
+
+</div>
+</body>
+</html>

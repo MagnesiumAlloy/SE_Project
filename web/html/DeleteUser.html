@@ -1,0 +1,185 @@
+<%
+  List<findAllFile> listBook=(List)session.getAttribute("filelist");
+%>
+<link rel="stylesheet" type="text/css" href="static/css/main.css" />
+<meta charset="UTF-8">
+<html>
+<head>
+  <title>用户浏览</title>
+  <style>
+    form.page{
+      width: 100%;
+      margin: auto;
+      margin-top: 40px;
+      font-size: 1.5em;
+      text-align: center;
+    }
+    table{
+      font-size: 1.2em;
+      margin: auto;
+      margin-bottom: 10em;
+    }
+    .pageInput{
+      border-radius: 7px;
+      padding: 5px;
+      margin-bottom: 4em;
+      margin-left: 1em;
+      font-size: 0.7em;
+    }
+    textarea{
+      border-radius: 7px;
+      padding: 5px;
+      font-size: 0.7em;
+    }
+    button{
+      position: absolute;
+      right: 19em;
+      top: 58em;
+      font-size: 0.7em;
+      background-color: #d44773;
+      transition-duration: 0.4s;
+      box-shadow: 0 6px #999;
+      font-weight:bold;
+      padding: 14px 20px;
+      margin: 8px 15px;
+      border:none;
+      border-radius: 6px;
+      clear: both;
+    }
+    select{
+      transform: translatex(-1em);
+      border-radius: 7px;
+      padding: 5px;
+      margin-bottom: 4em;
+      margin-left: 2em;
+      font-size: 0.7em;
+    }
+    .pageInput[name=bookName] {
+      margin-right: 0.5em;
+    }
+    .special{
+      margin-right: 4em;
+    }
+    .pageInput[type=reset]{
+      margin-left: 4em;
+      float: right;
+    }
+    .special,.pageInput[type=reset]{
+      background-color: #d44773;
+      transition-duration: 0.4s;
+      box-shadow: 0 6px #999;
+      font-weight:bold;
+      padding: 14px 20px;
+      margin: 8px 15px;
+      border:none;
+      border-radius: 6px;
+      clear: both;
+    }
+    .special:hover,.pageInput[type=reset]:hover,button:hover{
+      background-color: #f1dd78;
+    }
+
+    *:focus{
+      background-color: #f6f607;
+    }
+    div.columns{
+      column-count:2;
+      column-gap:40px;
+      column-rule-style:dotted;
+    }
+    div.f2{
+      display: inline-block;
+      transform: translateX(-3em);
+    }
+    div.f3{
+      display: inline-block;
+      transform: translateX(-1.5em);
+    }
+    div.f4{
+      display: inline-block;
+      transform: translateX(-1.5em);
+      margin-bottom: 2em;
+    }
+    body{
+      background-image: linear-gradient(#e66465, #9198e5);
+      background-size: 100% 100%;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+  </style>
+</head>
+
+
+<ul class="nav1" class="out">
+  <li class="border1">
+    <a class="li1" href="/adminMain">管理员首页</a>
+  </li>
+
+  <li class="border1">
+    <a href="#">基本数据维护</a>
+    <ul class="nav2">
+      <li>
+        <a href="#">用户信息</a>
+        <ul class="nav3">
+          <li><a href="${pageContext.request.contextPath}/admin/addType.jsp">用户浏览</a></li>
+          <li><a href="${pageContext.request.contextPath}/admin/deleteType.jsp">用户删除</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">文件信息</a>
+        <ul class="nav3">
+          <li>
+            <form action="${pageContext.request.contextPath}/JSP/admin/addType.jsp">" >
+              <input  class="kuang" type="submit"  name= "delete" value="文件删除" >
+            </form>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+
+  <li class="border1">
+    <a href="/about">关于我们</a>
+  </li>
+
+  <li class="border1">
+    <a href="/">退出系统</a>
+  </li>
+
+</ul>
+<br><br>
+
+<body>
+<div class="columns">
+  <form class="page"action="${pageContext.request.contextPath}/manage1" name="search" method="post" autocomplete="on" target="_self">
+    用户名<input  class="pageInput" type="text" name="Author">
+    <input class="special" type="submit" value="查询">
+  </form>
+
+  <table id="manage">
+    <tr>
+      <th>序号</th>
+      <th>用户名</th>
+      <th>已用空间</th>
+      <th>注册时间</th>
+    </tr>
+    <%for(int i=0;i<listUser.size();i++){
+      findAllfile temp=listFile.get(i);
+      out.println("<tr onclick=\"edit(this)\"> <td>"+temp.getId()+"</td> <td>"
+              +temp.getAuthor()+"</td> <td>"+
+              temp.getUsed()+"</td> <td>"+
+              temp.getRegTime()+"</td> </tr>");}
+    %>
+  </table>
+
+    <div class="f5">
+      <form class="special"action="${pageContext.request.contextPath}/PreServlet" method="post" >
+      <input class="special" type="submit"  value="删除" onclick="return window.confirm('确定删除吗')">
+      </form>
+    </div>
+
+
+</div>
+</body>
+</html>

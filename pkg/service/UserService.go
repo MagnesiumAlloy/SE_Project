@@ -24,7 +24,7 @@ func Login(userName string, password string, userType string) error {
 
 	return nil
 }
-func Registe(userName string, password string, passwordRepeat string) error {
+func Register(userName string, password string, passwordRepeat string) error {
 	var salted_pwd []byte
 	var err error
 	//check if exist

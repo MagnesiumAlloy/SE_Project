@@ -38,6 +38,56 @@ func SetupRouter() *gin.Engine {
 			"title": "adminLogin",
 		})
 	})
+	r.GET("/adminMain", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "adminMain.html", gin.H{
+			"title": "adminMain",
+		})
+	})
+	r.GET("/ScanUser", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "ScanUser.html", gin.H{
+			"title": "ScanUser",
+		})
+	})
+	r.GET("/DeleteFile", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "DeleteFile.html", gin.H{
+			"title": "DeleteFile",
+		})
+	})
+	r.GET("/DeleteUser", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "DeleteUser.html", gin.H{
+			"title": "DeleteUser",
+		})
+	})
+	r.GET("/Modify", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "Modify.html", gin.H{
+			"title": "Modify",
+		})
+	})
+	r.GET("/myfile", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "myfile.html", gin.H{
+			"title": "myfile",
+		})
+	})
+	r.GET("/recycle", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "recycle.html", gin.H{
+			"title": "recycle",
+		})
+	})
+	r.GET("/secret", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "secret.html", gin.H{
+			"title": "secret",
+		})
+	})
+	r.GET("/share", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "share.html", gin.H{
+			"title": "share",
+		})
+	})
+	r.GET("/zhuye", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "zhuye.html", gin.H{
+			"title": "zhuye",
+		})
+	})
 	r.POST("/Login", Controller.Login)
 	return r
 }

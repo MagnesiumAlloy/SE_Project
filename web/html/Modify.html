@@ -1,0 +1,43 @@
+<link rel="stylesheet" type="text/css" href="static/css/form.css" />
+<meta charset="UTF-8">
+<html>
+<head>
+  <title>修改密码</title>
+</head>
+<body>
+<form action="${pageContext.request.contextPath}/ModifyServlet" method="post">
+  <form>
+    <div class="from">
+      <img class="bgc" src="../img/214.jpg" alt="">
+      <div class="submit">
+        <span class="form_title">个人密码修改</span>
+        <div class="form_input">
+          <span>账号：</span>
+          <input class="inputs" type="text" name="id" placeholder="账号">
+        </div>
+        <div class="form_input">
+          <span>原密码：</span>
+          <input class="inputs" type="password" name="oldpwd" placeholder="原密码">
+        </div>
+        <div class="form_input">
+          <span>新密码：</span>
+          <input class="inputs" type="password" name="newpwd1" placeholder="新密码">
+        </div>
+        <div class="form_input">
+          <span>确定密码：</span>
+          <input class="inputs" type="password" name="newpwd2" placeholder="确定密码">
+        </div>
+        <div class="btn_submit">
+          <a href="/index">
+            <button type="submit" class="btn" onclick="aa()">确定修改</button></a>
+          <a href="/" class="back"><button type="button"  class="home_href">回到首页</button></a>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</form>
+
+
+</body>
+</html>
