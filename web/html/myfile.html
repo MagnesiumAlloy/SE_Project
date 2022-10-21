@@ -6,138 +6,7 @@
   <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
   </script>
 
-  <script type="text/javascript">
-      function user1(){
-          $.ajax({
-              //几个参数需要注意一下
-              dataType: "json",
-              url: "/User1" ,
-              type: "POST", 
-              data: $('#user1').serialize(),
-              success: function (result) {
-                  console.log(result);//打印服务端返回的数据(调试用)
-                  if (result.status == 200) {
-                     location.href="/myfile";
-                  } else {
-                      alert("错误");
-                  }
-              },
-              error : function() {
-                  console.log("failed");
-                  alert("异常！");
-              }
-          });
-      }
-
-      function user2(){ //私密上传 函数要重新写
-          $.ajax({
-              //几个参数需要注意一下
-              dataType: "json",
-              url: "/User2" ,
-              type: "POST", 
-              data: $('#user2').serialize(),
-              success: function (result) {
-                  console.log(result);//打印服务端返回的数据(调试用)
-                  if (result.status == 200) {
-                     location.href="/secret";
-                  } else {
-                      alert("错误");
-                  }
-              },
-              error : function() {
-                  console.log("failed");
-                  alert("异常！");
-              }
-          });
-      }
-
-      function user3(){ //普通上传 函数要重新写
-          $.ajax({
-              //几个参数需要注意一下
-              dataType: "json",
-              url: "/User3" ,
-              type: "POST", 
-              data: $('#user3').serialize(),
-              success: function (result) {
-                  console.log(result);//打印服务端返回的数据(调试用)
-                  if (result.status == 200) {
-                     location.href="/myfile";
-                  } else {
-                      alert("错误");
-                  }
-              },
-              error : function() {
-                  console.log("failed");
-                  alert("异常！");
-              }
-          });
-      }
-
-      function user4(){
-          $.ajax({
-              //几个参数需要注意一下
-              dataType: "json",
-              url: "/User4" ,
-              type: "POST", 
-              data: $('#user4').serialize(),
-              success: function (result) {
-                  console.log(result);//打印服务端返回的数据(调试用)
-                  if (result.status == 200) {
-                     location.href="recycle";
-                  } else {
-                      alert("错误");
-                  }
-              },
-              error : function() {
-                  console.log("failed");
-                  alert("异常！");
-              }
-          });
-      }
-
-      function user5(){
-          $.ajax({
-              //几个参数需要注意一下
-              dataType: "json",
-              url: "/User5" ,
-              type: "POST", 
-              data: $('#user5').serialize(),
-              success: function (result) {
-                  console.log(result);//打印服务端返回的数据(调试用)
-                  if (result.status == 200) {
-                     location.href="share";
-                  } else {
-                      alert("错误");
-                  }
-              },
-              error : function() {
-                  console.log("failed");
-                  alert("异常！");
-              }
-          });
-      }
-
-      function user6(){
-          $.ajax({
-              //几个参数需要注意一下
-              dataType: "json",
-              url: "/User6" ,
-              type: "POST", 
-              data: $('#user6').serialize(),
-              success: function (result) {
-                  console.log(result);//打印服务端返回的数据(调试用)
-                  if (result.status == 200) {
-                     location.href="/secret";
-                  } else {
-                      alert("错误");
-                  }
-              },
-              error : function() {
-                  console.log("failed");
-                  alert("异常！");
-              }
-          });
-      }
+  <script src="static/js/myfile.js">
   </script>
 
   <style>
@@ -201,6 +70,29 @@
       background-position: center center;
     }
   </style>
+
+  <style>
+    
+     .fileInputContainer{
+            height:256px;
+            background:url(static/img/uploadfolder.png);
+            position:relative;
+            width: 256px;
+        }
+        .fileInput{
+            height:256px;
+            overflow: hidden;
+            font-size: 300px;
+            position:absolute;
+            right:0;
+            top:0;
+            opacity: 0;
+            filter:alpha(opacity=0);
+            cursor:pointer;
+        }
+    
+    </style>
+
 </head>
 <body>
 
@@ -301,5 +193,8 @@
     <input class="page"type="submit" name="button" value="共享" onclick="return window.confirm('确定要共享吗')">
   </form>
 </div>
+<div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
+
 </body>
+
 </html>
