@@ -3,6 +3,7 @@ package service
 import (
 	"SE_Project/pkg/model"
 	"errors"
+	"log"
 	"os"
 )
 
@@ -29,8 +30,9 @@ func ReadDir(path string) ([]model.ObjectPointer, error) {
 		return nil, err
 	}
 	defer f.Close()
-	var result []model.ObjectPointer
+	//var result []model.ObjectPointer
 	for _, file := range files {
-
+		log.Println(file)
 	}
+	return nil, nil
 }
