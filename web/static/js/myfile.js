@@ -137,6 +137,7 @@ function getFile(value){
   // 获取文本框dom
  // var doc = document.getElementById('doc');
   // 获取上传控件dom
+  console.log(this.location.pathname);
   var upload = document.getElementById('fileUpload');
   // 获取文件名
   console.log(upload);
@@ -151,3 +152,5 @@ function getFile(value){
   console.log(filePath);
 
 }
+
+
