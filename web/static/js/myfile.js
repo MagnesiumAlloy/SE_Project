@@ -153,4 +153,59 @@ function getFile(value){
 
 }
 
+  function my(){
+       $.ajax({
+           url: "/fileData",
+           type:"get",
+           dataType:"json",
+           success:function (data) {
+               console.log(data);
+               myFunction(data.data);
+           }
+       })};
+
+  function myFunction(arr) {
+      var out = "";
+      for(let i = 0; i < arr.length; i++) {
+          out += "<tr  onclick="+"edit(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Path+"</td>"
+                   +"<td>"+arr[i].Type+"</td>"
+                +"</tr>";
+      }
+      document.getElementById("content").innerHTML=out;
+  }
+
+  function myy(filepath){
+       $.ajax({
+           url: "/innerData",
+           type:"get",
+           dataType:"json",
+           data: {
+            filepath:filepath
+           },
+           success:function (res) {
+               console.log(res);
+               myFunction(res.data);
+           }
+       })};
+    
+
+    function edit(obj){
+            let node=obj;
+            let id=node.children[0].innerHTML;
+            let filetype=node.children[4].innerHTML;
+            let filepath=node.children[3].innerHTML;
+            //alert(id,filepath,filetype);
+            if(filetype == "t1"){ //文件夹类型,要你指定
+              //更进一步
+              myy(filepath);
+            } else {
+              let f=document.forms[0];
+              f.action="/search?id="+id;
+              f.submit();
+            }
+     }
 

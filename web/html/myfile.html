@@ -17,20 +17,45 @@
            dataType:"json",
            success:function (data) {
                console.log(data);
-               myFunction(data);
+               myFunction(data.data);
            }
        })};
+
+  function path1(){
+       $.ajax({
+           url: "/fileData",
+           type:"get",
+           dataType:"json",
+           success:function (data) {
+               console.log(data);
+               myFunction1(data.data);
+           }
+       })};    
 
   function myFunction(arr) {
       var out = "";
       for(let i = 0; i < arr.length; i++) {
-          out += "<tr>"
-                   + "<td>"+arr[i].id+"</td>"
-                   +"<td>"+arr[i].name+"</td>"+
-                   +"<td>"+arr[i].author+"</td>"+
-                   +"<td>"+arr[i].path+"</td>"+
-                   +"<td>"+arr[i].fileType+"</td>"+
-                "</tr>";
+          out += "<tr  onclick="+"edit(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Path+"</td>"
+                   +"<td>"+arr[i].Type+"</td>"
+                +"</tr>";
+      }
+      document.getElementById("content").innerHTML=out;
+  }
+
+  function myFunction1(arr) {
+      var out = "";
+      for(let i = 0; i < arr.length; i++) {
+          out += "<tr  onclick="+"edit22(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Path+"</td>"
+                   +"<td>"+arr[i].Type+"</td>"
+                +"</tr>";
       }
       document.getElementById("content").innerHTML=out;
   }
@@ -38,16 +63,66 @@
   function myy(filepath){
        $.ajax({
            url: "/innerData",
-           type:"post",
+           type:"get",
            dataType:"json",
            data: {
             filepath:filepath
            },
            success:function (res) {
                console.log(res);
-               myFunction(res);
+               myFunction(res.data);
            }
        })};
+    
+      function myy1(filepath){
+       $.ajax({
+           url: "/innerData",
+           type:"get",
+           dataType:"json",
+           data: {
+            filepath:filepath
+           },
+           success:function (res) {
+               console.log(res);
+               myFunction1(res.data);
+           }
+       })};
+
+    function edit(obj){
+            let node=obj;
+            let id=node.children[0].innerHTML;
+            let filename=node.children[1].innerHTML;
+            let filetype=node.children[4].innerHTML;
+            let filepath=node.children[3].innerHTML;
+            //alert(id,filepath,filetype);
+            if(filetype == "t1"){ //文件夹类型,要你指定
+              //更进一步
+              myy(filepath);
+            } else {
+              const ipt1 = document.getElementById('ipt1')
+              const ipt2 = document.getElementById('ipt2')
+              ipt1.value = id;
+              ipt2.value = filename;
+            }
+     }
+
+     function edit22(obj){
+            let node=obj;
+            let id=node.children[0].innerHTML;
+            let filename=node.children[1].innerHTML;
+            let filetype=node.children[4].innerHTML;
+            let filepath=node.children[3].innerHTML;
+            //alert(id,filepath,filetype);
+            if(filetype == "t1"){ //文件夹类型,要你指定
+              //更进一步
+              myy1(filepath);
+            } else {
+              const ipt3 = document.getElementById('ipt3')
+              const ipt4 = document.getElementById('ipt4')
+              ipt3.value = id;
+              ipt4.value = filename;
+            }
+     }
 
 </script>
 
@@ -158,7 +233,7 @@
           <li>
             <!--            根据当前用户的id，返回其仓库的文件-->
             <form id="user1">
-              <input class="kuang" type="button"  name= "flag" value="文件浏览" onclick="loadXMLDoc()">
+              <input class="kuang" type="button"  name= "flag" value="文件浏览" onclick="my()">
             </form>
           </li>
           <li>
@@ -215,42 +290,25 @@
 <br>
 
 <div >
-    
-    <script>    
-    function edit(this1){
-            let node=this1;
-            let id=node.children[0].innerHTML;
-            let filetype=node.children[4].innerHTML;
-            let filepath=node.children[3].innerHTML;
-            if(filetype==1){
-              //更进一步
-              myy(filepath);
-            } else {
-              let f=document.forms[0];
-              f.action="/search?id="+id;
-              f.submit();
-            }
-     }
-
-    </script>
-      
-  <form class="special"action="${pageContext.request.contextPath}/BorrowServlet" method="post" >
+  <input class="page" type="submit" name="button" value="路径选择" onclick="path1()">
+  <form class="special" action="/caozuo" method="post" >
 
     <input class="page"type="text" size="20" name="error" id="error" value="${error}"hidden>
     
-    <p>编号：<input class="page"type="text" size="20" name="id"></p>
-    <p>文件名：<input class="page"type="text" size="20" name="fileName"></p>
-    <input class="page"type="submit" name="button" value="进入">
+    <p>编号：<input class="page"type="text" size="20" name="id" id="ipt1"></p>
+    <p>文件名：<input class="page"type="text" size="20" name="fileName" id="ipt2"></p>
     <input class="page"type="submit" name="button" value="备份" onclick="return window.confirm('确定要备份吗')">
     <input class="page"type="submit" name="button" value="删除" onclick="return window.confirm('确定要删除吗')">
     <input class="page"type="submit" name="button" value="共享" onclick="return window.confirm('确定要共享吗')">
+
+    <p>路径编号：<input class="page"type="text" size="20" name="pathid" id="ipt3"></p>
+    <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="ipt4"></p>
   </form>
 </div>
 <div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
 
-<button onclick="my()">浏览文件</button>
-<table border="1">
-      <tr onclick="edit()">
+<table border="5">
+      <tr>
         <th>序号</th>
         <th>文件名称</th>
         <th>上传者</th>
