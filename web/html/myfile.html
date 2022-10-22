@@ -13,7 +13,7 @@
   function my(){
        $.ajax({
            url: "/fileData",
-           type:"post",
+           type:"get",
            dataType:"json",
            success:function (data) {
                console.log(data);
@@ -28,11 +28,27 @@
                    + "<td>"+arr[i].id+"</td>"
                    +"<td>"+arr[i].name+"</td>"+
                    +"<td>"+arr[i].author+"</td>"+
-                   +"<td>"+arr[i].uploadTime+"</td>"+
+                   +"<td>"+arr[i].path+"</td>"+
+                   +"<td>"+arr[i].fileType+"</td>"+
                 "</tr>";
       }
       document.getElementById("content").innerHTML=out;
   }
+
+  function myy(filepath){
+       $.ajax({
+           url: "/innerData",
+           type:"post",
+           dataType:"json",
+           data: {
+            filepath:filepath
+           },
+           success:function (res) {
+               console.log(res);
+               myFunction(res);
+           }
+       })};
+
 </script>
 
   <style>
@@ -204,9 +220,16 @@
     function edit(this1){
             let node=this1;
             let id=node.children[0].innerHTML;
-            let f=document.forms[0];
-            f.action="/search?id="+id;
-            f.submit();
+            let filetype=node.children[4].innerHTML;
+            let filepath=node.children[3].innerHTML;
+            if(filetype==1){
+              //更进一步
+              myy(filepath);
+            } else {
+              let f=document.forms[0];
+              f.action="/search?id="+id;
+              f.submit();
+            }
      }
 
     </script>
@@ -217,7 +240,7 @@
     
     <p>编号：<input class="page"type="text" size="20" name="id"></p>
     <p>文件名：<input class="page"type="text" size="20" name="fileName"></p>
-    <input class="page"type="submit" name="button" value="进入" onclick="checkDir()">
+    <input class="page"type="submit" name="button" value="进入">
     <input class="page"type="submit" name="button" value="备份" onclick="return window.confirm('确定要备份吗')">
     <input class="page"type="submit" name="button" value="删除" onclick="return window.confirm('确定要删除吗')">
     <input class="page"type="submit" name="button" value="共享" onclick="return window.confirm('确定要共享吗')">
@@ -227,11 +250,12 @@
 
 <button onclick="my()">浏览文件</button>
 <table border="1">
-      <tr>
+      <tr onclick="edit()">
         <th>序号</th>
         <th>文件名称</th>
         <th>上传者</th>
-        <th>上传时间</th>
+        <th>文件路径</th>
+        <th>是否为文件夹</th>
       </tr>
     <tbody id="content">
 
