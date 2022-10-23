@@ -23,6 +23,28 @@
            }
        })};
 
+  function path1(){
+       $.ajax({
+           url: "/fileData",
+           type:"get",
+           dataType:"json",
+           success:function (data) {
+               console.log(data);
+               myFunction1(data.data);
+           }
+       })};    
+
+    function path4(){
+       $.ajax({
+           url: "/fileData",
+           type:"get",
+           dataType:"json",
+           success:function (data) {
+               console.log(data);
+               myFunction3(data.data);
+           }
+       })};      
+
   function myFunction(arr) {
       var out = "";
       for(let i = 0; i < arr.length; i++) {
@@ -35,6 +57,33 @@
                 +"</tr>";
       }
       document.getElementById("content").innerHTML=out;
+  }
+
+  function myFunction1(arr) {
+      var out = "";
+      for(let i = 0; i < arr.length; i++) {
+          out += "<tr  onclick="+"edit22(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Path+"</td>"
+                   +"<td>"+arr[i].Type+"</td>"
+                +"</tr>";
+      }
+      document.getElementById("content").innerHTML=out;
+  }
+
+  function myFunction3(arr) {
+      var out = "";
+      for(let i = 0; i < arr.length; i++) {
+          out += "<tr  onclick="+"edit44(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Author+"</td>"
+                   +"<td>"+arr[i].deleteTime+"</td>"
+                +"</tr>";
+      }
+      document.getElementById("recycled").innerHTML=out;
   }
 
   function myy(filepath){
@@ -51,10 +100,24 @@
            }
        })};
     
+      function myy1(filepath){
+       $.ajax({
+           url: "/innerData",
+           type:"get",
+           dataType:"json",
+           data: {
+            filepath:filepath
+           },
+           success:function (res) {
+               console.log(res);
+               myFunction1(res.data);
+           }
+       })};
 
     function edit(obj){
             let node=obj;
             let id=node.children[0].innerHTML;
+            let filename=node.children[1].innerHTML;
             let filetype=node.children[4].innerHTML;
             let filepath=node.children[3].innerHTML;
             //alert(id,filepath,filetype);
@@ -62,10 +125,43 @@
               //更进一步
               myy(filepath);
             } else {
-              let f=document.forms[0];
-              f.action="/search?id="+id;
-              f.submit();
+              const ipt1 = document.getElementById('ipt1')
+              const ipt2 = document.getElementById('ipt2')
+              ipt1.value = id;
+              ipt2.value = filename;
             }
+     }
+
+     function edit22(obj){
+            let node=obj;
+            let id=node.children[0].innerHTML;
+            let filename=node.children[1].innerHTML;
+            let filetype=node.children[4].innerHTML;
+            let filepath=node.children[3].innerHTML;
+            //alert(id,filepath,filetype);
+            if(filetype == "t1"){ //文件夹类型,要你指定
+              //更进一步
+              myy1(filepath);
+            } else {
+              const ipt3 = document.getElementById('ipt3')
+              const ipt4 = document.getElementById('ipt4')
+              ipt3.value = id;
+              ipt4.value = filename;
+            }
+     }
+
+     function edit44(obj){
+            let node=obj;
+            let id=node.children[0].innerHTML;
+            let filename=node.children[1].innerHTML;
+            let fileauthor=node.children[2].innerHTML;
+            let deleteTime=node.children[3].innerHTML;
+            //alert(id,filepath,filetype);
+              const pp3 = document.getElementById('pp3')
+              const pp4 = document.getElementById('pp4')
+              pp3.value = id;
+              pp4.value = filename;
+            
      }
 
 </script>
@@ -149,24 +245,24 @@
           <li>
             <!--            根据当前用户的id，返回其仓库的文件-->
             <form id="user1">
-              <input class="kuang" type="button"  name= "flag" value="文件浏览" onclick="user1()">
+              <a href="/myfile"><input class="kuang" type="button"  name= "flag" value="文件浏览" ></a>
             </form>
           </li>
           <li>
             <form id="user2">
-              <input class="kuang" type="button"  name= "flag" value="私密上传" onclick="user2()">
+              <a><input class="kuang" type="button"  name= "flag" value="私密备份" onclick="user2()"></a>
             </form>
           </li>
 
           <li>
             <form id="user3">
-              <input class="kuang" type="button"  name= "flag" value="普通上传" onclick="user3()">
+              <a><input class="kuang" type="button"  name= "flag" value="普通备份" onclick="user3()"></a>
             </form>
           </li>
 
           <li>
             <form id="user4">
-              <input class="kuang" type="button"  name= "flag" value="我的回收" onclick="user4()">
+              <a><input class="kuang" type="button"  name= "flag" value="我的回收" onclick="user4()"></a>
             </form>
           </li>
 
@@ -214,10 +310,14 @@
       <th>删除者</th>
       <th>删除时间</th>
     </tr>
-  
-  </table>
+    <tbody id="recycled">
 
-  <form class="special"action="${pageContext.request.contextPath}/PreServlet" method="post" >
+    </tbody>
+  </table>
+  <input class="page" type="submit" name="button" value="显示文件" onclick="path4()">
+  <form class="special"action="/PreServlet" method="post" >
+    <p>编号：<input class="page"type="text" size="20" name="id" id="pp3"></p>
+    <p>文件名：<input class="page"type="text" size="20" name="fileName" id="pp4"></p>
   <input class="page"type="submit" name="button" value="恢复" onclick="return window.confirm('确定要恢复吗')">
   </form>
 

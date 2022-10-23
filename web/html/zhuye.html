@@ -86,24 +86,24 @@
             <li>
               <!--            根据当前用户的id，返回其仓库的文件-->
               <form id="user1">
-                <input class="kuang" type="button"  name= "flag" value="文件浏览" onclick="user1()">
+                <a href="/myfile"><input class="kuang" type="button"  name= "flag" value="文件浏览" ></a>
               </form>
             </li>
             <li>
               <form id="user2">
-                <input class="kuang" type="button"  name= "flag" value="私密上传" onclick="user2()">
+                <a><input class="kuang" type="button"  name= "flag" value="私密备份" onclick="user2()"></a>
               </form>
             </li>
   
             <li>
               <form id="user3">
-                <input class="kuang" type="button"  name= "flag" value="普通上传" onclick="user3()">
+                <a><input class="kuang" type="button"  name= "flag" value="普通备份" onclick="user3()"></a>
               </form>
             </li>
   
             <li>
               <form id="user4">
-                <input class="kuang" type="button"  name= "flag" value="我的回收" onclick="user4()">
+                <a><input class="kuang" type="button"  name= "flag" value="我的回收" onclick="user4()"></a>
               </form>
             </li>
   
@@ -144,7 +144,7 @@
 
 
   <div class="about">
-    <h2 class="about_tit1">欢迎你，${user.get(0).getUsername()}</h2>
+    <h2 class="about_tit1">欢迎你</h2>
     <h3 class="about_tit">要不断的努力，才能成为更好的自己</h3>
     <img class="about_bgc" src="static/img/213.jpg" alt="">
   </div>

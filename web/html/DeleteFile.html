@@ -75,6 +75,72 @@
         }
     </script>
 
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+
+<script src="static/js/myfile.js">
+</script>
+
+<script>
+  function file2(){
+       $.ajax({
+           url: "/fileData",
+           type:"get",
+           dataType:"json",
+           success:function (data) {
+               console.log(data);
+               myFunction(data.data);
+           }
+       })};  
+
+
+  function myFunction(arr) {
+      var out = "";
+      for(let i = 0; i < arr.length; i++) {
+          out += "<tr  onclick="+"edit44(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].fileName+"</td>"
+                   +"<td>"+arr[i].author+"</td>"
+                   +"<td>"+arr[i].upTime+"</td>"
+                   +"<td>"+arr[i].size+"</td>"
+                   +"<td>"+arr[i].fileType+"</td>"
+                   +"<td>"+arr[i].shared+"</td>"
+                +"</tr>";
+      }
+      document.getElementById("file1").innerHTML=out;
+  }
+
+  function myy(filepath){
+       $.ajax({
+           url: "/innerData",
+           type:"get",
+           dataType:"json",
+           data: {
+            filepath:filepath
+           },
+           success:function (res) {
+               console.log(res);
+               myFunction(res.data);
+           }
+       })};
+
+  
+
+     function edit44(obj){
+            let node=obj;
+            let filename=node.children[1].innerHTML;
+            let username=node.children[2].innerHTML;
+            //alert(id,filepath,filetype);
+              const pp3 = document.getElementById('pp3')
+              const pp4 = document.getElementById('pp4')
+              pp3.value = filename;
+              pp4.value = username;
+            
+     }
+
+</script>
+
+
     <style>
       form.page{
         width: 100%;
@@ -224,14 +290,8 @@
   <br><br>
 
   <body>
+  <input class="page" type="submit" name="button" value="显示文件" onclick="file2()">
   <div >
-    <form class="page"action="${pageContext.request.contextPath}/manage1" name="search" method="post" autocomplete="on" target="_self">
-      文件名称<input  class="pageInput" type="text" name="fileName">
-      上传者 <input  class="pageInput" type="text" name="author"><br>
-      <input class="special" type="submit" value="查询">
-      <input class="special" type="submit"  value="删除" onclick="return window.confirm('确定删除吗')">
-    </form>
-
     <table id="manage">
       <tr>
         <th>序号</th>
@@ -242,9 +302,17 @@
         <th>文件类别</th>
         <th>是否共享</th>
       </tr>
-    
+      <tbody id="file1">
+
+      </tbody>
     </table>
 
+    <form class="page"action="/manage1" name="search" method="post" autocomplete="on" target="_self">
+      文件名称<input  class="pageInput" type="text" name="fileName" id="pp3">
+      上传者 <input  class="pageInput" type="text" name="author" id="pp4"><br>
+      <input class="special" type="submit" value="查询">
+      <input class="special" type="submit"  value="删除" onclick="return window.confirm('确定删除吗')">
+    </form>
 
   </div>
   </body>
