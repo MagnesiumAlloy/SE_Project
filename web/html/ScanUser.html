@@ -1,6 +1,3 @@
-<%
-    List<findAllFile> listBook=(List)session.getAttribute("filelist");
-%>
 <link rel="stylesheet" type="text/css" href="static/css/main.css" />
 <meta charset="UTF-8">
 <html>
@@ -130,7 +127,7 @@
                 <a href="#">文件信息</a>
                 <ul class="nav3">
                     <li>
-                        <form action="${pageContext.request.contextPath}/JSP/admin/addType.jsp">" >
+                        <form action="${pageContext.request.contextPath}/JSP/admin/addType.jsp"> >
                             <input  class="kuang" type="submit"  name= "delete" value="文件删除" >
                         </form>
                     </li>
@@ -163,13 +160,6 @@
             <th>已用空间</th>
             <th>注册时间</th>
         </tr>
-        <%for(int i=0;i<listUser.size();i++){
-            findAllfile temp=listFile.get(i);
-            out.println("<tr onclick=\"edit(this)\"> <td>"+temp.getId()+"</td> <td>"
-                    +temp.getAuthor()+"</td> <td>"+
-                    temp.getUsed()+"</td> <td>"+
-                    temp.getRegTime()+"</td> </tr>");}
-        %>
     </table>
 
 
