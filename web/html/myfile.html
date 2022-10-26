@@ -26,6 +26,7 @@
            url: "/fileData",
            type:"get",
            dataType:"json",
+           data: {path:"/usr/local/Cloud_backup"},
            success:function (data) {
                console.log(data);
                myFunction1(data.data);
@@ -36,11 +37,11 @@
       var out = "";
       for(let i = 0; i < arr.length; i++) {
           out += "<tr  onclick="+"edit(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Path+"</td>"
-                   +"<td>"+arr[i].Type+"</td>"
+                   +"<td>"+arr[i].id+"</td>"
+                   +"<td>"+arr[i].userid+"</td>"
+                   +"<td>"+arr[i].name+"</td>"
+                   +"<td>"+arr[i].path+"</td>"
+                   +"<td>"+arr[i].type+"</td>"
                 +"</tr>";
       }
       document.getElementById("content").innerHTML=out;
@@ -50,11 +51,11 @@
       var out = "";
       for(let i = 0; i < arr.length; i++) {
           out += "<tr  onclick="+"edit22(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Path+"</td>"
-                   +"<td>"+arr[i].Type+"</td>"
+                   +"<td>"+arr[i].id+"</td>"
+                   +"<td>"+arr[i].userid+"</td>"
+                   +"<td>"+arr[i].name+"</td>"
+                   +"<td>"+arr[i].path+"</td>"
+                   +"<td>"+arr[i].type+"</td>"
                 +"</tr>";
       }
       document.getElementById("content").innerHTML=out;
@@ -238,7 +239,7 @@
           </li>
           <li>
             <form id="user2">
-              <input class="kuang" type="button"  name= "flag" value="私密上传" onclick="user2()">
+              <input class="kuang" type="button"  name= "flag" value="私密上传" href='/login'>
             </form>
           </li>
 
@@ -300,7 +301,9 @@
     <input class="page"type="submit" name="button" value="备份" onclick="return window.confirm('确定要备份吗')">
     <input class="page"type="submit" name="button" value="比较" onclick="return window.confirm('两文件进行比较')">
     <input class="page"type="submit" name="button" value="删除" onclick="return window.confirm('确定要删除吗')">
-    <input class="page"type="submit" name="button" value="共享" onclick="return window.confirm('确定要共享吗')">
+    <input class="page"type="submit" name="button" value="共享" 
+    
+    onclick="return window.confirm('确定要共享吗')">
 
     <p>路径编号：<input class="page"type="text" size="20" name="pathid" id="ipt3"></p>
     <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="ipt4"></p>

@@ -30,9 +30,17 @@ func ReadDir(path string) ([]model.ObjectPointer, error) {
 		return nil, err
 	}
 	defer f.Close()
-	//var result []model.ObjectPointer
+	var result []model.ObjectPointer
 	for _, file := range files {
 		log.Println(file)
+		info, err := file.Info()
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, model.ObjectPointer{
+			Name: file.Name(), 
+			Type: file.Type().String(), 
+			Size: uint64(info.Size())})
 	}
-	return nil, nil
+	return result, nil
 }
