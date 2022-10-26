@@ -7,12 +7,12 @@ import (
 )
 
 type UserHandler struct {
-	gorm.DB
+	*gorm.DB
 	User *model.User
 }
 
 func NewUserHandler(user *model.User) *UserHandler {
-	return &UserHandler{*GetDb(), user}
+	return &UserHandler{GetDB(), user}
 }
 
 func (userHandler *UserHandler) Login() error {

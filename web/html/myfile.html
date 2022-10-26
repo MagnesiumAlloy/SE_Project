@@ -5,7 +5,7 @@
   <title>文件浏览</title>
   <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
   </script>
-
+ 
   <script src="static/js/myfile.js">
   </script>
 
@@ -37,11 +37,11 @@
       var out = "";
       for(let i = 0; i < arr.length; i++) {
           out += "<tr  onclick="+"edit(this)"+">"
-                   +"<td>"+arr[i].id+"</td>"
-                   +"<td>"+arr[i].userid+"</td>"
-                   +"<td>"+arr[i].name+"</td>"
-                   +"<td>"+arr[i].path+"</td>"
-                   +"<td>"+arr[i].type+"</td>"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].UserId+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Path+"</td>"
+                   +"<td>"+arr[i].Type+"</td>"
                 +"</tr>";
       }
       document.getElementById("content").innerHTML=out;
@@ -51,11 +51,11 @@
       var out = "";
       for(let i = 0; i < arr.length; i++) {
           out += "<tr  onclick="+"edit22(this)"+">"
-                   +"<td>"+arr[i].id+"</td>"
-                   +"<td>"+arr[i].userid+"</td>"
-                   +"<td>"+arr[i].name+"</td>"
-                   +"<td>"+arr[i].path+"</td>"
-                   +"<td>"+arr[i].type+"</td>"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].UserId+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Path+"</td>"
+                   +"<td>"+arr[i].Type+"</td>"
                 +"</tr>";
       }
       document.getElementById("content").innerHTML=out;

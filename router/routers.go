@@ -89,5 +89,7 @@ func SetupRouter() *gin.Engine {
 		})
 	})
 	r.POST("/Login", Controller.Login)
+
+	r.GET("/fileData", Controller.ListFiles)
 	return r
 }

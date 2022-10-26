@@ -13,7 +13,7 @@ var err error
 
 func ListFiles(c *gin.Context) {
 	path := c.Query("path")
-	var result []model.ObjectPointer
+	var result []model.Data
 	//pre check
 	//check path
 	if err = svc.CheckIsDir(path); err != nil {
