@@ -12,6 +12,8 @@
   
 <script>
   function upload2(){
+        const pp3 = document.getElementById('pp3').value;
+        const pp1 = document.getElementById('pp1').value;
         $.ajax({
             url: "/upload2",
             type:"post",
@@ -46,6 +48,11 @@
            url: "/readDir",
            type:"get",
            dataType:"json",
+           data:{
+            filepath: "",
+            filename: "",
+            isroot: 1
+           },
            success:function (data) {
                console.log(data);
                myFunction1(data.data);
@@ -57,6 +64,11 @@
            url: "/readDir",
            type:"get",
            dataType:"json",
+           data:{
+            filepath: "",
+            filename: "",
+            isroot: 1
+           },
            success:function (data) {
                console.log(data);
                myFunction2(data.data);
@@ -80,36 +92,36 @@
   function myFunction1(arr) {
       var out = "";
       for(let i = 0; i < arr.length; i++) {
-          out += "<tr  onclick="+"edit22(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
+          out += "<tr  onclick="+"edit(this)"+">"
                    +"<td>"+arr[i].Name+"</td>"
                    +"<td>"+arr[i].Path+"</td>"
                    +"<td>"+arr[i].Type+"</td>"
                 +"</tr>";
       }
-      document.getElementById("content").innerHTML=out;
+      document.getElementById("content1").innerHTML=out;
   }
 
   function myFunction2(arr) {
       var out = "";
       for(let i = 0; i < arr.length; i++) {
-          out += "<tr  onclick="+"edit33(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
+          out += "<tr  onclick="+"edit22(this)"+">"
                    +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Author+"</td>"
+                   +"<td>"+arr[i].Path+"</td>"
+                   +"<td>"+arr[i].Type+"</td>"
                 +"</tr>";
       }
-      document.getElementById("shared").innerHTML=out;
+      document.getElementById("content1").innerHTML=out;
   }
 
   function myy(filepath){
        $.ajax({
-           url: "/innerData",
+           url: "/readDir",
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath
+            filepath:filepath,
+            filename:"",
+            isroot:0
            },
            success:function (res) {
                console.log(res);
@@ -119,11 +131,13 @@
     
       function myy1(filepath){
        $.ajax({
-           url: "/innerData",
+           url: "/readDir",
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath
+            filepath:filepath,
+            filename:"",
+            isroot:0
            },
            success:function (res) {
                console.log(res);
@@ -133,37 +147,35 @@
 
     function edit(obj){
             let node=obj;
-            let id=node.children[0].innerHTML;
-            let filename=node.children[1].innerHTML;
-            let filetype=node.children[4].innerHTML;
-            let filepath=node.children[3].innerHTML;
+            let filename=node.children[0].innerHTML;
+            let filetype=node.children[2].innerHTML;
+            let filepath=node.children[1].innerHTML;
             //alert(id,filepath,filetype);
             if(filetype == "t1"){ //文件夹类型,要你指定
               //更进一步
               myy(filepath);
             } else {
-              const ipt1 = document.getElementById('ipt1')
-              const ipt2 = document.getElementById('ipt2')
-              ipt1.value = id;
-              ipt2.value = filename;
+              const pp1 = document.getElementById('pp1')
+              const pp2 = document.getElementById('pp2')
+              pp1.value = filename;
+              pp2.value = filepath;
             }
      }
 
      function edit22(obj){
             let node=obj;
-            let id=node.children[0].innerHTML;
-            let filename=node.children[1].innerHTML;
-            let filetype=node.children[4].innerHTML;
-            let filepath=node.children[3].innerHTML;
+            let filename=node.children[0].innerHTML;
+            let filetype=node.children[2].innerHTML;
+            let filepath=node.children[1].innerHTML;
             //alert(id,filepath,filetype);
             if(filetype == "t1"){ //文件夹类型,要你指定
               //更进一步
               myy1(filepath);
             } else {
-              const ipt3 = document.getElementById('ipt3')
-              const ipt4 = document.getElementById('ipt4')
-              ipt3.value = id;
-              ipt4.value = filename;
+              const pp3 = document.getElementById('pp3')
+              const pp4 = document.getElementById('pp4')
+              pp3.value = filename;
+              pp4.value = filepath;
             }
      }
 
@@ -315,20 +327,33 @@
     </tbody>
 </table> -->
 
-  <input class="page" type="submit" name="button" value="显示文件" onclick="path2()">
-  <input class="page" type="submit" name="button" value="选择路径" onclick="path1()">
+  <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
+  <input class="page" type="submit" name="button" value="选择路径" onclick="path2()">
   <form class="special"  method="post" >
 
   <p>文件名：<input class="page"type="text" size="20" name="fileName" id="pp1"></p>
+  <p>文件路径：<input class="page"type="text" size="20" name="filePath" id="pp2"></p>
 
   <input class="page"type="submit" name="button" value="普通上传" onclick="upload2()">
 
   <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="pp3"></p>
+  <p>上一层路径：<input class="page"type="text" size="20" name="pathfileName" id="pp4"></p>
   </form>
 
 </div>
 
 <div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
+
+<table border="5">
+  <tr>
+    <th>文件名称</th>
+    <th>文件路径</th>
+    <th>文件类型</th>
+  </tr>
+<tbody id="content1">
+
+</tbody>
+</table>
 
 </body>
 </html>

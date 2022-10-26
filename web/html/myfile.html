@@ -90,9 +90,21 @@
            data: {path:"/usr/local/Cloud_backup"},
            success:function (data) {
                console.log(data);
-               myFunction1(data.data);
+               myFunction(data.data);
            }
        })};    
+
+  function path2(){
+       $.ajax({
+           url: "/readDir",
+           type:"get",
+           dataType:"json",
+           data: {path:"/usr/local/Cloud_backup"},
+           success:function (data) {
+               console.log(data);
+               myFunction1(data.data);
+           }
+       })};       
 
   function myFunction(arr) {
       var out = "";
@@ -124,11 +136,12 @@
 
   function myy(filepath){
        $.ajax({
-           url: "/innerData",
+           url: "/readDir",
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath
+            filepath:filepath,
+            filename:""
            },
            success:function (res) {
                console.log(res);
@@ -138,11 +151,12 @@
     
       function myy1(filepath){
        $.ajax({
-           url: "/innerData",
+           url: "/readDir",
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath
+            filepath:filepath,
+            filename:""
            },
            success:function (res) {
                console.log(res);
@@ -361,7 +375,7 @@
         <th>文件名称</th>
         <th>上传者</th>
         <th>文件路径</th>
-        <th>是否为文件夹</th>
+        <th>文件类型</th>
       </tr>
     <tbody id="content">
 
