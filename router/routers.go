@@ -96,21 +96,23 @@ func SetupRouter() *gin.Engine {
 	})
 
 	r.POST("/Login", Controller.Login)
+	/*
+		data := []model.ObjectPointer{
+			{Name: "file1", Type: "t1", Path: "p1", Auther: "a1"},
+			{Name: "file1", Type: "t1", Path: "p1", Auther: "a1"},
+		}
 
-	data := []model.ObjectPointer{
-		{Name: "file1", Type: "t1", Path: "p1", Auther: "a1"},
-		{Name: "file1", Type: "t1", Path: "p1", Auther: "a1"},
-	}
-	r.GET("/fileData", func(c *gin.Context) {
+		r.GET("/fileData", func(c *gin.Context) {
 
-		c.JSON(http.StatusOK, gin.H{
-			"data": data,
+			c.JSON(http.StatusOK, gin.H{
+				"data": data,
+			})
 		})
-	})
-
+	*/
+	r.GET("/fileData", Controller.ListFiles)
 	data1 := []model.ObjectPointer{
-		{Name: "file2", Type: "t2", Path: "p2", Auther: "a2"},
-		{Name: "file3", Type: "t3", Path: "p3", Auther: "a3"},
+		{Name: "file2", Type: "t2", Path: "p2", UserId: 2},
+		{Name: "file3", Type: "t3", Path: "p3", UserId: 3},
 	}
 	r.GET("/innerData", func(c *gin.Context) {
 

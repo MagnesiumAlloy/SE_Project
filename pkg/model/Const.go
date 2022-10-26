@@ -9,5 +9,6 @@ const (
 	Audio         = "audio"
 	Video         = "video"
 	Zip           = "zip"
+	Dir           = "dir"
 	OtherFileType = "other"
 )
