@@ -73,7 +73,7 @@
 
   function my(){
        $.ajax({
-           url: "/fileData",
+           url: "/readDir",
            type:"get",
            dataType:"json",
            success:function (data) {
@@ -84,7 +84,7 @@
 
   function path1(){
        $.ajax({
-           url: "/fileData",
+           url: "/readDir",
            type:"get",
            dataType:"json",
            data: {path:"/usr/local/Cloud_backup"},
