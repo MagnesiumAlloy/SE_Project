@@ -19,8 +19,8 @@
             type:"post",
             dataType:"json",
             data:{
-              filename: pp1,
-              filepath: pp3
+              name: pp1,
+              path: pp3
             },
             success:function (data) {
                 console.log(data);
@@ -49,8 +49,8 @@
            type:"get",
            dataType:"json",
            data:{
-            filepath: "",
-            filename: "",
+            path: "",
+            name: "",
             isroot: 1
            },
            success:function (data) {
@@ -65,8 +65,8 @@
            type:"get",
            dataType:"json",
            data:{
-            filepath: "",
-            filename: "",
+            path: "",
+            name: "",
             isroot: 1
            },
            success:function (data) {
@@ -119,8 +119,8 @@
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath,
-            filename:"",
+            path:filepath,
+            name:"",
             isroot:0
            },
            success:function (res) {
@@ -135,8 +135,8 @@
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath,
-            filename:"",
+            path:filepath,
+            name:"",
             isroot:0
            },
            success:function (res) {

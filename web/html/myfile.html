@@ -11,13 +11,16 @@
 
 <script>
   function backup(){
+    const ipt1 = document.getElementById('ipt1').value;
+    const ipt2 = document.getElementById('ipt2').value;
+    const ipt4 = document.getElementById('ipt4').value;
         $.ajax({
             url: "/backup",
             type:"post",
             dataType:"json",
             data:{
               id : ipt1,
-              filename: ipt2,
+              name: ipt2,
               path: ipt4
             },
             success:function (data) {
@@ -31,15 +34,19 @@
         })};
 
   function compare(){
+    const ipt1 = document.getElementById('ipt1').value;
+    const ipt2 = document.getElementById('ipt2').value;
+    const ipt3 = document.getElementById('ipt3').value;
+    const ipt4 = document.getElementById('ipt4').value;
         $.ajax({
             url: "/compare",
             type:"post",
             dataType:"json",
             data:{
               id1: ipt1,
-              filename1: ipt2,
+              name1: ipt2,
               id2: ipt3,
-              filename2: ipt4
+              name2: ipt4
             },
             success:function (data) {
                 console.log(data);
@@ -52,6 +59,8 @@
         })};      
 
   function Delete(){
+    const ipt1 = document.getElementById('ipt1').value;
+    const ipt2 = document.getElementById('ipt2').value;
         $.ajax({
             url: "/Delete",
             type:"post",
@@ -140,8 +149,8 @@
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath,
-            filename:""
+            path:filepath,
+            name:""
            },
            success:function (res) {
                console.log(res);
@@ -155,8 +164,8 @@
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath,
-            filename:""
+            path:filepath,
+            name:""
            },
            success:function (res) {
                console.log(res);

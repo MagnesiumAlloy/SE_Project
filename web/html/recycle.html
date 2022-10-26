@@ -22,7 +22,7 @@ function delete1(){
             dataType:"json",
             data:{
               id : pp3,
-              filename: pp4,
+              name: pp4,
             },
             success:function (data) {
                 console.log(data);
@@ -45,7 +45,7 @@ function recover(){
             dataType:"json",
             data:{
               id : pp3,
-              filename: pp4,
+              name: pp4,
               path: pp2 
             },
             success:function (data) {
@@ -75,8 +75,8 @@ function recover(){
            type:"get",
            dataType:"json",
            data:{
-            filepath: "",
-            filename: "",
+            path: "",
+            name: "",
             isroot: 1
            },
            success:function (data) {
@@ -153,7 +153,7 @@ function recover(){
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath
+            path:filepath
            },
            success:function (res) {
                console.log(res);
@@ -167,7 +167,7 @@ function recover(){
            type:"get",
            dataType:"json",
            data: {
-            filepath:filepath
+            path:filepath
            },
            success:function (res) {
                console.log(res);
