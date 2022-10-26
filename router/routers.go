@@ -94,6 +94,11 @@ func SetupRouter() *gin.Engine {
 			"title": "select",
 		})
 	})
+	r.GET("/normal", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "normal.html", gin.H{
+			"title": "normal",
+		})
+	})
 
 	r.POST("/Login", Controller.Login)
 	/*

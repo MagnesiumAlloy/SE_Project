@@ -10,6 +10,67 @@
   </script>
 
 <script>
+  function backup(){
+        $.ajax({
+            url: "/backup",
+            type:"post",
+            dataType:"json",
+            data:{
+              id : ipt1,
+              filename: ipt2,
+              path: ipt4
+            },
+            success:function (data) {
+                console.log(data);
+                if(data==200){
+                  top.location.href='/myfile';
+                } else {
+                  alert("备份失败");
+                }
+            }
+        })};
+
+  function compare(){
+        $.ajax({
+            url: "/compare",
+            type:"post",
+            dataType:"json",
+            data:{
+              id1: ipt1,
+              filename1: ipt2,
+              id2: ipt3,
+              filename2: ipt4
+            },
+            success:function (data) {
+                console.log(data);
+                if(data==200){
+                 alert("两文件相同")
+                } else {
+                  alert("两文件不同");
+                }
+            }
+        })};      
+
+  function Delete(){
+        $.ajax({
+            url: "/Delete",
+            type:"post",
+            dataType:"json",
+            data:{
+              id1: ipt1,
+              filename1: ipt2,
+            },
+            success:function (data) {
+                console.log(data);
+                if(data==200){
+                 alert("删除成功");
+                 top.location.href='/myfile';
+                } else {
+                  alert("两删除失败");
+                }
+            }
+        })};          
+
   function my(){
        $.ajax({
            url: "/fileData",
@@ -234,42 +295,27 @@
           <li>
             <!--            根据当前用户的id，返回其仓库的文件-->
             <form id="user1">
-              <input class="kuang" type="button"  name= "flag" value="文件浏览" onclick="my()">
+              <a class="kuang" type="button"  name= "flag" value="私密上传" href='/myfile'>文件浏览</a>
             </form>
           </li>
           <li>
             <form id="user2">
-              <input class="kuang" type="button"  name= "flag" value="私密上传" href='/login'>
+              <a class="kuang" type="button"  name= "flag" value="私密上传" href='/secret'>私密上传</a>
             </form>
           </li>
 
           <li>
             <form id="user3">
-              <input class="kuang" type="button"  name= "flag" value="普通上传" onclick="user3()">
+              <a class="kuang" type="button"  name= "flag" value="私密上传" href='/normal'>普通上传</a>
             </form>
           </li>
 
           <li>
             <form id="user4">
-              <input class="kuang" type="button"  name= "flag" value="我的回收" onclick="user4()">
+              <a class="kuang" type="button"  name= "flag" value="私密上传" href='/recycle'>我的回收</a>
             </form>
           </li>
 
-        </ul>
-      </li>
-      <li>
-        <a href="#">我的空间</a>
-        <ul class="nav3">
-          <li>
-            <form id="user5">
-              <input class="kuang" type="button"  name= "flag" value="共享文件" onclick="user5()">
-            </form>
-          </li>
-          <li>
-            <form id="user6">
-              <input class="kuang" type="button"  name= "flag" value="私密文件" onclick="user6()">
-            </form>
-          </li>
         </ul>
       </li>
     </ul>
@@ -291,19 +337,17 @@
 <br>
 
 <div >
-  <input class="page" type="submit" name="button" value="路径选择" onclick="path1()">
-  <form class="special" action="/caozuo" method="post" >
+  <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
+  <input class="page" type="submit" name="button" value="选择路径" onclick="path2()">
+  <form class="special" method="post" >
 
     <input class="page"type="text" size="20" name="error" id="error" value="${error}"hidden>
     
     <p>编号：<input class="page"type="text" size="20" name="id" id="ipt1"></p>
     <p>文件名：<input class="page"type="text" size="20" name="fileName" id="ipt2"></p>
-    <input class="page"type="submit" name="button" value="备份" onclick="return window.confirm('确定要备份吗')">
-    <input class="page"type="submit" name="button" value="比较" onclick="return window.confirm('两文件进行比较')">
-    <input class="page"type="submit" name="button" value="删除" onclick="return window.confirm('确定要删除吗')">
-    <input class="page"type="submit" name="button" value="共享" 
-    
-    onclick="return window.confirm('确定要共享吗')">
+    <input class="page"type="submit" name="button" value="备份" onclick="backup()">
+    <input class="page"type="submit" name="button" value="比较" onclick="compare()">
+    <input class="page"type="submit" name="button" value="删除" onclick="Delete()">
 
     <p>路径编号：<input class="page"type="text" size="20" name="pathid" id="ipt3"></p>
     <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="ipt4"></p>
