@@ -3,6 +3,77 @@
 <html>
 <head>
     <title>用户浏览</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
+
+    <script type="text/javascript">
+        function scan(){
+            $.ajax({
+                //几个参数需要注意一下
+                dataType: "json",
+                url: "/Scan" ,
+                type: "POST", 
+                data: $('#scan').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.status == 200) {
+                       location.href="/ScanUser";
+                    } else {
+                        alert("错误");
+                    }
+                },
+                error : function() {
+                    console.log("failed");
+                    alert("异常！");
+                }
+            });
+        }
+
+        function delete1(){
+            $.ajax({
+                //几个参数需要注意一下
+                dataType: "json",
+                url: "/Delete1" ,
+                type: "POST", 
+                data: $('#delete').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.status == 200) {
+                       location.href="/DeleteUser";
+                    } else {
+                        alert("错误");
+                    }
+                },
+                error : function() {
+                    console.log("failed");
+                    alert("异常！");
+                }
+            });
+        }
+
+        function delete2(){
+            $.ajax({
+                //几个参数需要注意一下
+                dataType: "json",
+                url: "/Delete2" ,
+                type: "POST", 
+                data: $('#delete2').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.status == 200) {
+                       location.href="/DeleteFile";
+                    } else {
+                        alert("错误");
+                    }
+                },
+                error : function() {
+                    console.log("failed");
+                    alert("异常！");
+                }
+            });
+        }
+    </script>
+
     <style>
         form.page{
             width: 100%;
@@ -119,16 +190,20 @@
             <li>
                 <a href="#">用户信息</a>
                 <ul class="nav3">
-                    <li><a href="${pageContext.request.contextPath}/admin/addType.jsp">用户浏览</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/deleteType.jsp">用户删除</a></li>
+                    <form id="scan">
+                        <li><a onclick="scan()">用户浏览</a></li>
+                    </form>
+                    <form id="delete">
+                        <li><a onclick="delete1()">用户删除</a></li>
+                    </form>
                 </ul>
             </li>
             <li>
                 <a href="#">文件信息</a>
                 <ul class="nav3">
                     <li>
-                        <form action="${pageContext.request.contextPath}/JSP/admin/addType.jsp"> >
-                            <input  class="kuang" type="submit"  name= "delete" value="文件删除" >
+                        <form id="delete2">
+                            <input  class="kuang" type="button"  name= "delete" value="文件删除" onclick="delete2()">
                         </form>
                     </li>
                 </ul>

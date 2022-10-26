@@ -2,11 +2,19 @@ package main
 
 import (
 	"SE_Project/router"
+<<<<<<< HEAD
+=======
+	//"golang.org/x/crypto/bcrypt"
+>>>>>>> 10239f82450a18c82946f8bc53b3df2dfcd97ca4
 )
 
 func main() {
 	//handler.GetDb().AutoMigrate(&model.User{})
+<<<<<<< HEAD
 	//pwd, _ := bcrypt.GenerateFromPassword([]byte("123"), bcrypt.DefaultCost)
+=======
+	//pwd, _ := bcrypt.GenerateFromPassword([]byte("123"), bc6rypt.DefaultCost)
+>>>>>>> 10239f82450a18c82946f8bc53b3df2dfcd97ca4
 	//handler.GetDb().Create(&model.User{UserName: "user", Password: string(pwd), UserType: model.NormalUserType})
 	//pwd, _ = bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
 	//handler.GetDb().Create(&model.User{UserName: "admin", Password: string(pwd), UserType: model.AdminType})

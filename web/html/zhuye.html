@@ -3,9 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <title>主界面</title>
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+  </script>
+
+  <script src="static/js/myfile.js">
+  </script>
+   
+   
+<script>
+  function my(){
+       $.ajax({
+           url: "/fileData",
+           type:"get",
+           dataType:"json",
+           success:function (data) {
+               console.log(data);
+               myFunction(data.data);
+           }
+       })};
+
+  function myFunction(arr) {
+      var out = "";
+      for(let i = 0; i < arr.length; i++) {
+          out += "<tr  onclick="+"edit(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Path+"</td>"
+                   +"<td>"+arr[i].Type+"</td>"
+                +"</tr>";
+      }
+      document.getElementById("content").innerHTML=out;
+  }
+
+  function myy(filepath){
+       $.ajax({
+           url: "/innerData",
+           type:"get",
+           dataType:"json",
+           data: {
+            filepath:filepath
+           },
+           success:function (res) {
+               console.log(res);
+               myFunction(res.data);
+           }
+       })};
+    
+
+    function edit(obj){
+            let node=obj;
+            let id=node.children[0].innerHTML;
+            let filetype=node.children[4].innerHTML;
+            let filepath=node.children[3].innerHTML;
+            //alert(id,filepath,filetype);
+            if(filetype == "t1"){ //文件夹类型,要你指定
+              //更进一步
+              myy(filepath);
+            } else {
+              let f=document.forms[0];
+              f.action="/search?id="+id;
+              f.submit();
+            }
+     }
+
+</script>
+
 </head>
 <body>
-<%List<User> user=(List<User>)session.getAttribute("user");%>
 
   <ul class="nav1" class="out">
     <li class="border1">
@@ -20,27 +85,28 @@
           <ul class="nav3">
             <li>
               <!--            根据当前用户的id，返回其仓库的文件-->
-              <form action="${pageContext.request.contextPath}/BorrowServlet" method="post">
-                <input class="kuang" type="submit"  name= "flag" value="文件浏览">
+              <form id="user1">
+                <a href="/myfile"><input class="kuang" type="button"  name= "flag" value="文件浏览" ></a>
               </form>
             </li>
             <li>
-              <form action="${pageContext.request.contextPath}/BHistoryServlet" method="post">
-                <input class="kuang" type="submit"  name= "flag" value="私密上传">
+              <form id="user2">
+                <a><input class="kuang" type="button"  name= "flag" value="私密备份" onclick="user2()"></a>
               </form>
             </li>
-
+  
             <li>
-              <form action="${pageContext.request.contextPath}/BHistoryServlet" method="post">
-                <input class="kuang" type="submit"  name= "flag" value="普通上传">
+              <form id="user3">
+                <a><input class="kuang" type="button"  name= "flag" value="普通备份" onclick="user3()"></a>
               </form>
             </li>
-
+  
             <li>
-              <form action="${pageContext.request.contextPath}/MyBookServlet" method="post">
-                <input class="kuang" type="submit"  name= "flag" value="我的回收">
+              <form id="user4">
+                <a><input class="kuang" type="button"  name= "flag" value="我的回收" onclick="user4()"></a>
               </form>
             </li>
+  
 
           </ul>
         </li>
@@ -48,13 +114,13 @@
           <a href="#">我的空间</a>
           <ul class="nav3">
             <li>
-              <form action="${pageContext.request.contextPath}/PreServlet" method="post">
-                <input class="kuang" type="submit"  name= "flag" value="共享文件">
+              <form id="user5">
+                <input class="kuang" type="button"  name= "flag" value="共享文件" onclick="user5()">
               </form>
             </li>
             <li>
-              <form action="${pageContext.request.contextPath}/SecServlet" method="post">
-                <input class="kuang" type="submit"  name= "flag" value="私密文件">
+              <form id="user6">
+                <input class="kuang" type="button"  name= "flag" value="私密文件" onclick="user6()">
               </form>
             </li>
           </ul>
@@ -78,10 +144,13 @@
 
 
   <div class="about">
-    <h2 class="about_tit1">欢迎你，${user.get(0).getUsername()}</h2>
+    <h2 class="about_tit1">欢迎你</h2>
     <h3 class="about_tit">要不断的努力，才能成为更好的自己</h3>
     <img class="about_bgc" src="static/img/213.jpg" alt="">
   </div>
+
+  <div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
+
 
 </body>
 </html>

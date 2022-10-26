@@ -2,6 +2,7 @@ package router
 
 import (
 	Controller "SE_Project/pkg/controller"
+	"SE_Project/pkg/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -88,6 +89,34 @@ func SetupRouter() *gin.Engine {
 			"title": "zhuye",
 		})
 	})
+	r.GET("/select", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "select.html", gin.H{
+			"title": "select",
+		})
+	})
+
 	r.POST("/Login", Controller.Login)
+
+	data := []model.ObjectPointer{
+		{Name: "file1", Type: "t1", Path: "p1", Auther: "a1"},
+		{Name: "file1", Type: "t1", Path: "p1", Auther: "a1"},
+	}
+	r.GET("/fileData", func(c *gin.Context) {
+
+		c.JSON(http.StatusOK, gin.H{
+			"data": data,
+		})
+	})
+
+	data1 := []model.ObjectPointer{
+		{Name: "file2", Type: "t2", Path: "p2", Auther: "a2"},
+		{Name: "file3", Type: "t3", Path: "p3", Auther: "a3"},
+	}
+	r.GET("/innerData", func(c *gin.Context) {
+
+		c.JSON(http.StatusOK, gin.H{
+			"data": data1,
+		})
+	})
 	return r
 }

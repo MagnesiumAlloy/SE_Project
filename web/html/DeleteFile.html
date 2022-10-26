@@ -1,11 +1,146 @@
-<%
-List<findAllFile> listBook=(List)session.getAttribute("filelist");
-  %>
   <link rel="stylesheet" type="text/css" href="static/css/main.css" />
   <meta charset="UTF-8">
   <html>
   <head>
     <title>文件删除</title>
+    
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
+
+    <script type="text/javascript">
+        function scan(){
+            $.ajax({
+                //几个参数需要注意一下
+                dataType: "json",
+                url: "/Scan" ,
+                type: "POST", 
+                data: $('#scan').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.status == 200) {
+                       location.href="/ScanUser";
+                    } else {
+                        alert("错误");
+                    }
+                },
+                error : function() {
+                    console.log("failed");
+                    alert("异常！");
+                }
+            });
+        }
+
+        function delete1(){
+            $.ajax({
+                //几个参数需要注意一下
+                dataType: "json",
+                url: "/Delete1" ,
+                type: "POST", 
+                data: $('#delete').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.status == 200) {
+                       location.href="/DeleteUser";
+                    } else {
+                        alert("错误");
+                    }
+                },
+                error : function() {
+                    console.log("failed");
+                    alert("异常！");
+                }
+            });
+        }
+
+        function delete2(){
+            $.ajax({
+                //几个参数需要注意一下
+                dataType: "json",
+                url: "/Delete2" ,
+                type: "POST", 
+                data: $('#delete2').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.status == 200) {
+                       location.href="/DeleteFile";
+                    } else {
+                        alert("错误");
+                    }
+                },
+                error : function() {
+                    console.log("failed");
+                    alert("异常！");
+                }
+            });
+        }
+    </script>
+
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+
+<script src="static/js/myfile.js">
+</script>
+
+<script>
+  function file2(){
+       $.ajax({
+           url: "/fileData",
+           type:"get",
+           dataType:"json",
+           success:function (data) {
+               console.log(data);
+               myFunction(data.data);
+           }
+       })};  
+
+
+  function myFunction(arr) {
+      var out = "";
+      for(let i = 0; i < arr.length; i++) {
+          out += "<tr  onclick="+"edit44(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].fileName+"</td>"
+                   +"<td>"+arr[i].author+"</td>"
+                   +"<td>"+arr[i].upTime+"</td>"
+                   +"<td>"+arr[i].size+"</td>"
+                   +"<td>"+arr[i].fileType+"</td>"
+                   +"<td>"+arr[i].shared+"</td>"
+                +"</tr>";
+      }
+      document.getElementById("file1").innerHTML=out;
+  }
+
+  function myy(filepath){
+       $.ajax({
+           url: "/innerData",
+           type:"get",
+           dataType:"json",
+           data: {
+            filepath:filepath
+           },
+           success:function (res) {
+               console.log(res);
+               myFunction(res.data);
+           }
+       })};
+
+  
+
+     function edit44(obj){
+            let node=obj;
+            let filename=node.children[1].innerHTML;
+            let username=node.children[2].innerHTML;
+            //alert(id,filepath,filetype);
+              const pp3 = document.getElementById('pp3')
+              const pp4 = document.getElementById('pp4')
+              pp3.value = filename;
+              pp4.value = username;
+            
+     }
+
+</script>
+
+
     <style>
       form.page{
         width: 100%;
@@ -122,16 +257,20 @@ List<findAllFile> listBook=(List)session.getAttribute("filelist");
         <li>
           <a href="#">用户信息</a>
           <ul class="nav3">
-            <li><a href="${pageContext.request.contextPath}/admin/addType.jsp">用户浏览</a></li>
-            <li><a href="${pageContext.request.contextPath}/admin/deleteType.jsp">用户删除</a></li>
+                <form id="scan">
+                  <li><a onclick="scan()">用户浏览</a></li>
+              </form>
+              <form id="delete">
+                  <li><a onclick="delete1()">用户删除</a></li>
+              </form>
           </ul>
         </li>
         <li>
           <a href="#">文件信息</a>
           <ul class="nav3">
             <li>
-              <form action="${pageContext.request.contextPath}/JSP/admin/addType.jsp">" >
-                <input  class="kuang" type="submit"  name= "delete" value="文件删除" >
+              <form id="delete2">
+                <input  class="kuang" type="button"  name= "delete" value="文件删除" onclick="delete2()">
               </form>
             </li>
           </ul>
@@ -151,14 +290,8 @@ List<findAllFile> listBook=(List)session.getAttribute("filelist");
   <br><br>
 
   <body>
+  <input class="page" type="submit" name="button" value="显示文件" onclick="file2()">
   <div >
-    <form class="page"action="${pageContext.request.contextPath}/manage1" name="search" method="post" autocomplete="on" target="_self">
-      文件名称<input  class="pageInput" type="text" name="fileName">
-      上传者 <input  class="pageInput" type="text" name="author"><br>
-      <input class="special" type="submit" value="查询">
-      <input class="special" type="submit"  value="删除" onclick="return window.confirm('确定删除吗')">
-    </form>
-
     <table id="manage">
       <tr>
         <th>序号</th>
@@ -169,18 +302,17 @@ List<findAllFile> listBook=(List)session.getAttribute("filelist");
         <th>文件类别</th>
         <th>是否共享</th>
       </tr>
-      <%for(int i=0;i<listFile.size();i++){
-      findAllfile temp=listFile.get(i);
-      out.println("<tr onclick=\"edit(this)\"> <td>"+temp.getId()+"</td> <td>"
-      +temp.getFileName()+"</td> <td>"
-      +temp.getAuthor()+"</td> <td>"+
-      temp.getUpTime()+"</td> <td>"+
-      temp.getFileSize()+"</td> <td>"+
-      temp.getFileType()+"</td> <td>"+
-      temp.getShare()+"</td> </tr>");}
-      %>
+      <tbody id="file1">
+
+      </tbody>
     </table>
 
+    <form class="page"action="/manage1" name="search" method="post" autocomplete="on" target="_self">
+      文件名称<input  class="pageInput" type="text" name="fileName" id="pp3">
+      上传者 <input  class="pageInput" type="text" name="author" id="pp4"><br>
+      <input class="special" type="submit" value="查询">
+      <input class="special" type="submit"  value="删除" onclick="return window.confirm('确定删除吗')">
+    </form>
 
   </div>
   </body>

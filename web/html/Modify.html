@@ -3,10 +3,37 @@
 <html>
 <head>
   <title>修改密码</title>
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+  </script>
+
+  <script type="text/javascript">
+      function modify(){
+          $.ajax({
+              //几个参数需要注意一下
+              dataType: "json",
+              url: "/Modify" ,
+              type: "POST", 
+              data: $('#modify').serialize(),
+              success: function (result) {
+                  console.log(result);//打印服务端返回的数据(调试用)
+                  if (result.status == 200) {
+                     location.href="/login";
+                  } else {
+                      alert("错误");
+                  }
+              },
+              error : function() {
+                  console.log("failed");
+                  alert("异常！");
+              }
+          });
+      }
+  </script>
+
 </head>
 <body>
-<form action="${pageContext.request.contextPath}/ModifyServlet" method="post">
-  <form>
+
+<form id="modify">
     <div class="from">
       <img class="bgc" src="static/img/214.jpg" alt="">
       <div class="submit">
@@ -28,13 +55,12 @@
           <input class="inputs" type="password" name="newpwd2" placeholder="确定密码">
         </div>
         <div class="btn_submit">
-          <a href="/index">
-            <button type="submit" class="btn" onclick="aa()">确定修改</button></a>
+          <a>
+            <button type="button" class="btn" onclick="modify()">确定修改</button></a>
           <a href="/" class="back"><button type="button"  class="home_href">回到首页</button></a>
         </div>
       </div>
     </div>
-  </form>
 
 </form>
 
