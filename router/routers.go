@@ -88,6 +88,17 @@ func SetupRouter() *gin.Engine {
 			"title": "zhuye",
 		})
 	})
+	r.GET("/select", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "select.html", gin.H{
+			"title": "select",
+		})
+	})
+	r.GET("/normal", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "normal.html", gin.H{
+			"title": "normal",
+		})
+	})
+
 	r.POST("/Login", Controller.Login)
 
 	r.GET("/fileData", Controller.ListFiles)

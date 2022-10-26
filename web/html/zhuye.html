@@ -76,7 +76,7 @@
     <li class="border1">
       <a class="li1" href="/zhuye">用户主界面</a>
     </li>
-
+  
     <li class="border1">
       <a href="#">基本功能</a>
       <ul class="nav2">
@@ -86,43 +86,27 @@
             <li>
               <!--            根据当前用户的id，返回其仓库的文件-->
               <form id="user1">
-                <a href="/myfile"><input class="kuang" type="button"  name= "flag" value="文件浏览" ></a>
+                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/myfile'>文件浏览</a>
               </form>
             </li>
             <li>
               <form id="user2">
-                <a><input class="kuang" type="button"  name= "flag" value="私密备份" onclick="user2()"></a>
+                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/secret'>私密上传</a>
               </form>
             </li>
   
             <li>
               <form id="user3">
-                <a><input class="kuang" type="button"  name= "flag" value="普通备份" onclick="user3()"></a>
+                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/normal'>普通上传</a>
               </form>
             </li>
   
             <li>
               <form id="user4">
-                <a><input class="kuang" type="button"  name= "flag" value="我的回收" onclick="user4()"></a>
+                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/recycle'>我的回收</a>
               </form>
             </li>
   
-
-          </ul>
-        </li>
-        <li>
-          <a href="#">我的空间</a>
-          <ul class="nav3">
-            <li>
-              <form id="user5">
-                <input class="kuang" type="button"  name= "flag" value="共享文件" onclick="user5()">
-              </form>
-            </li>
-            <li>
-              <form id="user6">
-                <input class="kuang" type="button"  name= "flag" value="私密文件" onclick="user6()">
-              </form>
-            </li>
           </ul>
         </li>
       </ul>

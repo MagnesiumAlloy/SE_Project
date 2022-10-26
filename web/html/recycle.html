@@ -12,9 +12,49 @@
 
   
 <script>
+
+function delete1(){
+        $.ajax({
+            url: "/delete1",
+            type:"post",
+            dataType:"json",
+            data:{
+              id : pp3,
+              filename: pp4,
+            },
+            success:function (data) {
+                console.log(data);
+                if(data==200){
+                  top.location.href='/recycle';
+                } else {
+                  alert("删除失败");
+                }
+            }
+        })}; 
+
+function recover(){
+        $.ajax({
+            url: "/recover",
+            type:"post",
+            dataType:"json",
+            data:{
+              id : pp3,
+              filename: pp4,
+              path: pp2 
+            },
+            success:function (data) {
+                console.log(data);
+                if(data==200){
+                  top.location.href='/myfile';
+                } else {
+                  alert("恢复失败");
+                }
+            }
+        })};
+
   function my(){
        $.ajax({
-           url: "/fileData",
+           url: "/readDir",
            type:"get",
            dataType:"json",
            success:function (data) {
@@ -231,60 +271,45 @@
 <body>
 
 
-<ul class="nav1" class="out">
-  <li class="border1">
-    <a class="li1" href="/zhuye">用户主界面</a>
-  </li>
-
-  <li class="border1">
-    <a href="#">基本功能</a>
-    <ul class="nav2">
-      <li>
-        <a href="#">我的文件</a>
-        <ul class="nav3">
-          <li>
-            <!--            根据当前用户的id，返回其仓库的文件-->
-            <form id="user1">
-              <a href="/myfile"><input class="kuang" type="button"  name= "flag" value="文件浏览" ></a>
-            </form>
-          </li>
-          <li>
-            <form id="user2">
-              <a><input class="kuang" type="button"  name= "flag" value="私密备份" onclick="user2()"></a>
-            </form>
-          </li>
-
-          <li>
-            <form id="user3">
-              <a><input class="kuang" type="button"  name= "flag" value="普通备份" onclick="user3()"></a>
-            </form>
-          </li>
-
-          <li>
-            <form id="user4">
-              <a><input class="kuang" type="button"  name= "flag" value="我的回收" onclick="user4()"></a>
-            </form>
-          </li>
-
-        </ul>
-      </li>
-      <li>
-        <a href="#">我的空间</a>
-        <ul class="nav3">
-          <li>
-            <form id="user5">
-              <input class="kuang" type="button"  name= "flag" value="共享文件" onclick="user5()">
-            </form>
-          </li>
-          <li>
-            <form id="user6">
-              <input class="kuang" type="button"  name= "flag" value="私密文件" onclick="user6()">
-            </form>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </li>
+  <ul class="nav1" class="out">
+    <li class="border1">
+      <a class="li1" href="/zhuye">用户主界面</a>
+    </li>
+  
+    <li class="border1">
+      <a href="#">基本功能</a>
+      <ul class="nav2">
+        <li>
+          <a href="#">我的文件</a>
+          <ul class="nav3">
+            <li>
+              <!--            根据当前用户的id，返回其仓库的文件-->
+              <form id="user1">
+                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/myfile'>文件浏览</a>
+              </form>
+            </li>
+            <li>
+              <form id="user2">
+                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/secret'>私密上传</a>
+              </form>
+            </li>
+  
+            <li>
+              <form id="user3">
+                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/normal'>普通上传</a>
+              </form>
+            </li>
+  
+            <li>
+              <form id="user4">
+                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/recycle'>我的回收</a>
+              </form>
+            </li>
+  
+          </ul>
+        </li>
+      </ul>
+    </li>
 
   <li class="border1">
     <a href="/Modify">修改密码</a>
@@ -315,10 +340,15 @@
     </tbody>
   </table>
   <input class="page" type="submit" name="button" value="显示文件" onclick="path4()">
-  <form class="special"action="/PreServlet" method="post" >
+  <input class="page" type="submit" name="button" value="选择路径" onclick="path1()">
+  <form class="special"  method="post" >
     <p>编号：<input class="page"type="text" size="20" name="id" id="pp3"></p>
     <p>文件名：<input class="page"type="text" size="20" name="fileName" id="pp4"></p>
-  <input class="page"type="submit" name="button" value="恢复" onclick="return window.confirm('确定要恢复吗')">
+  <input class="page"type="submit" name="button" value="恢复" onclick="delete1()">
+  <input class="page"type="submit" name="button" value="恢复" onclick="recover()">
+
+  <p>路径编号：<input class="page"type="text" size="20" name="pathid" id="pp1"></p>
+  <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="pp2"></p>
   </form>
 
 </div>
