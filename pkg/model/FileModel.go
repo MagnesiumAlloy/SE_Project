@@ -2,7 +2,7 @@ package model
 
 import "gorm.io/gorm"
 
-type ObjectPointer struct {
+type Data struct {
 	gorm.Model
 	Path      string `form:"path"`
 	Size      uint64 `form:"size"`
@@ -11,12 +11,4 @@ type ObjectPointer struct {
 	Name      string `form:"name"`
 	UserId    uint64 `form:"userid"`
 	IsDeleted bool   `form:"isdeleted"`
-}
-
-type Folder struct {
-	ObjectPointer
-}
-
-type File struct {
-	ObjectPointer
 }

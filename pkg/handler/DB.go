@@ -23,7 +23,7 @@ func dbConn(User, Password, Host, Db string, Port int) *gorm.DB {
 	return db
 }
 
-func GetDb() (conn *gorm.DB) {
+func GetDB() (conn *gorm.DB) {
 	for {
 		conn = dbConn("root", "123456", "127.0.0.1", "SE_DB", 3306)
 		if conn != nil {

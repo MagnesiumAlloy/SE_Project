@@ -1,13 +1,15 @@
 package service
 
 import (
+	"SE_Project/pkg/handler"
 	"SE_Project/pkg/model"
+	"SE_Project/pkg/util"
 	"errors"
 	"log"
 	"os"
 )
 
-func CheckIsDir(path string) error {
+func SqlCheckIsDir(path string) error {
 	folderinfo, err := os.Stat(path)
 	if err != nil {
 		return err
@@ -20,7 +22,7 @@ func CheckIsDir(path string) error {
 	return nil
 }
 
-func ReadDir(path string) ([]model.ObjectPointer, error) {
+func SqlReadDir(path string) ([]model.Data, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -30,17 +32,36 @@ func ReadDir(path string) ([]model.ObjectPointer, error) {
 		return nil, err
 	}
 	defer f.Close()
-	var result []model.ObjectPointer
+	var result []model.Data
 	for _, file := range files {
 		log.Println(file)
 		info, err := file.Info()
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, model.ObjectPointer{
-			Name: file.Name(), 
-			Type: file.Type().String(), 
-			Size: uint64(info.Size())})
+		result = append(result, model.Data{
+			Name: file.Name(),
+			Type: util.GetTargetType(file.Name(), file.IsDir()),
+			Size: uint64(info.Size()),
+			Path: path})
+
+	}
+	return result, nil
+}
+
+func CheckIsDir(path string) error {
+	obj := &model.Data{Path: path, Type: model.Dir}
+	if err := handler.NewFileHandler(obj).CheckIsDir(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func ReadDir(path string) ([]model.Data, error) {
+	obj := &model.Data{Path: path}
+	result, err := handler.NewFileHandler(obj).ReadDir()
+	if err != nil {
+		return nil, err
 	}
 	return result, nil
 }
