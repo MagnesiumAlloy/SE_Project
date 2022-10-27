@@ -101,6 +101,24 @@ func SetupRouter() *gin.Engine {
 
 	r.POST("/Login", Controller.Login)
 
-	r.GET("/readDir", Controller.ListFiles)
+	r.POST("/register", Controller.Register)
+
+	r.POST("/recover", Controller.Recover)
+
+	r.POST("/compare", Controller.Compare)
+
+	r.DELETE("/delete", Controller.Delete)
+
+	r.GET("/readDir", Controller.ReadDir)
+
+	r.POST("/backup", Controller.Backup)
+
+	r.POST("/backupWithKey", Controller.BackupWithKey)
+
+	r.GET("/readBin", Controller.ReadBin)
+
+	r.DELETE("/clean", Controller.Clean)
+
+	r.POST("/recycle", Controller.Recycle)
 	return r
 }

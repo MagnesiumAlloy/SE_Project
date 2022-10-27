@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 )
 
-func SqlCheckIsDir(path string) error {
+func SysCheckIsDir(path string) error {
 	folderinfo, err := os.Stat(path)
 	if err != nil {
 		return err
@@ -23,7 +23,7 @@ func SqlCheckIsDir(path string) error {
 	return nil
 }
 
-func SqlReadDir(path string) ([]model.Data, error) {
+func SysReadDir(path string) ([]model.Data, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -50,28 +50,27 @@ func SqlReadDir(path string) ([]model.Data, error) {
 	return result, nil
 }
 
-func CheckIsDir(dir *model.Data, readRoot bool) error {
-	if readRoot {
-		if err := handler.NewFileHandler(dir).CheckIsDir(); err != nil {
+func CheckIsDir(path string, isRoot bool, isBin bool) error {
+	if isRoot {
+		if err := handler.NewFileHandler(&model.Data{Path: path, IsDeleted: isBin}).CheckIsDir(); err != nil {
 			return err
 		}
 		return nil
 	} else {
-		return SqlCheckIsDir(dir.Path + "/" + dir.Name)
+		return SysCheckIsDir(path)
 	}
 
 }
 
-func ReadDir(dir *model.Data, readRoot bool) ([]model.Data, error) {
-	if readRoot {
-
-		result, err := handler.NewFileHandler(&model.Data{Path: dir.Path + "/" + dir.Name}).ReadDir()
+func ReadDir(path string, isRoot bool, isBin bool) ([]model.Data, error) {
+	if isRoot {
+		result, err := handler.NewFileHandler(&model.Data{Path: path, IsDeleted: isBin}).ReadDir()
 		if err != nil {
 			return nil, err
 		}
 		return result, nil
 	} else {
-		return SqlReadDir(dir.Path + "/" + dir.Name)
+		return SysReadDir(path)
 	}
 }
 
@@ -116,4 +115,32 @@ func ReadAllFileAndDir(root string) ([]model.Data, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+func Recover(srcName, srcPath, desPath string) error {
+	return nil
+}
+
+func Compare(srcName, srcPath, desName, desPath string) error {
+	return nil
+}
+
+func Delete(Name, Path string) error {
+	return nil
+}
+
+func Backup(srcName, srcPath, desPath string) error {
+	return nil
+}
+
+func BackupWithKey(srcName, srcPath, desPath, key string) error {
+	return nil
+}
+
+func Clean(name, path string) error {
+	return nil
+}
+
+func Recycle(name, path string) error {
+	return nil
 }
