@@ -44,10 +44,10 @@
             type:"POST",
             dataType:"json",
             data:{
-              srcName: ipt1,
-              srcPath: ipt2,
-              desName: ipt3,
-              desPath: ipt4
+              desName: ipt1,
+              desPath: ipt2,
+              srcName: ipt3,
+              srcPath: ipt4
             },
             success:function (data) {
                 console.log(data);
@@ -60,15 +60,15 @@
         })};      
 
   function Delete(){
-    const ipt1 = document.getElementById('ipt1').value;
-    const ipt2 = document.getElementById('ipt2').value;
+    const ipt3 = document.getElementById('ipt3').value;
+    const ipt4 = document.getElementById('ipt4').value;
         $.ajax({
             url: "/delete",
             type:"DELETE",
             dataType:"json",
             data:{
-              name: ipt1,
-              path: ipt2,
+              name: ipt3,
+              path: ipt4,
             },
             success:function (data) {
                 console.log(data);
@@ -100,7 +100,7 @@
            data: {
             path: "",
             name: "",
-            isroot: 1
+            isroot: 0
           },
            success:function (data) {
                console.log(data);
@@ -176,7 +176,7 @@
            data: {
             path:filepath,
             name:"",
-            isroot:0
+            isroot:1
            },
            success:function (res) {
                console.log(res);
@@ -372,7 +372,7 @@
 
 <div >
   <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
-  <input class="page" type="submit" name="button" value="选择路径" onclick="path2()">
+  <input class="page" type="submit" name="button" value="选择备份路径" onclick="path2()">
   <form class="special" method="post" >
 
     <input class="page"type="text" size="20" name="error" id="error" value="${error}"hidden>

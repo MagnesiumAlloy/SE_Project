@@ -11,19 +11,28 @@
 
     function path1(){
        $.ajax({
-           url: "/readDir",
+           url: "/readUser",
            type:"GET",
            dataType:"json",
-           data: {
-            path: "",
-            name: "",
-            isroot: 1
-          },
            success:function (data) {
                console.log(data);
                myFunction(data.data);
            }
        })}; 
+
+
+    function myFunction(arr) {
+      var out = "";
+      for(let i = 0; i < arr.length; i++) {
+          out += "<tr  onclick="+"edit(this)"+">"
+                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].Space+"</td>"
+                   +"<td>"+arr[i].RegTime+"</td>"
+                +"</tr>";
+      }
+      document.getElementById("content1").innerHTML=out;
+  }
 
         function scan(){
             $.ajax({
@@ -90,6 +99,39 @@
                 }
             });
         }
+
+        function edit(obj){
+            let node=obj;
+            let id=node.children[0].innerHTML;
+            let name=node.children[1].innerHTML;
+            //alert(id,filepath,filetype);
+              const pp3 = document.getElementById('pp3')
+              const pp4 = document.getElementById('pp4')
+              pp3.value = id;
+              pp4.value = name;
+     }
+
+     function deleteUsr(){
+        const pp3 = document.getElementById('pp3').value;
+        const pp4 = document.getElementById('pp4').value;
+        $.ajax({
+            url: "/cleanUsr",
+            type:"DELETE",
+            dataType:"json",
+            data:{
+              id : pp3,
+              name: pp4,
+            },
+            success:function (data) {
+                console.log(data);
+                if(data==200){
+                  top.location.href='/ScanUser';
+                } else {
+                  alert("删除失败");
+                }
+            }
+        })}; 
+
     </script>
 
     <style>
@@ -241,12 +283,8 @@
 
 <body>
 
-<div class="columns">
+<div>
     <input class="special" type="submit" name="button" value="显示用户" onclick="path1()">
-    <form class="page"action="${pageContext.request.contextPath}/manage1" name="search" method="post" autocomplete="on" target="_self">
-        用户名<input  class="pageInput" type="text" name="Author">
-        <input class="special" type="submit" value="查询">
-    </form>
 
     <table id="manage">
         <tr>
@@ -255,7 +293,17 @@
             <th>已用空间</th>
             <th>注册时间</th>
         </tr>
+        <tbody id="content1">
+
+        </tbody>
     </table>
+
+    
+    <div class="f5">
+          <p>编号：<input class="page" type="text" size="20" name="id" id="pp3"></p>
+          <p>用户名：<input class="page" type="text" size="20" name="fileName" id="pp4"></p>
+          <input class="special" type="submit" name="button" value="删除" onclick="deleteUsr()">
+      </div>
 
 </div>
 </body>

@@ -36,8 +36,6 @@ function delete1(){
 
 function recover(){
   console.log(11);
-        const pp3 = document.getElementById('pp3').value;
-        const pp4 = document.getElementById('pp4').value;
         const pp2 = document.getElementById('pp2').value;
         const pp1 = document.getElementById('pp1').value;
         $.ajax({
@@ -47,7 +45,6 @@ function recover(){
             data:{
               srcName: pp1,
               srcPath: pp2,
-              desPath: pp4
             },
             success:function (data) {
                 console.log(data);
@@ -371,15 +368,12 @@ function recover(){
   </table>
 
   <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
-  <input class="page" type="submit" name="button" value="选择路径" onclick="path2()">
   <form class="special"  method="post" >
     <p>文件名：<input class="page"type="text" size="20" name="fileName" id="pp1"></p>
     <p>文件原路径：<input class="page"type="text" size="20" name="fileName" id="pp2"></p>
   <input class="page"type="submit" name="button" value="删除" onclick="delete1()">
   <input class="page"type="submit" name="button" value="恢复" onclick="recover()">
 
-  <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="pp3"></p>
-  <p>上一层路径：<input class="page"type="text" size="20" name="pathfileName" id="pp4"></p>
   </form>
 
 </div>

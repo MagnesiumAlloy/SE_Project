@@ -11,6 +11,30 @@
 </script>
 
     <script type="text/javascript">
+
+      function deleteFile(){
+        const pp3 = document.getElementById('pp3').value;
+        const pp4 = document.getElementById('pp4').value;
+        $.ajax({
+                //几个参数需要注意一下
+                dataType: "json",
+                url: "/deleteFile" ,
+                type: "DELETE", 
+                data: {
+                  name: pp3,
+                  file: pp4
+                },
+                success:function (data) {
+                console.log(data);
+                if(data==200){
+                  top.location.href='/ScanFile';
+                } else {
+                  alert("删除失败");
+                }
+            }
+            });
+      }
+
         function scan(){
             $.ajax({
                 //几个参数需要注意一下
@@ -87,7 +111,7 @@
 <script>
   function file2(){
        $.ajax({
-           url: "/fileData",
+           url: "/ScanFile",
            type:"get",
            dataType:"json",
            success:function (data) {
@@ -103,6 +127,7 @@
           out += "<tr  onclick="+"edit44(this)"+">"
                    +"<td>"+arr[i].ID+"</td>"
                    +"<td>"+arr[i].fileName+"</td>"
+                   +"<td>"+arr[i].filePath+"</td>"
                    +"<td>"+arr[i].author+"</td>"
                    +"<td>"+arr[i].upTime+"</td>"
                    +"<td>"+arr[i].size+"</td>"
@@ -132,12 +157,12 @@
      function edit44(obj){
             let node=obj;
             let filename=node.children[1].innerHTML;
-            let username=node.children[2].innerHTML;
+            let filepath=node.children[2].innerHTML;
             //alert(id,filepath,filetype);
               const pp3 = document.getElementById('pp3')
               const pp4 = document.getElementById('pp4')
               pp3.value = filename;
-              pp4.value = username;
+              pp4.value = filepath;
             
      }
 
@@ -260,12 +285,9 @@
         <li>
           <a href="#">用户信息</a>
           <ul class="nav3">
-                <form id="scan">
-                  <li><a onclick="scan()">用户浏览</a></li>
-              </form>
-              <form id="delete">
-                  <li><a onclick="delete1()">用户删除</a></li>
-              </form>
+            <form id="scan">
+              <a class="kuang" type="button"  name= "flag" value="用户浏览" href='/ScanUser'>用户浏览</a>
+           </form>
           </ul>
         </li>
         <li>
@@ -299,6 +321,7 @@
       <tr>
         <th>序号</th>
         <th>文件名称</th>
+        <th>文件路径</th>
         <th>上传者</th>
         <th>上传时间</th>
         <th>文件大小</th>
@@ -310,12 +333,9 @@
       </tbody>
     </table>
 
-    <form class="page"action="/manage1" name="search" method="post" autocomplete="on" target="_self">
       文件名称<input  class="pageInput" type="text" name="fileName" id="pp3">
-      上传者 <input  class="pageInput" type="text" name="author" id="pp4"><br>
-      <input class="special" type="submit" value="查询">
-      <input class="special" type="submit"  value="删除" onclick="return window.confirm('确定删除吗')">
-    </form>
+      文件路径 <input  class="pageInput" type="text" name="filePath" id="pp4"><br>
+      <input class="special" type="submit"  value="删除" onclick="deleteFile()">
 
   </div>
   </body>
