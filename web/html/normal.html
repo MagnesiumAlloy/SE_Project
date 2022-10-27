@@ -17,18 +17,17 @@
         const pp3 = document.getElementById('pp3').value;
         const pp4 = document.getElementById('pp4').value;
         $.ajax({
-            url: "/upload2",
-            type:"post",
+            url: "/backup",
+            type:"POST",
             dataType:"json",
             data:{
-              name1: pp1,
-              path1: pp2,
-              name2: pp3,
-              path2: pp4
+              srcName: pp1,
+              srcPath: pp2,
+              desPath: pp4
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/myfile';
                 } else {
                   alert("上传失败");
@@ -55,7 +54,7 @@
            data:{
             path: "",
             name: "",
-            isroot: 1
+            isroot: 0
            },
            success:function (data) {
                console.log(data);
@@ -141,7 +140,7 @@
            data: {
             path:filepath,
             name:"",
-            isroot:0
+            isroot:1
            },
            success:function (res) {
                console.log(res);
@@ -155,7 +154,7 @@
             let filetype=node.children[2].innerHTML;
             let filepath=node.children[1].innerHTML;
             //alert(id,filepath,filetype);
-            if(filetype == "t1"){ //文件夹类型,要你指定
+            if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
               myy(filepath);
             } else {
@@ -172,7 +171,7 @@
             let filetype=node.children[2].innerHTML;
             let filepath=node.children[1].innerHTML;
             //alert(id,filepath,filetype);
-            if(filetype == "t1"){ //文件夹类型,要你指定
+            if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
               myy1(filepath);
             } else {

@@ -93,6 +93,11 @@ func SetupRouter() *gin.Engine {
 			"title": "select",
 		})
 	})
+	r.GET("/ScanFile", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "ScanFile.html", gin.H{
+			"title": "ScanFile",
+		})
+	})
 	r.GET("/normal", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "normal.html", gin.H{
 			"title": "normal",

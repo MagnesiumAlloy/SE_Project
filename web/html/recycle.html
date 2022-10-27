@@ -17,8 +17,8 @@ function delete1(){
         const pp1 = document.getElementById('pp1').value;
         const pp2 = document.getElementById('pp2').value;
         $.ajax({
-            url: "/delete1",
-            type:"post",
+            url: "/clean",
+            type:"DELETE",
             dataType:"json",
             data:{
               name : pp1,
@@ -26,7 +26,7 @@ function delete1(){
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/recycle';
                 } else {
                   alert("删除失败");
@@ -36,23 +36,19 @@ function delete1(){
 
 function recover(){
   console.log(11);
-        const pp3 = document.getElementById('pp3').value;
-        const pp4 = document.getElementById('pp4').value;
         const pp2 = document.getElementById('pp2').value;
         const pp1 = document.getElementById('pp1').value;
         $.ajax({
-            url: "/recover",
-            type:"get",
+            url: "/recycle",
+            type:"POST",
             dataType:"json",
             data:{
-              name1: pp1,
-              path1: pp2,
-              name2: pp3,
-              path2: pp4  
+              srcName: pp1,
+              srcPath: pp2,
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/myfile';
                 } else {
                   alert("恢复失败");
@@ -89,8 +85,8 @@ function recover(){
        
   function path1(){
        $.ajax({
-           url: "/readDelete",
-           type:"get",
+           url: "/readBin",
+           type:"GET",
            dataType:"json",
            success:function (data) {
                console.log(data);
@@ -103,6 +99,11 @@ function recover(){
            url: "/readDir",
            type:"get",
            dataType:"json",
+           data:{
+            path:"",
+            name:"",
+            isroot:0
+           },
            success:function (data) {
                console.log(data);
                myFunction3(data.data);
@@ -155,7 +156,9 @@ function recover(){
            type:"get",
            dataType:"json",
            data: {
-            path:filepath
+            path:filepath,
+            name:"",
+            isroot:0
            },
            success:function (res) {
                console.log(res);
@@ -169,7 +172,9 @@ function recover(){
            type:"get",
            dataType:"json",
            data: {
-            path:filepath
+            path:filepath,
+            name:"",
+            isroot:0
            },
            success:function (res) {
                console.log(res);
@@ -200,7 +205,7 @@ function recover(){
             let filepath=node.children[3].innerHTML;
             let deleteTime=node.children[4].innerHTML;
             //alert(id,filepath,filetype);
-            if(filetype == "t1"){ //文件夹类型,要你指定
+            if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
               myy1(filepath);
             } else {
@@ -363,15 +368,12 @@ function recover(){
   </table>
 
   <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
-  <input class="page" type="submit" name="button" value="选择路径" onclick="path2()">
   <form class="special"  method="post" >
     <p>文件名：<input class="page"type="text" size="20" name="fileName" id="pp1"></p>
     <p>文件原路径：<input class="page"type="text" size="20" name="fileName" id="pp2"></p>
   <input class="page"type="submit" name="button" value="删除" onclick="delete1()">
   <input class="page"type="submit" name="button" value="恢复" onclick="recover()">
 
-  <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="pp3"></p>
-  <p>上一层路径：<input class="page"type="text" size="20" name="pathfileName" id="pp4"></p>
   </form>
 
 </div>
