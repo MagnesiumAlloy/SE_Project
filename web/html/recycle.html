@@ -17,8 +17,8 @@ function delete1(){
         const pp1 = document.getElementById('pp1').value;
         const pp2 = document.getElementById('pp2').value;
         $.ajax({
-            url: "/delete1",
-            type:"post",
+            url: "/clean",
+            type:"DELETE",
             dataType:"json",
             data:{
               name : pp1,
@@ -41,14 +41,13 @@ function recover(){
         const pp2 = document.getElementById('pp2').value;
         const pp1 = document.getElementById('pp1').value;
         $.ajax({
-            url: "/recover",
-            type:"get",
+            url: "/recycle",
+            type:"POST",
             dataType:"json",
             data:{
-              name1: pp1,
-              path1: pp2,
-              name2: pp3,
-              path2: pp4  
+              srcName: pp1,
+              srcPath: pp2,
+              desPath: pp4
             },
             success:function (data) {
                 console.log(data);
@@ -89,8 +88,8 @@ function recover(){
        
   function path1(){
        $.ajax({
-           url: "/readDelete",
-           type:"get",
+           url: "/readBin",
+           type:"GET",
            dataType:"json",
            success:function (data) {
                console.log(data);
@@ -103,6 +102,11 @@ function recover(){
            url: "/readDir",
            type:"get",
            dataType:"json",
+           data:{
+            path:"",
+            name:"",
+            isroot:0
+           },
            success:function (data) {
                console.log(data);
                myFunction3(data.data);
@@ -155,7 +159,9 @@ function recover(){
            type:"get",
            dataType:"json",
            data: {
-            path:filepath
+            path:filepath,
+            name:"",
+            isroot:0
            },
            success:function (res) {
                console.log(res);
@@ -169,7 +175,9 @@ function recover(){
            type:"get",
            dataType:"json",
            data: {
-            path:filepath
+            path:filepath,
+            name:"",
+            isroot:0
            },
            success:function (res) {
                console.log(res);
@@ -200,7 +208,7 @@ function recover(){
             let filepath=node.children[3].innerHTML;
             let deleteTime=node.children[4].innerHTML;
             //alert(id,filepath,filetype);
-            if(filetype == "t1"){ //文件夹类型,要你指定
+            if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
               myy1(filepath);
             } else {

@@ -6,6 +6,9 @@
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
     </script>
 
+<script src="static/js/myfile.js">
+</script>
+
     <script type="text/javascript">
         function scan(){
             $.ajax({
@@ -90,10 +93,10 @@
                 <a href="#">用户信息管理</a>
                 <ul class="nav3">
                     <form id="scan">
-                        <li><a onclick="scan()">用户浏览</a></li>
+                        <a class="kuang" type="button"  name= "flag" value="用户浏览" href='/ScanUser'>用户浏览</a>
                     </form>
                     <form id="delete">
-                        <li><a onclick="delete1()">用户删除</a></li>
+                        <a class="kuang" type="button"  name= "flag" value="用户删除" href='/DeleteUser'>用户删除</a>
                     </form>
                 </ul>
             </li>
@@ -102,7 +105,7 @@
                 <ul class="nav3">
                     <li>
                         <form id="delete2">
-                            <input  class="kuang" type="button"  name= "delete" value="文件删除" onclick="delete2()">
+                            <a class="kuang" type="button"  name= "flag" value="文件浏览" href='/ScanFile'>文件浏览</a>
                         </form>
                     </li>
                 </ul>

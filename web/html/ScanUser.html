@@ -6,7 +6,25 @@
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
     </script>
 
+
     <script type="text/javascript">
+
+    function path1(){
+       $.ajax({
+           url: "/readDir",
+           type:"GET",
+           dataType:"json",
+           data: {
+            path: "",
+            name: "",
+            isroot: 1
+          },
+           success:function (data) {
+               console.log(data);
+               myFunction(data.data);
+           }
+       })}; 
+
         function scan(){
             $.ajax({
                 //几个参数需要注意一下
@@ -203,7 +221,7 @@
                 <ul class="nav3">
                     <li>
                         <form id="delete2">
-                            <input  class="kuang" type="button"  name= "delete" value="文件删除" onclick="delete2()">
+                               <a class="kuang" type="button"  name= "flag" value="文件浏览" href='/ScanFile'>文件浏览</a>
                         </form>
                     </li>
                 </ul>
@@ -222,7 +240,9 @@
 <br><br>
 
 <body>
+
 <div class="columns">
+    <input class="special" type="submit" name="button" value="显示用户" onclick="path1()">
     <form class="page"action="${pageContext.request.contextPath}/manage1" name="search" method="post" autocomplete="on" target="_self">
         用户名<input  class="pageInput" type="text" name="Author">
         <input class="special" type="submit" value="查询">
@@ -236,8 +256,6 @@
             <th>注册时间</th>
         </tr>
     </table>
-
-
 
 </div>
 </body>

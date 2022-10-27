@@ -10,20 +10,19 @@
   </script>
 
 <script>
-  function backup(){
+  function backup(){// 对文件进行恢复
     const ipt1 = document.getElementById('ipt1').value;
     const ipt2 = document.getElementById('ipt2').value;
     const ipt3 = document.getElementById('ipt3').value;
     const ipt4 = document.getElementById('ipt4').value;
         $.ajax({
-            url: "/backup",
-            type:"post",
+            url: "/recover",
+            type:"POST",
             dataType:"json",
             data:{
-              name1: ipt1,
-              path1: ipt2,
-              name2: ipt3,
-              path2: ipt4
+              srcName: ipt1,
+              srcPath: ipt2,
+              desPath: ipt4
             },
             success:function (data) {
                 console.log(data);
@@ -42,13 +41,13 @@
     const ipt4 = document.getElementById('ipt4').value;
         $.ajax({
             url: "/compare",
-            type:"post",
+            type:"POST",
             dataType:"json",
             data:{
-              name1: ipt1,
-              path1: ipt2,
-              name2: ipt3,
-              path2: ipt4
+              srcName: ipt1,
+              srcPath: ipt2,
+              desName: ipt3,
+              desPath: ipt4
             },
             success:function (data) {
                 console.log(data);
@@ -64,8 +63,8 @@
     const ipt1 = document.getElementById('ipt1').value;
     const ipt2 = document.getElementById('ipt2').value;
         $.ajax({
-            url: "/Delete",
-            type:"post",
+            url: "/delete",
+            type:"DELETE",
             dataType:"json",
             data:{
               name: ipt1,
@@ -85,7 +84,7 @@
   function my(){
        $.ajax({
            url: "/readDir",
-           type:"get",
+           type:"GET",
            dataType:"json",
            success:function (data) {
                console.log(data);
@@ -96,9 +95,13 @@
   function path1(){
        $.ajax({
            url: "/readDir",
-           type:"get",
+           type:"GET",
            dataType:"json",
-           data: {path:"/usr/local/Cloud_backup"},
+           data: {
+            path: "",
+            name: "",
+            isroot: 1
+          },
            success:function (data) {
                console.log(data);
                myFunction(data.data);
@@ -108,9 +111,13 @@
   function path2(){
        $.ajax({
            url: "/readDir",
-           type:"get",
+           type:"GET",
            dataType:"json",
-           data: {path:"/usr/local/Cloud_backup"},
+           data: {
+            path: "",
+            name: "",
+            isroot: 1
+          },
            success:function (data) {
                console.log(data);
                myFunction1(data.data);
@@ -148,11 +155,12 @@
   function myy(filepath){
        $.ajax({
            url: "/readDir",
-           type:"get",
+           type:"GET",
            dataType:"json",
            data: {
             path:filepath,
-            name:""
+            name:"",
+            isroot:0
            },
            success:function (res) {
                console.log(res);
@@ -163,11 +171,12 @@
       function myy1(filepath){
        $.ajax({
            url: "/readDir",
-           type:"get",
+           type:"GET",
            dataType:"json",
            data: {
             path:filepath,
-            name:""
+            name:"",
+            isroot:0
            },
            success:function (res) {
                console.log(res);
@@ -182,7 +191,7 @@
             let filetype=node.children[4].innerHTML;
             let filepath=node.children[3].innerHTML;
             //alert(id,filepath,filetype);
-            if(filetype == "t1"){ //文件夹类型,要你指定
+            if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
               myy(filepath);
             } else {
@@ -200,7 +209,7 @@
             let filetype=node.children[4].innerHTML;
             let filepath=node.children[3].innerHTML;
             //alert(id,filepath,filetype);
-            if(filetype == "t1"){ //文件夹类型,要你指定
+            if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
               myy1(filepath);
             } else {
