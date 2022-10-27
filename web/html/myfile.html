@@ -13,15 +13,17 @@
   function backup(){
     const ipt1 = document.getElementById('ipt1').value;
     const ipt2 = document.getElementById('ipt2').value;
+    const ipt3 = document.getElementById('ipt3').value;
     const ipt4 = document.getElementById('ipt4').value;
         $.ajax({
             url: "/backup",
             type:"post",
             dataType:"json",
             data:{
-              id : ipt1,
-              name: ipt2,
-              path: ipt4
+              name1: ipt1,
+              path1: ipt2,
+              name2: ipt3,
+              path2: ipt4
             },
             success:function (data) {
                 console.log(data);
@@ -43,10 +45,10 @@
             type:"post",
             dataType:"json",
             data:{
-              id1: ipt1,
-              name1: ipt2,
-              id2: ipt3,
-              name2: ipt4
+              name1: ipt1,
+              path1: ipt2,
+              name2: ipt3,
+              path2: ipt4
             },
             success:function (data) {
                 console.log(data);
@@ -66,8 +68,8 @@
             type:"post",
             dataType:"json",
             data:{
-              id1: ipt1,
-              filename1: ipt2,
+              name: ipt1,
+              path: ipt2,
             },
             success:function (data) {
                 console.log(data);
@@ -186,8 +188,8 @@
             } else {
               const ipt1 = document.getElementById('ipt1')
               const ipt2 = document.getElementById('ipt2')
-              ipt1.value = id;
-              ipt2.value = filename;
+              ipt1.value = filename;
+              ipt2.value = filepath;
             }
      }
 
@@ -204,8 +206,8 @@
             } else {
               const ipt3 = document.getElementById('ipt3')
               const ipt4 = document.getElementById('ipt4')
-              ipt3.value = id;
-              ipt4.value = filename;
+              ipt3.value = filename;
+              ipt4.value = filepath;
             }
      }
 
@@ -366,8 +368,10 @@
 
     <input class="page"type="text" size="20" name="error" id="error" value="${error}"hidden>
     
-    <p>编号：<input class="page"type="text" size="20" name="id" id="ipt1"></p>
-    <p>文件名：<input class="page"type="text" size="20" name="fileName" id="ipt2"></p>
+
+    <p>文件名：<input class="page"type="text" size="20" name="fileName" id="ipt1"></p>
+    <p>文件路径：<input class="page"type="text" size="20" name="pathfileName" id="ipt2"></p>
+
     <input class="page"type="submit" name="button" value="备份" onclick="backup()">
     <input class="page"type="submit" name="button" value="比较" onclick="compare()">
     <input class="page"type="submit" name="button" value="删除" onclick="Delete()">
