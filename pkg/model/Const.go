@@ -13,4 +13,5 @@ const (
 	OtherFileType = "other"
 	//path
 	Root = "/usr/local/Cloud_backup"
+	Bin  = "/usr/local/Cloud_Bin"
 )
