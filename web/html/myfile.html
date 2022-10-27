@@ -26,7 +26,7 @@
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/myfile';
                 } else {
                   alert("备份失败");
@@ -51,7 +51,7 @@
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                  alert("两文件相同")
                 } else {
                   alert("两文件不同");
@@ -72,7 +72,7 @@
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                  alert("删除成功");
                  top.location.href='/myfile';
                 } else {

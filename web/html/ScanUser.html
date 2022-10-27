@@ -27,7 +27,7 @@
           out += "<tr  onclick="+"edit(this)"+">"
                    +"<td>"+arr[i].ID+"</td>"
                    +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Space+"</td>"
+                   +"<td>"+arr[i].usedSpace+"</td>"
                    +"<td>"+arr[i].RegTime+"</td>"
                 +"</tr>";
       }
@@ -124,7 +124,7 @@
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/ScanUser';
                 } else {
                   alert("删除失败");
@@ -251,11 +251,8 @@
                 <a href="#">用户信息</a>
                 <ul class="nav3">
                     <form id="scan">
-                        <li><a onclick="scan()">用户浏览</a></li>
-                    </form>
-                    <form id="delete">
-                        <li><a onclick="delete1()">用户删除</a></li>
-                    </form>
+                        <a class="kuang" type="button"  name= "flag" value="用户浏览" href='/ScanUser'>用户浏览</a>
+                     </form>
                 </ul>
             </li>
             <li>

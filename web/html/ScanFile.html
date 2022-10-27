@@ -26,7 +26,7 @@
                 },
                 success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/ScanFile';
                 } else {
                   alert("删除失败");
@@ -128,11 +128,10 @@
                    +"<td>"+arr[i].ID+"</td>"
                    +"<td>"+arr[i].fileName+"</td>"
                    +"<td>"+arr[i].filePath+"</td>"
-                   +"<td>"+arr[i].author+"</td>"
-                   +"<td>"+arr[i].upTime+"</td>"
+                   +"<td>"+arr[i].UserId+"</td>"
+                   +"<td>"+arr[i].backupTime+"</td>"
                    +"<td>"+arr[i].size+"</td>"
                    +"<td>"+arr[i].fileType+"</td>"
-                   +"<td>"+arr[i].shared+"</td>"
                 +"</tr>";
       }
       document.getElementById("file1").innerHTML=out;
@@ -322,20 +321,16 @@
         <th>序号</th>
         <th>文件名称</th>
         <th>文件路径</th>
-        <th>上传者</th>
-        <th>上传时间</th>
+        <th>备份者</th>
+        <th>备份时间</th>
         <th>文件大小</th>
         <th>文件类别</th>
-        <th>是否共享</th>
       </tr>
       <tbody id="file1">
 
       </tbody>
     </table>
 
-      文件名称<input  class="pageInput" type="text" name="fileName" id="pp3">
-      文件路径 <input  class="pageInput" type="text" name="filePath" id="pp4"><br>
-      <input class="special" type="submit"  value="删除" onclick="deleteFile()">
 
   </div>
   </body>

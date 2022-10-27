@@ -27,7 +27,7 @@
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/myfile';
                 } else {
                   alert("上传失败");

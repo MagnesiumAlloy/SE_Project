@@ -26,7 +26,7 @@ function delete1(){
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/recycle';
                 } else {
                   alert("删除失败");
@@ -48,7 +48,7 @@ function recover(){
             },
             success:function (data) {
                 console.log(data);
-                if(data==200){
+                if(data.status==200){
                   top.location.href='/myfile';
                 } else {
                   alert("恢复失败");
