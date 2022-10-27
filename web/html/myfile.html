@@ -129,8 +129,8 @@
       for(let i = 0; i < arr.length; i++) {
           out += "<tr  onclick="+"edit(this)"+">"
                    +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].UserId+"</td>"
                    +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].UserId+"</td>"
                    +"<td>"+arr[i].Path+"</td>"
                    +"<td>"+arr[i].Type+"</td>"
                 +"</tr>";
@@ -143,8 +143,8 @@
       for(let i = 0; i < arr.length; i++) {
           out += "<tr  onclick="+"edit22(this)"+">"
                    +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].UserId+"</td>"
                    +"<td>"+arr[i].Name+"</td>"
+                   +"<td>"+arr[i].UserId+"</td>"
                    +"<td>"+arr[i].Path+"</td>"
                    +"<td>"+arr[i].Type+"</td>"
                 +"</tr>";
@@ -152,14 +152,14 @@
       document.getElementById("content").innerHTML=out;
   }
 
-  function myy(filepath){
+  function myy(filepath,filename){
        $.ajax({
            url: "/readDir",
            type:"GET",
            dataType:"json",
            data: {
             path:filepath,
-            name:"",
+            name:filename,
             isroot:0
            },
            success:function (res) {
@@ -168,14 +168,14 @@
            }
        })};
     
-      function myy1(filepath){
+      function myy1(filepath,filename){
        $.ajax({
            url: "/readDir",
            type:"GET",
            dataType:"json",
            data: {
             path:filepath,
-            name:"",
+            name:filename,
             isroot:1
            },
            success:function (res) {
@@ -193,7 +193,7 @@
             //alert(id,filepath,filetype);
             if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
-              myy(filepath);
+              myy(filepath,filename);
             } else {
               const ipt1 = document.getElementById('ipt1')
               const ipt2 = document.getElementById('ipt2')
@@ -211,7 +211,7 @@
             //alert(id,filepath,filetype);
             if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
-              myy1(filepath);
+              myy1(filepath,filename);
             } else {
               const ipt3 = document.getElementById('ipt3')
               const ipt4 = document.getElementById('ipt4')
