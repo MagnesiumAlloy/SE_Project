@@ -30,9 +30,12 @@ func Recover(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-	})
+
+	messgae_map := map[string]interface{}{
+		"status": 200,
+		"msg":    "提交成功",
+	}
+	c.JSON(http.StatusOK, messgae_map)
 }
 
 func Compare(c *gin.Context) {
