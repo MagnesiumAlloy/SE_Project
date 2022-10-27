@@ -57,7 +57,7 @@ func SysReadDir(path string) ([]model.Data, error) {
 			Name: file.Name(),
 			Type: util.GetTargetType(file.Name(), file.IsDir()),
 			Size: uint64(info.Size()),
-			Path: ""})
+			Path: path})
 
 	}
 	return result, nil
@@ -65,12 +65,12 @@ func SysReadDir(path string) ([]model.Data, error) {
 
 func SysReadFileInfo(name, path string) (*model.Data, error) {
 	res := model.Data{Name: name, Path: path}
-	if err := SysCheckIsDir(name + "/" + path); err != nil {
+	if err := SysCheckIsDir(path + name); err != nil {
 		res.Type = util.GetTargetType(name, false)
 	} else {
 		res.Type = model.Dir
 	}
-	info, err := os.Stat(name + "/" + path)
+	info, err := os.Stat(path + name)
 	if err != nil {
 		return nil, err
 	}

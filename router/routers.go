@@ -104,6 +104,12 @@ func SetupRouter() *gin.Engine {
 		})
 	})
 
+	r.POST("/myfile", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "myfile.html", gin.H{
+			"title": "myfile",
+		})
+	})
+
 	r.POST("/Login", Controller.Login)
 
 	r.POST("/register", Controller.Register)

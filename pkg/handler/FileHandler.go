@@ -16,24 +16,24 @@ func NewFileHandler(Obj *model.Data) *FileHandler {
 }
 func (fileHandler *FileHandler) ReadDir() ([]model.Data, error) {
 	var result []model.Data
-	if err := fileHandler.Where(fileHandler.Obj).Find(&result); err != nil {
-		return nil, err.Error
+	if err := fileHandler.Where(fileHandler.Obj).Find(&result).Error; err != nil {
+		return nil, err
 	}
 	return result, nil
 }
 
 func (fileHandler *FileHandler) CheckTargetExist() error {
 	var result model.Data
-	if err := fileHandler.Where(fileHandler.Obj).First(&result); err != nil {
-		return err.Error
+	if err := fileHandler.Where(fileHandler.Obj).First(&result).Error; err != nil {
+		return err
 	}
 	return nil
 }
 
 func (fileHandler *FileHandler) GetTarget() (*model.Data, error) {
 	var result model.Data
-	if err := fileHandler.Where(fileHandler.Obj).First(&result); err != nil {
-		return nil, err.Error
+	if err := fileHandler.Where(fileHandler.Obj).First(&result).Error; err != nil {
+		return nil, err
 	}
 	return &result, nil
 }

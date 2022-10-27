@@ -3,7 +3,6 @@ package service
 import (
 	"SE_Project/pkg/handler"
 	"SE_Project/pkg/model"
-	"SE_Project/pkg/util"
 	"os"
 	"path/filepath"
 	"time"
@@ -12,39 +11,39 @@ import (
 var err error
 var obj *model.Data
 
-func checkIsDir(path string, isRoot bool, isBin bool) error {
+func checkIsDir(path, name string, isRoot bool, isBin bool) error {
 	if isRoot {
-		if err := handler.NewFileHandler(&model.Data{Path: path, IsDeleted: isBin, Type: model.Dir}).CheckTargetExist(); err != nil {
+		if err := handler.NewFileHandler(&model.Data{Path: path, Name: name, IsDeleted: isBin, Type: model.Dir}).CheckTargetExist(); err != nil {
 			return err
 		}
 		return nil
 	} else {
-		return handler.SysCheckIsDir(path)
+		return handler.SysCheckIsDir(path + name + "/")
 	}
 
 }
 
-func ReadDir(path string, isRoot bool, isBin bool) ([]model.Data, error) {
-	if err := checkIsDir(path, isRoot, isBin); err != nil {
+func ReadDir(path, name string, isRoot bool, isBin bool) ([]model.Data, error) {
+	if err := checkIsDir(path, name, isRoot, isBin); err != nil {
 		return nil, err
 	}
 	if isRoot {
-		result, err := handler.NewFileHandler(&model.Data{Path: path, IsDeleted: isBin}).ReadDir()
+		result, err := handler.NewFileHandler(&model.Data{Path: path + name + "/", IsDeleted: isBin}).ReadDir()
 		if err != nil {
 			return nil, err
 		}
 		return result, nil
 	} else {
-		return handler.SysReadDir(path)
+		return handler.SysReadDir(path + name + "/")
 	}
 }
 
 func ReadAllFileAndDir(root string) ([]model.Data, error) {
-	var res []model.Data
+	res := []model.Data{}
 	err := filepath.Walk(root, func(file string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			name := ""
-			path := ""
+			path := "/"
 			for i, fd := len(file)-1, 0; i >= len(root); i-- {
 				if fd == 0 && file[i] == '/' {
 					fd = 1
@@ -56,11 +55,13 @@ func ReadAllFileAndDir(root string) ([]model.Data, error) {
 					}
 				}
 			}
-			res = append(res, model.Data{Path: path, Name: name, Type: model.Dir, Size: uint64(info.Size())})
+			obj, _ := handler.SysReadFileInfo(name, root+path)
+			obj.Path = path
+			res = append(res, *obj)
 
 		} else {
 			name := ""
-			path := ""
+			path := "/"
 			for i, fd := len(file)-1, 0; i >= len(root); i-- {
 				if fd == 0 && file[i] == '/' {
 					fd = 1
@@ -72,7 +73,9 @@ func ReadAllFileAndDir(root string) ([]model.Data, error) {
 					}
 				}
 			}
-			res = append(res, model.Data{Path: path, Name: name, Type: util.GetTargetType(name, false), Size: uint64(info.Size())})
+			obj, _ := handler.SysReadFileInfo(name, root+path)
+			obj.Path = path
+			res = append(res, *obj)
 		}
 		return nil
 	})
@@ -93,7 +96,7 @@ func checkFileExist(name, path string, params ...bool) error {
 			return err
 		}
 	} else {
-		return handler.SysCheckFileExist(path + "/" + name)
+		return handler.SysCheckFileExist(path + name + "/")
 	}
 	return nil
 }
@@ -101,10 +104,10 @@ func Recover(srcName, srcPath, desPath string) error {
 	if err = checkFileExist(srcName, srcPath, true); err != nil {
 		return err
 	}
-	if obj, err = handler.NewFileHandler(&model.Data{Name: srcName, Path: srcName, IsDeleted: false}).GetTarget(); err != nil {
+	if obj, err = handler.NewFileHandler(&model.Data{Name: srcName, Path: srcPath, IsDeleted: false}).GetTarget(); err != nil {
 		return err
 	}
-	if err = handler.SysCopy(model.Root+obj.Path+"/"+obj.Name, desPath+"/"+obj.Name, obj.ModTime, obj.CreatTime); err != nil {
+	if err = handler.SysCopy(model.Root+obj.Path+obj.Name, desPath+obj.Name, obj.ModTime, obj.CreatTime); err != nil {
 		return err
 	}
 	return nil
@@ -120,7 +123,7 @@ func Compare(srcName, srcPath, desName, desPath string) error {
 	if obj, err = handler.NewFileHandler(&model.Data{Name: desName, Path: desName, IsDeleted: false}).GetTarget(); err != nil {
 		return err
 	}
-	if err = handler.SysCompare(srcPath+"/"+srcPath, model.Root+obj.Path+"/"+obj.Name); err != nil {
+	if err = handler.SysCompare(srcPath+srcPath, model.Root+obj.Path+obj.Name); err != nil {
 		return err
 	}
 	return nil
@@ -131,7 +134,7 @@ func Delete(name, path string) error {
 		return err
 	}
 	if err := handler.NewFileHandler(&model.Data{Name: name, Path: path, Type: model.Dir}).CheckTargetExist(); err == nil {
-		if err := handler.NewFileHandler(&model.Data{Path: path + "/" + name}).Delete(); err != nil {
+		if err := handler.NewFileHandler(&model.Data{Path: path + name}).Delete(); err != nil {
 			return err
 		}
 	}
@@ -152,7 +155,7 @@ func Backup(srcName, srcPath, desPath string) error {
 	if err := handler.NewFileHandler(obj).Backup(); err != nil {
 		return err
 	}
-	if err := handler.SysCopy(srcPath+"/"+srcName, model.Root+desPath, time.Now(), time.Now()); err != nil {
+	if err := handler.SysCopy(srcPath+srcName, model.Root+desPath+srcName, time.Now(), time.Now()); err != nil {
 		return err
 	}
 
@@ -174,7 +177,7 @@ func Clean(name, path string) error {
 	if err := handler.NewFileHandler(&model.Data{Name: name, Path: path, IsDeleted: true}).Clean(); err != nil {
 		return err
 	}
-	if err := handler.SysCleanFile(model.Bin + path + "/" + name); err != nil {
+	if err := handler.SysCleanFile(model.Bin + path + name); err != nil {
 		return err
 	}
 	return nil
@@ -188,7 +191,7 @@ func Recycle(name, path string) error {
 		return err
 	}
 
-	if err := handler.SysCopy(model.Bin+path+"/"+name, model.Root+path+"/"+name, time.Now(), time.Now()); err != nil {
+	if err := handler.SysCopy(model.Bin+path+name, model.Root+path+name, time.Now(), time.Now()); err != nil {
 		return err
 	}
 	return nil
