@@ -54,7 +54,7 @@ func (fileHandler *FileHandler) Backup() error {
 			return err
 		}
 	} else {
-		if err := fileHandler.Model(&res).Updates(&fileHandler.Obj).Error; err != nil {
+		if err := fileHandler.Model(&res).Updates(fileHandler.Obj).Error; err != nil {
 			return err
 		}
 	}
@@ -62,10 +62,15 @@ func (fileHandler *FileHandler) Backup() error {
 }
 
 func (fileHandler *FileHandler) Clean() error {
-
+	if err := fileHandler.Where(fileHandler.Obj).Delete(&model.Data{}).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
 func (fileHandler *FileHandler) Recycle() error {
+	if err := fileHandler.Model(fileHandler.Obj).Update("isdeleted", "false").Error; err != nil {
+		return err
+	}
 	return nil
 }

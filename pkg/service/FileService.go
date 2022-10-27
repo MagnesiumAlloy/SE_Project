@@ -171,7 +171,7 @@ func Clean(name, path string) error {
 	if err := checkFileExist(name, path, true, true); err != nil {
 		return err
 	}
-	if err := handler.NewFileHandler(&model.Data{Name: name, Path: path}).Clean(); err != nil {
+	if err := handler.NewFileHandler(&model.Data{Name: name, Path: path, IsDeleted: true}).Clean(); err != nil {
 		return err
 	}
 	if err := handler.SysCleanFile(model.Bin + path + "/" + name); err != nil {
