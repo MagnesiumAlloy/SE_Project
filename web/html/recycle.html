@@ -150,14 +150,14 @@ function recover(){
       document.getElementById("recycled").innerHTML=out;
   }
 
-  function myy(filepath){
+  function myy(filepath,filename){
        $.ajax({
            url: "/readDir",
            type:"get",
            dataType:"json",
            data: {
             path:filepath,
-            name:"",
+            name:filename,
             isroot:0
            },
            success:function (res) {
@@ -166,14 +166,14 @@ function recover(){
            }
        })};
     
-      function myy1(filepath){
+      function myy1(filepath,filename){
        $.ajax({
            url: "/readDir",
            type:"get",
            dataType:"json",
            data: {
             path:filepath,
-            name:"",
+            name:filename,
             isroot:0
            },
            success:function (res) {
@@ -207,7 +207,7 @@ function recover(){
             //alert(id,filepath,filetype);
             if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
-              myy1(filepath);
+              myy1(filepath,filename);
             } else {
               const pp3 = document.getElementById('pp3')
               const pp4 = document.getElementById('pp4')

@@ -154,14 +154,14 @@
       document.getElementById("content").innerHTML=out;
   }
 
-  function myy(filepath,name){
+  function myy(filepath,filename){
        $.ajax({
            url: "/readDir",
            type:"GET",
            dataType:"json",
            data: {
             path:filepath,
-            name:name,
+            name:filename,
             isroot:0
            },
            success:function (res) {
