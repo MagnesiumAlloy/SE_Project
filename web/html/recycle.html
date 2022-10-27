@@ -14,15 +14,15 @@
 <script>
 
 function delete1(){
-        const pp3 = document.getElementById('pp3').value;
-        const pp4 = document.getElementById('pp4').value;
+        const pp1 = document.getElementById('pp1').value;
+        const pp2 = document.getElementById('pp2').value;
         $.ajax({
             url: "/delete1",
             type:"post",
             dataType:"json",
             data:{
-              id : pp3,
-              name: pp4,
+              name : pp1,
+              path: pp2,
             },
             success:function (data) {
                 console.log(data);
@@ -39,14 +39,16 @@ function recover(){
         const pp3 = document.getElementById('pp3').value;
         const pp4 = document.getElementById('pp4').value;
         const pp2 = document.getElementById('pp2').value;
+        const pp1 = document.getElementById('pp1').value;
         $.ajax({
             url: "/recover",
             type:"get",
             dataType:"json",
             data:{
-              id : pp3,
-              name: pp4,
-              path: pp2 
+              name1: pp1,
+              path1: pp2,
+              name2: pp3,
+              path2: pp4  
             },
             success:function (data) {
                 console.log(data);
@@ -98,7 +100,7 @@ function recover(){
 
     function path4(){
        $.ajax({
-           url: "/fileData",
+           url: "/readDir",
            type:"get",
            dataType:"json",
            success:function (data) {
