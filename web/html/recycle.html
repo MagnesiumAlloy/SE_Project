@@ -43,8 +43,8 @@ function recover(){
             type:"POST",
             dataType:"json",
             data:{
-              srcName: pp1,
-              srcPath: pp2,
+              name: pp1,
+              path: pp2,
             },
             success:function (data) {
                 console.log(data);
@@ -332,13 +332,13 @@ function recover(){
             </li>
             <li>
               <form id="user2">
-                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/secret'>私密上传</a>
+                <a class="kuang" type="button" name="flag" value="私密上传" href='/secret'>加密备份</a>
               </form>
             </li>
-  
+
             <li>
               <form id="user3">
-                <a class="kuang" type="button"  name= "flag" value="普通上传" href='/normal'>普通上传</a>
+                <a class="kuang" type="button" name="flag" value="私密上传" href='/normal'>普通备份</a>
               </form>
             </li>
   

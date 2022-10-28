@@ -20,19 +20,20 @@
         url: "/recover",
         type: "POST",
         data: {
-          srcName: srcName+srcPath,
+          srcName: srcName,
+          srcPath:srcPath,
           desPath: desPath
         },
         datatype: "json",
         success: function (res) {
           console.log(res);
           if (res.status == 200) {
-            alert("备份成功");
+            alert("恢复成功");
             top.location.href="/myfile";
           }
         },
         error: function (res) {
-          alert("备份失败");
+          alert("恢复失败");
         }
       });
       return false;
@@ -101,12 +102,60 @@
       })
     };
 
+    function Last(obj,isroot)  {
+      let node = obj;
+      let filename = node.parentElement.parentElement.children[1].innerHTML;
+      let filepath = node.parentElement.parentElement.children[4].innerHTML;
+      //alert(id,filepath,filetype);
+      console.log(filename);
+      console.log(filepath);
+      let ii=0,point=-1;
+      for(let i=filepath.length-1;i>=0;i--){
+        if (filepath[i]!='/') continue;
+        else {
+          ii++;
+        }
+        if(ii==3){
+          point=i;
+          break;
+        }
+      } 
+      let filepath1="";
+      let filename1="";
+      ii=0;
+      for(let i=point+1;;i++){
+        if(filepath[i]=="/"){
+          break;
+        }
+        filename1+=filepath[i];
+      }
+      for(let i=0;i<=point;i++){
+        filepath1+=filepath[i];
+      }
+      
+      console.log(filepath1);
+      console.log(filename1);
+      $.ajax({
+        url: "/readDir",
+        type: "GET",
+        dataType: "json",
+        data: {
+          path: filepath1,
+          name: filename1,
+          isroot: isroot
+        },
+        success: function (data) {
+          console.log(data);
+          showTable(data.data,isroot);
+        }
+      })
+    };
 
     function showTable(arr,isroot) {
       var out = "";
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].Name == "") continue;
-        if(arr[i].Type !="dir")  continue;
+        if(arr[i].Type !="dir"&&!isroot) continue;
         out += "<tr>"
           +"<td><button type=button class= "+"hiddenbox "+"onclick="+"select(this,"+isroot+")"+">选择</button></td>"
           + "<td onclick=" + "explore(this,"+isroot+")"+">" + arr[i].Name + "</td>"
@@ -114,6 +163,7 @@
           + "<td>" + arr[i].Size + "</td>"
           + "<td hidden=true>" + arr[i].Path + "</td>"
           + "<td hidden=true>" + arr[i].Type + "</td>"
+          +"<td><button type=button class= "+"hiddenbox "+"onclick="+"Last(this,"+isroot+")"+">返回上一级</button></td>"
           + "</tr>";
       }
       document.getElementById("content").innerHTML = out;
@@ -130,9 +180,12 @@
         readDir(isroot,filename,filepath);
       } else {
         if(isroot){
-          document.getElementById('srcName').value=filepath+filename;
+          console.log(filepath);
+          document.getElementById('srcName').value=filename;
+          document.getElementById('srcPath').value=filepath;
         } else {
-          document.getElementById('desPath').value=filepath;
+          console.log(filepath);
+          document.getElementById('desPath').value=filepath+filename+"/";
         }
       }
     }
@@ -145,9 +198,10 @@
       let filepath = node.parentElement.parentElement.children[4].innerHTML;
       //alert(id,filepath,filetype);
         if(isroot){
-          document.getElementById('srcName').value=filepath+filename;
+          document.getElementById('srcName').value=filename;
+          document.getElementById('srcPath').value=filepath;
         } else {
-          document.getElementById('desPath').value=filepath;
+          document.getElementById('desPath').value=filepath+filename+"/";
         }
     }
 
@@ -292,13 +346,13 @@
             </li>
             <li>
               <form id="user2">
-                <a class="kuang" type="button" name="flag" value="私密上传" href='/secret'>私密上传</a>
+                <a class="kuang" type="button" name="flag" value="私密上传" href='/secret'>加密备份</a>
               </form>
             </li>
 
             <li>
               <form id="user3">
-                <a class="kuang" type="button" name="flag" value="私密上传" href='/normal'>普通上传</a>
+                <a class="kuang" type="button" name="flag" value="私密上传" href='/normal'>普通备份</a>
               </form>
             </li>
 
@@ -331,21 +385,22 @@
   <div>
     <form class="special">
     <input class="page" type="button" name="button" value="选择恢复文件" onclick="readDir(1,'','')">
-    <input class="page" type="button" name="button" value="选择备份路径" onclick="readDir(0,'','')">
+    <input class="page" type="button" name="button" value="选择恢复路径" onclick="readDir(0,'','')">
     </form>
     
     <form class="special">
 
       <input class="page" type="text" size="20" name="error" id="error" value="${error}" hidden>
 
-      <p>恢复文件名：<input class="page" type="text" size="20" name="fileName" id="srcName"></p>
-      <p><input hidden="true" class="page" type="text" size="20" name="pathfileName" id="srcPath"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="srcPath"></p>
+      <p>文件：<input class="page" type="text" size="20" name="pathfileName" id="srcName"></p>
 
-      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="desName"></p>
-      <p>磁盘路径名：<input class="page" type="text" size="20" name="pathfileName" id="desPath"></p>
+      <p>恢复路径：<input class="page" type="text" size="20" name="fileName" id="desPath"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="pathfileName" id="desName"></p>
+
       <input class="page" type="button" name="button" value="恢复" onclick="recover()">
       <!-- <input class="page" type="button" name="button" value="比较" onclick="compare()"> -->
-      <input class="page" type="button" name="button" value="删除" onclick="Delete()">
+      <input class="page" type="button" name="button" value="删除备份" onclick="Delete()">
 
     </form>
   </div>
