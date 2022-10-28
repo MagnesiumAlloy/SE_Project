@@ -247,6 +247,23 @@
     input.page[type=submit]:hover{
       background-color: #f1dd78;
     }
+    input.page[type=button] {
+      background-color: #d44773;
+      transition-duration: 0.4s;
+      box-shadow: 0 6px #999;
+      font-weight: bold;
+      padding: 14px 20px;
+      margin: 8px 15px;
+      border: none;
+      border-radius: 6px;
+      clear: both;
+    }
+
+    input.page[type=button]:hover {
+      background-color: #f1dd78;
+    }
+
+
     *:focus{
       background-color: #f6f607;
     }
@@ -287,13 +304,13 @@
   
             <li>
               <form id="user3">
-                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/normal'>普通上传</a>
+                <a class="kuang" type="button"  name= "flag" value="普通上传" href='/normal'>普通上传</a>
               </form>
             </li>
   
             <li>
               <form id="user4">
-                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/recycle'>我的回收</a>
+                <a class="kuang" type="button"  name= "flag" value="我的回收" href='/recycle'>我的回收</a>
               </form>
             </li>
   
@@ -332,12 +349,12 @@
 
   <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
   <input class="page" type="submit" name="button" value="选择路径" onclick="path2()">
-  <form class="special"  method="post" >
+  <form class="special" >
 
   <p>文件名：<input class="page"type="text" size="20" name="fileName" id="pp1"></p>
   <p>文件路径：<input class="page"type="text" size="20" name="filePath" id="pp2"></p>
 
-  <input class="page"type="submit" name="button" value="普通上传" onclick="upload2()">
+  <input class="page"type="button" name="button" value="普通上传" onclick="upload2()">
 
   <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="pp3"></p>
   <p>上一层路径：<input class="page"type="text" size="20" name="pathfileName" id="pp4"></p>

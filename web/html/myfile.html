@@ -296,6 +296,22 @@
       clear: both;
     }
 
+    input.page[type=button]:hover {
+      background-color: #f1dd78;
+    }
+
+    input.page[type=button] {
+      background-color: #d44773;
+      transition-duration: 0.4s;
+      box-shadow: 0 6px #999;
+      font-weight: bold;
+      padding: 14px 20px;
+      margin: 8px 15px;
+      border: none;
+      border-radius: 6px;
+      clear: both;
+    }
+
     input.page[type=submit]:hover {
       background-color: #f1dd78;
     }
@@ -395,22 +411,22 @@
   <br>
 
   <div>
-    <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
-    <input class="page" type="submit" name="button" value="选择备份路径" onclick="path2()">
+    <input class="page" type="submit" name="button" value="选择备份路径" onclick="path1()">
+    <input class="page" type="submit" name="button" value="选择备份文件" onclick="path2()">
     <form class="special">
 
       <input class="page" type="text" size="20" name="error" id="error" value="${error}" hidden>
 
 
-      <p>文件名：<input class="page" type="text" size="20" name="fileName" id="ipt1"></p>
-      <p>文件路径：<input class="page" type="text" size="20" name="pathfileName" id="ipt2"></p>
+      <p>磁盘文件名：<input class="page" type="text" size="20" name="fileName" id="ipt1"></p>
+      <p>磁盘路径名：<input class="page" type="text" size="20" name="pathfileName" id="ipt2"></p>
 
       <input class="page" type="button" name="button" value="备份" onclick="recover()">
-      <input class="page" type="submit" name="button" value="比较" onclick="compare()">
-      <input class="page" type="submit" name="button" value="删除" onclick="Delete()">
+      <input class="page" type="button" name="button" value="比较" onclick="compare()">
+      <input class="page" type="button" name="button" value="删除" onclick="Delete()">
 
-      <p>路径文件名：<input class="page" type="text" size="20" name="fileName" id="ipt3"></p>
-      <p>路径名：<input class="page" type="text" size="20" name="pathfileName" id="ipt4"></p>
+      <p>备份文件名：<input class="page" type="text" size="20" name="fileName" id="ipt3"></p>
+      <p>备份路径名：<input class="page" type="text" size="20" name="pathfileName" id="ipt4"></p>
     </form>
   </div>
   <div><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;"
