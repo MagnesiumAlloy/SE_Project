@@ -99,9 +99,16 @@ func checkFileExist(name, path string, params ...bool) error {
 		if len(params) > 1 {
 			isBin = params[1]
 		}
-		if err := handler.NewFileHandler(&model.Data{Name: name, Path: path, InBin: isBin}).CheckTargetExist(); err != nil {
-			return err
+		if isBin {
+			if err := handler.NewFileHandler(&model.Data{Name: name, BinPath: path, InBin: isBin}).CheckTargetExist(); err != nil {
+				return err
+			}
+		} else {
+			if err := handler.NewFileHandler(&model.Data{Name: name, Path: path, InBin: isBin}).CheckTargetExist(); err != nil {
+				return err
+			}
 		}
+
 	} else {
 		return handler.SysCheckFileExist(path + name)
 	}

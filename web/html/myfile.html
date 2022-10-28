@@ -68,11 +68,7 @@
       const srcName = document.getElementById('srcName').value;
       const srcPath = document.getElementById('srcPath').value;
       $.ajax({
-<<<<<<< HEAD
-        url: "/delete?name="+ipt3+"&path="+ipt4,
-=======
         url: "/delete"+"?name="+srcName+"&path="+srcPath,
->>>>>>> 604ba1b0dd46ac80ba938d8b2c77e16101799c72
         type: "DELETE",
         dataType: "json",
         success: function (data) {

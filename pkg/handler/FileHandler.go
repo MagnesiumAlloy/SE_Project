@@ -24,7 +24,7 @@ func (fileHandler *FileHandler) ReadDir(isBin bool) ([]model.Data, error) {
 
 func (fileHandler *FileHandler) CheckTargetExist() error {
 	var result model.Data
-	if err := fileHandler.Where(fileHandler.Obj).First(&result).Error; err != nil {
+	if err := fileHandler.Where(fileHandler.Obj).Where("in_bin", fileHandler.Obj.InBin).First(&result).Error; err != nil {
 		return err
 	}
 	return nil
@@ -32,7 +32,7 @@ func (fileHandler *FileHandler) CheckTargetExist() error {
 
 func (fileHandler *FileHandler) GetTarget() (*model.Data, error) {
 	var result model.Data
-	if err := fileHandler.Where(fileHandler.Obj).First(&result).Error; err != nil {
+	if err := fileHandler.Where(fileHandler.Obj).Where("in_bin", fileHandler.Obj.InBin).First(&result).Error; err != nil {
 		return nil, err
 	}
 	return &result, nil
