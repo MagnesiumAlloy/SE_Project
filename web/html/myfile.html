@@ -108,7 +108,7 @@
         if (arr[i].Name == "") continue;
         if(arr[i].Type !="dir")  continue;
         out += "<tr>"
-          +"<td><button type=button class= "+"hiddenbox "+"onclick=select(this,"+isroot+")"+">选择</button></td>"
+          +"<td><button type=button class= "+"hiddenbox "+"onclick="+"select(this,"+isroot+")"+">选择</button></td>"
           + "<td onclick=" + "explore(this,"+isroot+")"+">" + arr[i].Name + "</td>"
           + "<td>" + arr[i].ModTime + "</td>"
           + "<td>" + arr[i].Size + "</td>"
@@ -121,20 +121,18 @@
 
     function explore(obj,isroot) {
       let node = obj;
-      let filename = node.children[1].innerHTML;
-      let filetype = node.children[5].innerHTML;
-      let filepath = node.children[4].innerHTML;
+      let filename = node.parentElement.children[1].innerHTML;
+      let filetype = node.parentElement.children[5].innerHTML;
+      let filepath = node.parentElement.children[4].innerHTML;
       //alert(id,filepath,filetype);
       if (filetype == "dir") { //文件夹类型,要你指定
         //更进一步
         readDir(isroot,filename,filepath);
       } else {
         if(isroot){
-          console.log(filepath);
-          document.getElementById('desPath').value=filepath;
-        } else {
-          console.log(filepath);
           document.getElementById('srcName').value=filepath+filename;
+        } else {
+          document.getElementById('desPath').value=filepath;
         }
       }
     }
@@ -142,14 +140,14 @@
 
     function select(obj,isroot) {
       let node = obj;
-      let filename = node.children[1].innerHTML;
-      let filetype = node.children[5].innerHTML;
-      let filepath = node.children[4].innerHTML;
+      let filename = node.parentElement.parentElement.children[1].innerHTML;
+      let filetype = node.parentElement.parentElement.children[5].innerHTML;
+      let filepath = node.parentElement.parentElement.children[4].innerHTML;
       //alert(id,filepath,filetype);
         if(isroot){
-          document.getElementById('desPath').value=filepath;
-        } else {
           document.getElementById('srcName').value=filepath+filename;
+        } else {
+          document.getElementById('desPath').value=filepath;
         }
     }
 
@@ -332,8 +330,8 @@
 
   <div>
     <form class="special">
-    <input class="page" type="button" name="button" value="选择恢复文件" onclick="readDir(0,'','')">
-    <input class="page" type="button" name="button" value="选择备份路径" onclick="readDir(1,'','')">
+    <input class="page" type="button" name="button" value="选择恢复文件" onclick="readDir(1,'','')">
+    <input class="page" type="button" name="button" value="选择备份路径" onclick="readDir(0,'','')">
     </form>
     
     <form class="special">
