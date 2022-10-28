@@ -53,9 +53,13 @@ func SysReadDir(path string) ([]model.Data, error) {
 		if err != nil {
 			return nil, err
 		}
+		Type := model.Dir
+		if !file.IsDir() {
+			Type = util.GetTargetType(file.Name())
+		}
 		result = append(result, model.Data{
 			Name: file.Name(),
-			Type: util.GetTargetType(file.Name(), file.IsDir()),
+			Type: Type,
 			Size: uint64(info.Size()),
 			Path: path})
 
@@ -66,7 +70,7 @@ func SysReadDir(path string) ([]model.Data, error) {
 func SysReadFileInfo(name, path string) (*model.Data, error) {
 	res := model.Data{Name: name, Path: path}
 	if err := SysCheckIsDir(path + name); err != nil {
-		res.Type = util.GetTargetType(name, false)
+		res.Type = util.GetTargetType(name)
 	} else {
 		res.Type = model.Dir
 	}
@@ -123,6 +127,13 @@ func SysCompare(srcPath, desPath string) error {
 
 func SysCleanFile(path string) error {
 	if err := os.Remove(path); err != nil {
+		return err
+	}
+	return nil
+}
+
+func SysMove(srcPath, desPath string) error {
+	if err := os.Rename(srcPath, desPath); err != nil {
 		return err
 	}
 	return nil

@@ -69,13 +69,9 @@
       const ipt3 = document.getElementById('ipt3').value;
       const ipt4 = document.getElementById('ipt4').value;
       $.ajax({
-        url: "/delete",
+        url: "/delete?name="+ipt3+"&path="+ipt4,
         type: "DELETE",
         dataType: "json",
-        data: {
-          name: ipt3,
-          path: ipt4,
-        },
         success: function (data) {
           console.log(data);
           if (data.status == 200) {

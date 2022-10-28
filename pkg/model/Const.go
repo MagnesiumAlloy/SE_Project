@@ -11,7 +11,7 @@ const (
 	Zip           = "zip"
 	Dir           = "dir"
 	OtherFileType = "other"
-	//path
-	Root = "/usr/local/Cloud_backup"
-	Bin  = "/usr/local/Cloud_Bin"
 )
+
+var Root string
+var Bin string

@@ -11,19 +11,18 @@
 
   
 <script>
-  function upload2(){
-        const pp2 = document.getElementById('pp2').value;
-        const pp1 = document.getElementById('pp1').value;
-        const pp3 = document.getElementById('pp3').value;
-        const pp4 = document.getElementById('pp4').value;
+  function backup(){
+        const srcPath = document.getElementById('srcPath').value;
+        const srcName = document.getElementById('srcName').value;
+        const desPath = document.getElementById('desPath').value;
         $.ajax({
             url: "/backup",
             type:"POST",
             dataType:"json",
             data:{
-              srcName: pp1,
-              srcPath: pp2,
-              desPath: pp4
+              srcName: srcName,
+              srcPath: srcPath,
+              desPath: desPath
             },
             success:function (data) {
                 console.log(data);
@@ -35,120 +34,35 @@
             }
         })};
 
-  function my(){
-       $.ajax({
-           url: "/readDir",
-           type:"get",
-           dataType:"json",
-           success:function (data) {
-               console.log(data);
-               myFunction(data.data);
-           }
-       })};
-
-  function path1(){
+  function readDir(isroot,path,name){
        $.ajax({
            url: "/readDir",
            type:"get",
            dataType:"json",
            data:{
-            path: "",
-            name: "",
-            isroot: 0
+            path: path,
+            name: name,
+            isroot: isroot
            },
            success:function (data) {
                console.log(data);
-               myFunction1(data.data);
+               showData(data.data,isroot);
            }
        })};    
 
-    function path2(){
-       $.ajax({
-           url: "/readDir",
-           type:"get",
-           dataType:"json",
-           data:{
-            path: "",
-            name: "",
-            isroot: 1
-           },
-           success:function (data) {
-               console.log(data);
-               myFunction2(data.data);
-           }
-       })};      
-
-  function myFunction(arr) {
+  function showData(arr,isroot) {
       var out = "";
       for(let i = 0; i < arr.length; i++) {
-          out += "<tr  onclick="+"edit(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
+          out += "<tr  onclick="+"select(this,"+isroot+")>"
                    +"<td>"+arr[i].Name+"</td>"
                    +"<td>"+arr[i].Path+"</td>"
                    +"<td>"+arr[i].Type+"</td>"
                 +"</tr>";
       }
-      document.getElementById("content").innerHTML=out;
+      document.getElementById("TableBody").innerHTML=out;
   }
 
-  function myFunction1(arr) {
-      var out = "";
-      for(let i = 0; i < arr.length; i++) {
-          out += "<tr  onclick="+"edit(this)"+">"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Path+"</td>"
-                   +"<td>"+arr[i].Type+"</td>"
-                +"</tr>";
-      }
-      document.getElementById("content1").innerHTML=out;
-  }
-
-  function myFunction2(arr) {
-      var out = "";
-      for(let i = 0; i < arr.length; i++) {
-          out += "<tr  onclick="+"edit22(this)"+">"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Path+"</td>"
-                   +"<td>"+arr[i].Type+"</td>"
-                +"</tr>";
-      }
-      document.getElementById("content1").innerHTML=out;
-  }
-
-  function myy(filepath,filename){
-       $.ajax({
-           url: "/readDir",
-           type:"get",
-           dataType:"json",
-           data: {
-            path:filepath,
-            name:filename,
-            isroot:0
-           },
-           success:function (res) {
-               console.log(res);
-               myFunction(res.data);
-           }
-       })};
-    
-      function myy1(filepath,filename){
-       $.ajax({
-           url: "/readDir",
-           type:"get",
-           dataType:"json",
-           data: {
-            path:filepath,
-            name:filename,
-            isroot:1
-           },
-           success:function (res) {
-               console.log(res);
-               myFunction1(res.data);
-           }
-       })};
-
-    function edit(obj){
+  function select(obj,isroot){
             let node=obj;
             let filename=node.children[0].innerHTML;
             let filetype=node.children[2].innerHTML;
@@ -156,43 +70,16 @@
             //alert(id,filepath,filetype);
             if(filetype == "dir"){ //文件夹类型,要你指定
               //更进一步
-              myy(filepath,filename);
+              readDir(isroot,filepath,filename);
             } else {
-              const pp1 = document.getElementById('pp1')
-              const pp2 = document.getElementById('pp2')
-              pp1.value = filename;
-              pp2.value = filepath;
+              if(!isroot){
+                document.getElementById('srcName').value=filename;
+                document.getElementById('srcPath').value=filepath;
+              }
+              else{
+                document.getElementById('desPath').value=filepath;
+              }
             }
-     }
-
-     function edit22(obj){
-            let node=obj;
-            let filename=node.children[0].innerHTML;
-            let filetype=node.children[2].innerHTML;
-            let filepath=node.children[1].innerHTML;
-            //alert(id,filepath,filetype);
-            if(filetype == "dir"){ //文件夹类型,要你指定
-              //更进一步
-              myy1(filepath,filename);
-            } else {
-              const pp3 = document.getElementById('pp3')
-              const pp4 = document.getElementById('pp4')
-              pp3.value = filename;
-              pp4.value = filepath;
-            }
-     }
-
-     function edit33(obj){
-            let node=obj;
-            let id=node.children[0].innerHTML;
-            let filename=node.children[1].innerHTML;
-            let fileauthor=node.children[2].innerHTML;
-            //alert(id,filepath,filetype);
-              const pp1 = document.getElementById('pp1')
-              const pp2 = document.getElementById('pp2')
-              pp1.value = id;
-              pp2.value = filename;
-            
      }
 
 </script>
@@ -347,17 +234,15 @@
     </tbody>
 </table> -->
 
-  <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
-  <input class="page" type="submit" name="button" value="选择路径" onclick="path2()">
+  <input class="page" type="submit" name="button" value="显示文件" onclick="readDir(0,'','')">
+  <input class="page" type="submit" name="button" value="选择路径" onclick="readDir(1,'','')">
   <form class="special" >
 
-  <p>文件名：<input class="page"type="text" size="20" name="fileName" id="pp1"></p>
-  <p>文件路径：<input class="page"type="text" size="20" name="filePath" id="pp2"></p>
+  <p>选择文件：<input class="page"type="text" size="20" name="fileName" id="srcName"></p>
+  <p><input hidden = true class="page"type="text" size="20" name="filePath" id="srcPath"></p>
+  <p>备份路径：<input class="page"type="text" size="20" name="pathfileName" id="desPath"></p>
 
-  <input class="page"type="button" name="button" value="普通上传" onclick="upload2()">
-
-  <p>路径文件名：<input class="page"type="text" size="20" name="pathfileName" id="pp3"></p>
-  <p>上一层路径：<input class="page"type="text" size="20" name="pathfileName" id="pp4"></p>
+  <input class="page"type="button" name="button" value="普通上传" onclick="backup()">
   </form>
 
 </div>
@@ -370,7 +255,7 @@
     <th>文件路径</th>
     <th>文件类型</th>
   </tr>
-<tbody id="content1">
+<tbody id="TableBody">
 
 </tbody>
 </table>
