@@ -17,13 +17,9 @@ function delete1(){
         const pp1 = document.getElementById('pp1').value;
         const pp2 = document.getElementById('pp2').value;
         $.ajax({
-            url: "/clean",
+            url: "/clean?name="+pp1+"&path="+pp2,
             type:"DELETE",
             dataType:"json",
-            data:{
-              name : pp1,
-              path: pp2,
-            },
             success:function (data) {
                 console.log(data);
                 if(data.status==200){

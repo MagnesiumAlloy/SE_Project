@@ -5,6 +5,7 @@ import (
 	"SE_Project/pkg/model"
 	"SE_Project/pkg/service"
 	"SE_Project/router"
+	"os"
 	"os/user"
 
 	"golang.org/x/crypto/bcrypt"
@@ -26,6 +27,13 @@ func initFileSys() {
 	model.Bin = user.HomeDir + "/Cloud_Bin"
 	model.Root = user.HomeDir + "/Cloud_Backup"
 	//create if not exist
+	if err := handler.SysCheckFileExist(model.Bin); err != nil {
+		os.Mkdir(model.Bin, os.ModePerm)
+	}
+
+	if err := handler.SysCheckFileExist(model.Root); err != nil {
+		os.Mkdir(model.Root, os.ModePerm)
+	}
 
 }
 
@@ -47,6 +55,8 @@ func initDB() {
 	res, _ = service.ReadAllFileAndDir(model.Bin)
 	for _, x := range res {
 		x.InBin = true
+		x.BinPath = x.Path
+		x.Path = "/"
 		handler.GetDB().Create(&x)
 	}
 }

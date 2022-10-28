@@ -77,11 +77,11 @@ func (fileHandler *FileHandler) Backup() error {
 	qry.Name = fileHandler.Obj.Name
 	qry.Path = fileHandler.Obj.Path
 	if err := fileHandler.Where(&qry).Where("in_bin", false).First(&res).Error; err != nil {
-		if err := fileHandler.Model(&res).Updates(fileHandler.Obj).Error; err != nil {
+		if err := fileHandler.Create(&fileHandler.Obj).Error; err != nil {
 			return err
 		}
 	} else {
-		if err := fileHandler.Create(&fileHandler.Obj).Error; err != nil {
+		if err := fileHandler.Model(&res).Updates(fileHandler.Obj).Error; err != nil {
 			return err
 		}
 	}

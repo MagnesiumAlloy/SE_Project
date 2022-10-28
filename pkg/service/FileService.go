@@ -172,7 +172,7 @@ func Delete(name, path string) error {
 	if err = handler.NewFileHandler(obj).MoveToBin(); err != nil {
 		return err
 	}
-	if err := handler.SysMove(model.Root+path+name, model.Bin+name); err != nil {
+	if err := handler.SysMove(model.Root+path+name, model.Bin+obj.BinPath+name); err != nil {
 		return err
 	}
 	return nil
@@ -218,7 +218,7 @@ func Clean(name, path string) error {
 }
 
 func Recycle(name, path string) error {
-	if err := checkFileExist(name, path, true); err != nil {
+	if err := checkFileExist(name, path, true, true); err != nil {
 		return err
 	}
 	if util.GetTargetType(name) == model.Dir {
