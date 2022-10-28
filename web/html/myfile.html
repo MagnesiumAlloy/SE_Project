@@ -12,17 +12,16 @@
 
   <script>
     function recover() {// 对文件进行恢复
-      const ipt1 = document.getElementById('ipt1').value;
-      const ipt2 = document.getElementById('ipt2').value;
-      const ipt3 = document.getElementById('ipt3').value;
-      const ipt4 = document.getElementById('ipt4').value;
+      const desName = document.getElementById('desName').value;
+      const desPath = document.getElementById('desPath').value;
+      const srcName = document.getElementById('srcName').value;
+      const srcPath = document.getElementById('srcPath').value;
       $.ajax({
         url: "/recover",
         type: "POST",
         data: {
-          srcName: ipt3,
-          srcPath: ipt4,
-          desPath: ipt2
+          srcName: srcName+srcPath,
+          desPath: desPath
         },
         datatype: "json",
         success: function (res) {
@@ -40,19 +39,19 @@
     };
 
     function compare() {
-      const ipt1 = document.getElementById('ipt1').value;
-      const ipt2 = document.getElementById('ipt2').value;
-      const ipt3 = document.getElementById('ipt3').value;
-      const ipt4 = document.getElementById('ipt4').value;
+      const desName = document.getElementById('desName').value;
+      const desPath = document.getElementById('desPath').value;
+      const srcName = document.getElementById('srcName').value;
+      const srcPath = document.getElementById('srcPath').value;
       $.ajax({
         url: "/compare",
         type: "POST",
         dataType: "json",
         data: {
-          desName: ipt1,
-          desPath: ipt2,
-          srcName: ipt3,
-          srcPath: ipt4
+          desName: desName,
+          desPath: desPath,
+          srcName: srcName,
+          srcPath: srcPath
         },
         success: function (data) {
           console.log(data);
@@ -66,16 +65,12 @@
     };
 
     function Delete() {
-      const ipt3 = document.getElementById('ipt3').value;
-      const ipt4 = document.getElementById('ipt4').value;
+      const srcName = document.getElementById('srcName').value;
+      const srcPath = document.getElementById('srcPath').value;
       $.ajax({
-        url: "/delete",
+        url: "/delete"+"?name="+srcName+"&path="+srcPath,
         type: "DELETE",
         dataType: "json",
-        data: {
-          name: ipt3,
-          path: ipt4,
-        },
         success: function (data) {
           console.log(data);
           if (data.status == 200) {
@@ -88,150 +83,74 @@
       })
     };
 
-    function my() {
-      $.ajax({
-        url: "/readDir",
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-          console.log(data);
-          myFunction(data.data);
-        }
-      })
-    };
 
-    function path1() {
+    function readDir(isroot,name,path) {
       $.ajax({
         url: "/readDir",
         type: "GET",
         dataType: "json",
         data: {
-          path: "",
-          name: "",
-          isroot: 0
+          path: path,
+          name: name,
+          isroot: isroot
         },
         success: function (data) {
           console.log(data);
-          myFunction(data.data);
+          showTable(data.data,isroot);
         }
       })
     };
 
-    function path2() {
-      $.ajax({
-        url: "/readDir",
-        type: "GET",
-        dataType: "json",
-        data: {
-          path: "",
-          name: "",
-          isroot: 1
-        },
-        success: function (data) {
-          console.log(data);
-          myFunction1(data.data);
-        }
-      })
-    };
 
-    function myFunction(arr) {
+    function showTable(arr,isroot) {
       var out = "";
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].Name == "") continue;
-        out += "<tr  onclick=" + "edit(this)" + ">"
-          + "<td>" + arr[i].ID + "</td>"
+        if(arr[i].Type !="dir")  continue;
+        out += "<tr  onclick=" + "edit(this,"+isroot+")" + ">"
+          +"<td><button type=button class= "+"hiddenbox "+"onclick=edit123(this,"+isroot+")"+">选择</button></td>"
           + "<td>" + arr[i].Name + "</td>"
-          + "<td>" + arr[i].UserId + "</td>"
-          + "<td>" + arr[i].Path + "</td>"
-          + "<td>" + arr[i].Type + "</td>"
+          + "<td>" + arr[i].ModTime + "</td>"
+          + "<td>" + arr[i].Size + "</td>"
+          + "<td hidden=true>" + arr[i].Path + "</td>"
+          + "<td hidden=true>" + arr[i].Type + "</td>"
           + "</tr>";
       }
       document.getElementById("content").innerHTML = out;
     }
 
-    function myFunction1(arr) {
-      var out = "";
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i].Name == "") continue;
-        out += "<tr  onclick=" + "edit22(this)" + ">"
-          + "<td>" + arr[i].ID + "</td>"
-          + "<td>" + arr[i].Name + "</td>"
-          + "<td>" + arr[i].UserId + "</td>"
-          + "<td>" + arr[i].Path + "</td>"
-          + "<td>" + arr[i].Type + "</td>"
-          + "</tr>";
-      }
-      document.getElementById("content").innerHTML = out;
-    }
-
-    function myy(filepath, filename) {
-      $.ajax({
-        url: "/readDir",
-        type: "GET",
-        dataType: "json",
-        data: {
-          path: filepath,
-          name: filename,
-          isroot: 0
-        },
-        success: function (res) {
-          console.log(res);
-          myFunction(res.data);
-        }
-      })
-    };
-
-    function myy1(filepath, filename) {
-      $.ajax({
-        url: "/readDir",
-        type: "GET",
-        dataType: "json",
-        data: {
-          path: filepath,
-          name: filename,
-          isroot: 1
-        },
-        success: function (res) {
-          console.log(res);
-          myFunction1(res.data);
-        }
-      })
-    };
-
-    function edit(obj) {
+    function edit(obj,isroot) {
       let node = obj;
-      let id = node.children[0].innerHTML;
       let filename = node.children[1].innerHTML;
-      let filetype = node.children[4].innerHTML;
-      let filepath = node.children[3].innerHTML;
+      let filetype = node.children[5].innerHTML;
+      let filepath = node.children[4].innerHTML;
       //alert(id,filepath,filetype);
       if (filetype == "dir") { //文件夹类型,要你指定
         //更进一步
-        myy(filepath, filename);
+        readDir(isroot,filename,filepath);
       } else {
-        const ipt1 = document.getElementById('ipt1')
-        const ipt2 = document.getElementById('ipt2')
-        ipt1.value = filename;
-        ipt2.value = filepath;
+        if(isroot){
+          console.log(filepath);
+          document.getElementById('desPath').value=filepath;
+        } else {
+          console.log(filepath);
+          document.getElementById('srcName').value=filepath+filename;
+        }
       }
     }
 
-    function edit22(obj) {
+
+    function edit123(obj,isroot) {
       let node = obj;
-      let id = node.children[0].innerHTML;
       let filename = node.children[1].innerHTML;
-      let filetype = node.children[4].innerHTML;
-      let filepath = node.children[3].innerHTML;
+      let filetype = node.children[5].innerHTML;
+      let filepath = node.children[4].innerHTML;
       //alert(id,filepath,filetype);
-      if (filetype == "dir") { //文件夹类型,要你指定
-        //更进一步
-        myy1(filepath, filename);
-      } else {
-        const ipt3 = document.getElementById('ipt3')
-        const ipt4 = document.getElementById('ipt4')
-        ipt3.value = filename;
-        ipt4.value = filepath;
-      }
+        if(isroot){
+          document.getElementById('desPath').value=filepath;
+        } else {
+          document.getElementById('srcName').value=filepath+filename;
+        }
     }
 
   </script>
@@ -327,9 +246,8 @@
       background-repeat: no-repeat;
       background-position: center center;
     }
-  </style>
 
-  <style>
+
     .fileInputContainer {
       height: 256px;
       background: url(static/img/uploadfolder.png);
@@ -348,6 +266,8 @@
       filter: alpha(opacity=0);
       cursor: pointer;
     }
+
+
   </style>
 
 </head>
@@ -411,22 +331,24 @@
   <br>
 
   <div>
-    <input class="page" type="submit" name="button" value="选择备份路径" onclick="path1()">
-    <input class="page" type="submit" name="button" value="选择备份文件" onclick="path2()">
+    <form class="special">
+    <input class="page" type="button" name="button" value="选择恢复文件" onclick="readDir(0,'','')">
+    <input class="page" type="button" name="button" value="选择备份路径" onclick="readDir(1,'','')">
+    </form>
+    
     <form class="special">
 
       <input class="page" type="text" size="20" name="error" id="error" value="${error}" hidden>
 
+      <p>恢复文件名：<input class="page" type="text" size="20" name="fileName" id="srcName"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="pathfileName" id="srcPath"></p>
 
-      <p>磁盘文件名：<input class="page" type="text" size="20" name="fileName" id="ipt1"></p>
-      <p>磁盘路径名：<input class="page" type="text" size="20" name="pathfileName" id="ipt2"></p>
-
-      <input class="page" type="button" name="button" value="备份" onclick="recover()">
-      <input class="page" type="button" name="button" value="比较" onclick="compare()">
+      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="desName"></p>
+      <p>磁盘路径名：<input class="page" type="text" size="20" name="pathfileName" id="desPath"></p>
+      <input class="page" type="button" name="button" value="恢复" onclick="recover()">
+      <!-- <input class="page" type="button" name="button" value="比较" onclick="compare()"> -->
       <input class="page" type="button" name="button" value="删除" onclick="Delete()">
 
-      <p>备份文件名：<input class="page" type="text" size="20" name="fileName" id="ipt3"></p>
-      <p>备份路径名：<input class="page" type="text" size="20" name="pathfileName" id="ipt4"></p>
     </form>
   </div>
   <div><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;"
@@ -434,11 +356,10 @@
 
   <table border="5">
     <tr>
-      <th>序号</th>
+      <th class="firstC"></th>
       <th>文件名称</th>
-      <th>上传者</th>
-      <th>文件路径</th>
-      <th>文件类型</th>
+      <th>修改时间</th>
+      <th>文件大小</th>
     </tr>
     <tbody id="content">
 
