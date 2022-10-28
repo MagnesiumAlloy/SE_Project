@@ -182,8 +182,8 @@ func ReadBin(c *gin.Context) {
 }
 
 func Clean(c *gin.Context) {
-	name := c.PostForm("name")
-	path := c.PostForm("path")
+	name := c.Query("name")
+	path := c.Query("path")
 	if err = validator.CheckNameAndPath([]string{name}, []string{path}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
