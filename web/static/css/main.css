@@ -325,6 +325,7 @@ table {
 caption{
     margin-bottom: 1.5em;
 }
+
 table th {
     border-width: 1px;
     padding: 8px;
@@ -347,6 +348,31 @@ table td {
     background-color: #c3dde0;
 }
 
-table tr:hover {
-    opacity: 0.7;
+table tr:hover .hiddenbox{
+    opacity: 1;
+    border-style:none; 
 }
+
+table tr .hiddenbox{
+    opacity: 0;
+    border-style:none; 
+}
+
+table tr .hiddenbox[type=button]{
+    background-color: #d44773;
+    transition-duration: 0.4s;
+    box-shadow: 0 6px #999;
+    font-weight: bold;
+    padding: 14px 20px;
+    margin: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    clear: both;
+}
+
+table tr .firstC{
+    border-style:none; 
+    outline:medium; 
+    border-right:none; 
+}
+
