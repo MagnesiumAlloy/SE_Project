@@ -20,19 +20,20 @@
         url: "/recover",
         type: "POST",
         data: {
-          srcName: srcName+srcPath,
+          srcName: srcName,
+          srcPath:srcPath,
           desPath: desPath
         },
         datatype: "json",
         success: function (res) {
           console.log(res);
           if (res.status == 200) {
-            alert("备份成功");
+            alert("恢复成功");
             top.location.href="/myfile";
           }
         },
         error: function (res) {
-          alert("备份失败");
+          alert("恢复失败");
         }
       });
       return false;
@@ -106,7 +107,7 @@
       var out = "";
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].Name == "") continue;
-        if(arr[i].Type !="dir")  continue;
+        if(arr[i].Type !="dir"&&!isroot) continue;
         out += "<tr>"
           +"<td><button type=button class= "+"hiddenbox "+"onclick=select(this,"+isroot+")"+">选择</button></td>"
           + "<td onclick=" + "explore(this,"+isroot+")"+">" + arr[i].Name + "</td>"
@@ -121,9 +122,9 @@
 
     function explore(obj,isroot) {
       let node = obj;
-      let filename = node.children[1].innerHTML;
-      let filetype = node.children[5].innerHTML;
-      let filepath = node.children[4].innerHTML;
+      let filename = node.parentElement.children[1].innerHTML;
+      let filetype = node.parentElement.children[5].innerHTML;
+      let filepath = node.parentElement.children[4].innerHTML;
       //alert(id,filepath,filetype);
       if (filetype == "dir") { //文件夹类型,要你指定
         //更进一步
@@ -131,10 +132,11 @@
       } else {
         if(isroot){
           console.log(filepath);
-          document.getElementById('desPath').value=filepath;
+          document.getElementById('srcName').value=filename;
+          document.getElementById('srcPath').value=filepath;
         } else {
           console.log(filepath);
-          document.getElementById('srcName').value=filepath+filename;
+          document.getElementById('desPath').value=filepath+filename+"/";
         }
       }
     }
@@ -142,14 +144,15 @@
 
     function select(obj,isroot) {
       let node = obj;
-      let filename = node.children[1].innerHTML;
-      let filetype = node.children[5].innerHTML;
-      let filepath = node.children[4].innerHTML;
+      let filename = node.parentElement.parentElement.children[1].innerHTML;
+      let filetype = node.parentElement.parentElement.children[5].innerHTML;
+      let filepath = node.parentElement.parentElement.children[4].innerHTML;
       //alert(id,filepath,filetype);
         if(isroot){
-          document.getElementById('desPath').value=filepath;
+          document.getElementById('srcName').value=filename;
+          document.getElementById('srcPath').value=filepath;
         } else {
-          document.getElementById('srcName').value=filepath+filename;
+          document.getElementById('desPath').value=filepath+filename+"/";
         }
     }
 
@@ -332,22 +335,23 @@
 
   <div>
     <form class="special">
-    <input class="page" type="button" name="button" value="选择恢复文件" onclick="readDir(0,'','')">
-    <input class="page" type="button" name="button" value="选择备份路径" onclick="readDir(1,'','')">
+    <input class="page" type="button" name="button" value="选择恢复文件" onclick="readDir(1,'','')">
+    <input class="page" type="button" name="button" value="选择恢复路径" onclick="readDir(0,'','')">
     </form>
     
     <form class="special">
 
       <input class="page" type="text" size="20" name="error" id="error" value="${error}" hidden>
 
-      <p>恢复文件名：<input class="page" type="text" size="20" name="fileName" id="srcName"></p>
-      <p><input hidden="true" class="page" type="text" size="20" name="pathfileName" id="srcPath"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="srcPath"></p>
+      <p>文件：<input class="page" type="text" size="20" name="pathfileName" id="srcName"></p>
 
-      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="desName"></p>
-      <p>磁盘路径名：<input class="page" type="text" size="20" name="pathfileName" id="desPath"></p>
+      <p>恢复路径：<input class="page" type="text" size="20" name="fileName" id="desPath"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="pathfileName" id="desName"></p>
+
       <input class="page" type="button" name="button" value="恢复" onclick="recover()">
       <!-- <input class="page" type="button" name="button" value="比较" onclick="compare()"> -->
-      <input class="page" type="button" name="button" value="删除" onclick="Delete()">
+      <input class="page" type="button" name="button" value="删除备份" onclick="Delete()">
 
     </form>
   </div>

@@ -58,14 +58,17 @@ func (fileHandler *FileHandler) MoveToBin() error {
 	var qryRes []model.Data
 	qry.Path = fileHandler.Obj.Path
 	qry.Name = fileHandler.Obj.Name
-	qry.InBin = true
-	if err := fileHandler.Where(&qry).Find(&qryRes).Error; err == nil {
+	if err := fileHandler.Where(&qry).Where("in_bin", true).Find(&qryRes).Error; err == nil {
 		for _, obj := range qryRes {
 			if err := fileHandler.Delete(&obj).Error; err != nil {
 				return err
 			}
+			if err := SysCleanFile(model.Bin + fileHandler.Obj.Path + fileHandler.Obj.Name); err != nil {
+				return err
+			}
 		}
 	}
+
 	return fileHandler.Update()
 }
 
@@ -93,8 +96,20 @@ func (fileHandler *FileHandler) Clean() error {
 }
 
 func (fileHandler *FileHandler) Recycle() error {
-	if err := fileHandler.Debug().Table("data").Where(fileHandler.Obj).Update("in_bin", false).Error; err != nil {
-		return err
+	var qry model.Data
+	var qryRes []model.Data
+	qry.Path = fileHandler.Obj.Path
+	qry.Name = fileHandler.Obj.Name
+	if err := fileHandler.Where(&qry).Where("in_bin", false).Find(&qryRes).Error; err == nil {
+		for _, obj := range qryRes {
+			if err := fileHandler.Delete(&obj).Error; err != nil {
+				return err
+			}
+			if err := SysCleanFile(model.Root + fileHandler.Obj.Path + fileHandler.Obj.Name); err != nil {
+				return err
+			}
+		}
 	}
-	return nil
+
+	return fileHandler.Update()
 }

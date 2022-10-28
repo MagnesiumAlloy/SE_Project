@@ -46,7 +46,7 @@ func SysReadDir(path string) ([]model.Data, error) {
 		return nil, err
 	}
 	defer f.Close()
-	var result []model.Data
+	result := []model.Data{}
 	for _, file := range files {
 		log.Println(file)
 		info, err := file.Info()
