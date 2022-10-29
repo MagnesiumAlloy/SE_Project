@@ -365,32 +365,30 @@ function recover(){
 <br>
 
 <div>
-      
-  <table id="manage">
-    <tr>
-      <th>序号</th>
-      <th>文件名</th>
-      <th>删除者</th>
-      <th>原路径</th>
-      <th>删除时间</th>
-    </tr>
-    <tbody id="recycled">
-
-    </tbody>
-  </table>
-
-  <input class="page" type="submit" name="button" value="显示文件" onclick="path1()">
   <form class="special" >
-    <p>文件名：<input class="page"type="text" size="20" name="fileName" id="pp1"></p>
+    <input class="page" type="button" name="button" value="显示文件" onclick="path1()"><br><br><br>
+    <p>文件名：&ensp;&ensp;&ensp;<input class="page"type="text" size="20" name="fileName" id="pp1"></p>
     <p>文件原路径：<input class="page"type="text" size="20" name="fileName" id="pp2"></p>
   <input class="page"type="button" name="button" value="删除" onclick="delete1()">
   <input class="page"type="button" name="button" value="恢复" onclick="recover()">
 
   </form>
-
 </div>
-
+<br><br>
 <div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
+
+<table id="manage">
+  <tr>
+    <th>序号</th>
+    <th>文件名</th>
+    <th>删除者</th>
+    <th>原路径</th>
+    <th>删除时间</th>
+  </tr>
+  <tbody id="recycled">
+
+  </tbody>
+</table>
 
 </body>
 </html>

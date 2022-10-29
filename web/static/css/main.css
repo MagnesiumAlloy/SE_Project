@@ -4,6 +4,10 @@
     font-family: "幼圆";
 }
 
+* {
+    font-size: inherit;
+}
+
 ul {
     list-style: none;
 }
