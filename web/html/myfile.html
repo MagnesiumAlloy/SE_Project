@@ -18,7 +18,7 @@ var stackPath = new Stack();
 var stackID = new Stack();
 var data
 
-function Stack(){
+    function Stack(){
      this.items = [];
      // 添加一个新元素到栈顶位置。push()
      Stack.prototype.push = function(element){
@@ -60,13 +60,14 @@ function Stack(){
       const desPath = document.getElementById('desPath').value;
       const srcName = document.getElementById('srcName').value;
       const srcPath = document.getElementById('srcPath').value;
+      const ID      = document.getElementById('tmpId').value
       $.ajax({
         url: "/recover",
         type: "POST",
         data: {
-          srcName: srcName,
           srcPath:srcPath,
-          desPath: desPath
+          desPath: desPath,
+          ID: ID
         },
         datatype: "json",
         success: function (res) {
@@ -86,6 +87,7 @@ function Stack(){
     function compare() {
       const desName = document.getElementById('desName').value;
       const desPath = document.getElementById('desPath').value;
+      const ID      = document.getElementById('tmpId').value
       const srcName = document.getElementById('srcName').value;
       const srcPath = document.getElementById('srcPath').value;
       $.ajax({
@@ -93,10 +95,11 @@ function Stack(){
         type: "POST",
         dataType: "json",
         data: {
+          ID: ID,
           desName: desName,
           desPath: desPath,
           srcName: srcName,
-          srcPath: srcPath
+          srcPath: srcPath,
         },
         success: function (data) {
           console.log(data);
@@ -203,8 +206,8 @@ function Stack(){
           + "<td>" + arr[i].Size + unit[aa] + "</td>"
           + "<td hidden=true>" + arr[i].Path + "</td>"
           + "<td hidden=true>" + arr[i].Type + "</td>"
-          + "<td>" + rootID + "</td>"
-          + "<td>" + i + "</td>"
+          + "<td hidden=true>" + rootID + "</td>"
+          + "<td hidden=true>" + i + "</td>"
           + "</tr>";
       }
       document.getElementById("content").innerHTML = out;
@@ -215,12 +218,12 @@ function Stack(){
     function explore(obj,isroot,inBin) {
       let id = obj.parentElement.children[7].innerHTML;
       //console.log(filepath,"+",filename)
-      //alert(id,filepath,filetype);
       if (data[id].Type == "dir") { //文件夹类型,要你指定
         //更进一步
         ReadDirWithPush(isroot,data[id].ID,data[id].Path,inBin);
       } else {
         if(isroot){
+          document.getElementById('tmpId').value=data[id].ID;
           document.getElementById('srcName').value=data[id].Name;
           document.getElementById('srcPath').value=data[id].Path;
         } else {
@@ -236,15 +239,15 @@ function Stack(){
       let filename = node.parentElement.parentElement.children[1].innerHTML;
       let filetype = node.parentElement.parentElement.children[5].innerHTML;
       let filepath = node.parentElement.parentElement.children[4].innerHTML;
-      let rootid   = node.parentElement.children[6].innerHTML;
-      let rootpath   = node.parentElement.children[7].innerHTML;
+      let rootid   = node.parentElement.parentElement.children[6].innerHTML;
+      let id       = node.parentElement.parentElement.children[7].innerHTML;
       //alert(id,filepath,filetype);
         if(isroot){
-h;
+          document.getElementById('tmpId').value=data[id].ID;
           document.getElementById('srcName').value=filename;
           document.getElementById('srcPath').value=filepath;
         } else {
-          document.getElementById('desPath').value=filepath+filename+"/";
+          document.getElementById('desPath').value=filepath;
        
         }
     }
@@ -437,6 +440,7 @@ h;
       <p><input hidden="true" class="page" type="text" size="20" name="pathfileName" id="desName"></p>
       <p>&ensp;当前文件夹: <input class="page" type="text" size="20" name="pathfile" id="tmpPath"></p>
       <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpRoot"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpId"></p>
 
 
       <input class="page" type="button" name="button" value="恢复" onclick="recover()">
