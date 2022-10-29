@@ -2,14 +2,12 @@ package handler
 
 import (
 	"SE_Project/pkg/model"
-	"SE_Project/pkg/util"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
 	"io"
-	"log"
 	"os"
-	"syscall"
+	"path/filepath"
 	"time"
 )
 
@@ -20,8 +18,6 @@ func SysCheckIsDir(path string) error {
 	if err != nil {
 		return err
 	}
-	//log.Println(folderinfo)
-	//check is a dir
 	if !folderinfo.IsDir() {
 		return errors.New("target is not a dir")
 	}
@@ -30,10 +26,7 @@ func SysCheckIsDir(path string) error {
 
 func SysCheckFileExist(path string) error {
 	_, err := os.Stat(path)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func SysReadDir(path string) ([]model.Data, error) {
@@ -48,43 +41,65 @@ func SysReadDir(path string) ([]model.Data, error) {
 	defer f.Close()
 	result := []model.Data{}
 	for _, file := range files {
-		log.Println(file)
+		//log.Println(file)
 		info, err := file.Info()
 		if err != nil {
 			return nil, err
 		}
 		Type := model.Dir
-		if !file.IsDir() {
-			Type = util.GetTargetType(file.Name())
+		if !info.IsDir() {
+			Type = filepath.Ext(file.Name())
 		}
 		result = append(result, model.Data{
-			Name: file.Name(),
-			Type: Type,
-			Size: uint64(info.Size()),
-			Path: path})
-
+			Name:      file.Name(),
+			Type:      Type,
+			Size:      uint64(info.Size()),
+			Path:      filepath.Join(path, file.Name()),
+			Perm:      uint32(info.Mode()),
+			ZipSize:   uint64(info.Size()),
+			Encrypted: false,
+			ModTime:   info.ModTime(),
+		})
 	}
 	return result, nil
 }
 
-func SysReadFileInfo(name, path string) (*model.Data, error) {
-	res := model.Data{Name: name, Path: path}
-	if err := SysCheckIsDir(path + name); err != nil {
-		res.Type = util.GetTargetType(name)
-	} else {
-		res.Type = model.Dir
-	}
-	info, err := os.Stat(path + name)
+//backup use this
+func SysReadFileInfo(path string) (*model.Data, error) {
+	Type := model.Dir
+	info, err := os.Stat(path)
 	if err != nil {
 		return nil, err
 	}
-	res.Size = uint64(info.Size())
-	res.ModTime = info.ModTime()
-	res.CreatTime = time.Unix(info.Sys().(*syscall.Stat_t).Ctim.Sec, 0)
-	return &res, nil
+	if !info.IsDir() {
+		Type = filepath.Ext(path)
+	}
+
+	return &model.Data{
+		Name:    info.Name(),
+		Path:    path,
+		Size:    uint64(info.Size()),
+		ZipSize: uint64(info.Size()),
+		ModTime: info.ModTime(),
+		Perm:    uint32(info.Mode()),
+		Type:    Type,
+	}, nil
 }
 
-func SysCopy(srcPath, desPath string, modTime time.Time, CreatTime time.Time) error {
+func SysModifyInfo(path string, perm uint32, modTime time.Time) error {
+	if err := SysCheckFileExist(path); err != nil {
+		return err
+	}
+	if err := os.Chtimes(path, time.Now(), modTime); err != nil {
+		return err
+	}
+	if err := os.Chmod(path, os.FileMode(perm)); err != nil {
+		return err
+	}
+	return nil
+}
+
+func sysCopyFile(srcPath, desPath string, perm uint32, modTime time.Time) error {
 	srcFile, err := os.Open(srcPath)
 	if err != nil {
 		return err
@@ -93,9 +108,41 @@ func SysCopy(srcPath, desPath string, modTime time.Time, CreatTime time.Time) er
 	if err != nil {
 		return err
 	}
-	_, err = io.Copy(desFile, srcFile)
+	if _, err = io.Copy(desFile, srcFile); err != nil {
+		return err
+	}
+	if err = SysModifyInfo(desPath, perm, modTime); err != nil {
+		return err
+	}
 	defer desFile.Close()
 	defer srcFile.Close()
+	return nil
+}
+
+func SysCopy(srcPath, desPath string, perm uint32, modTime time.Time) error {
+	src, err := os.Stat(srcPath)
+	if err != nil {
+		return err
+	}
+	if src.IsDir() {
+		if list, err := os.ReadDir(srcPath); err == nil {
+			for _, item := range list {
+				if err := SysCopy(filepath.Join(srcPath, item.Name()), filepath.Join(desPath, item.Name()), perm, modTime); err != nil {
+					return err
+				}
+			}
+		} else {
+			return err
+		}
+	} else {
+		path := filepath.Dir(desPath)
+		if _, err := os.Stat(path); err != nil {
+			if err := os.Mkdir(path, os.ModePerm); err != nil {
+				return err
+			}
+		}
+		return sysCopyFile(srcPath, desPath, perm, modTime)
+	}
 	return err
 }
 
@@ -125,16 +172,56 @@ func SysCompare(srcPath, desPath string) error {
 	return nil
 }
 
-func SysCleanFile(path string) error {
-	if err := os.Remove(path); err != nil {
+func sysCleanFile(path string) error {
+	return os.Remove(path)
+}
+
+func SysClean(path string) error {
+	src, err := os.Stat(path)
+	if err != nil {
 		return err
 	}
-	return nil
+	if src.IsDir() {
+		if list, err := os.ReadDir(path); err == nil {
+			for _, item := range list {
+				if err := SysClean(filepath.Join(path, item.Name())); err != nil {
+					return err
+				}
+			}
+		} else {
+			return err
+		}
+	}
+	return sysCleanFile(path)
 }
 
 func SysMove(srcPath, desPath string) error {
-	if err := os.Rename(srcPath, desPath); err != nil {
-		return err
+	/*
+		if err := SysCheckFileExist(desPath); err == nil {
+			if err := SysClean(desPath); err != nil {
+				return err
+			}
+		}
+	*/
+	return os.Rename(srcPath, desPath)
+}
+
+func ReadAllFileAndDir(root string) ([]model.Data, error) {
+	res := []model.Data{}
+	err := filepath.Walk(root, func(file string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			obj, _ := SysReadFileInfo(file)
+			obj.Path = file
+			res = append(res, *obj)
+		} else {
+			obj, _ := SysReadFileInfo(file)
+			obj.Path = file
+			res = append(res, *obj)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	return res, nil
 }

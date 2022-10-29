@@ -3,10 +3,10 @@ package main
 import (
 	"SE_Project/pkg/handler"
 	"SE_Project/pkg/model"
-	"SE_Project/pkg/service"
 	"SE_Project/router"
 	"os"
 	"os/user"
+	"path/filepath"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -14,7 +14,7 @@ import (
 func main() {
 
 	initFileSys()
-	//initDB()
+	initDB()
 
 	r := router.SetupRouter()
 	// Listen and Server in 0.0.0.0:8080
@@ -48,15 +48,30 @@ func initDB() {
 	pwd, _ = bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
 	handler.GetDB().Create(&model.User{UserName: "admin", Password: string(pwd), UserType: model.AdminType})
 
-	res, _ := service.ReadAllFileAndDir(model.Root)
+	res, _ := handler.ReadAllFileAndDir(model.Root)
 	for _, x := range res {
+		x.Path = x.Path[len(model.Root):]
+		if x.Path == "" {
+			x.Path = "/"
+		} else {
+			var f model.Data
+			handler.GetDB().Where(&model.Data{Path: filepath.Dir(x.Path)}).First(&f)
+			x.PID = f.ID
+		}
 		handler.GetDB().Create(&x)
 	}
-	res, _ = service.ReadAllFileAndDir(model.Bin)
+	res, _ = handler.ReadAllFileAndDir(model.Bin)
 	for _, x := range res {
+		x.Path = x.Path[len(model.Bin):]
+		if x.Path == "" {
+			x.Path = "/"
+		} else {
+			var f model.Data
+			handler.GetDB().Where(&model.Data{Path: filepath.Dir(x.Path)}).First(&f)
+			x.PID = f.ID
+		}
 		x.InBin = true
 		x.BinPath = x.Path
-		x.Path = "/"
 		handler.GetDB().Create(&x)
 	}
 }
