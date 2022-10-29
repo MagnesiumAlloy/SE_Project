@@ -96,8 +96,10 @@ var data
         dataType: "json",
         data: {
           ID: ID,
+          desName: desName,
           desPath: desPath,
-          srcPath: srcPath
+          srcName: srcName,
+          srcPath: srcPath,
         },
         success: function (data) {
           console.log(data);
@@ -204,8 +206,8 @@ var data
           + "<td>" + arr[i].Size + unit[aa] + "</td>"
           + "<td hidden=true>" + arr[i].Path + "</td>"
           + "<td hidden=true>" + arr[i].Type + "</td>"
-          + "<td>" + rootID + "</td>"
-          + "<td>" + i + "</td>"
+          + "<td hidden=true>" + rootID + "</td>"
+          + "<td hidden=true>" + i + "</td>"
           + "</tr>";
       }
       document.getElementById("content").innerHTML = out;
