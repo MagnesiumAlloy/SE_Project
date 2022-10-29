@@ -120,8 +120,6 @@ func SetupRouter() *gin.Engine {
 
 	r.POST("/backupWithKey", Controller.BackupWithKey)
 
-	r.GET("/readBin", Controller.ReadBin)
-
 	r.DELETE("/clean", Controller.Clean)
 
 	r.POST("/recycle", Controller.Recycle)

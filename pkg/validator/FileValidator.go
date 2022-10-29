@@ -10,7 +10,7 @@ func CheckFileName(name string) error {
 }
 
 func CheckPath(path string) error {
-	if len(path) > 0 && (path[0] != '/' || path[len(path)-1] != '/') || len(path) > 256 {
+	if len(path) > 0 && path[0] != '/' || len(path) > 256 {
 		return errors.New("invalid path string")
 	}
 	return nil

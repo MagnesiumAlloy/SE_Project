@@ -11,6 +11,13 @@
 
   <script>
 
+var Path;
+var IsRoot;
+var InBin;
+var stackPath = new Stack();
+var stackID = new Stack();
+var data
+
 function Stack(){
      this.items = [];
      // 添加一个新元素到栈顶位置。push()
@@ -133,67 +140,32 @@ function Stack(){
           isroot: isroot,
           inBin: inBin
         },
-        success: function (data) {
+        success: function (res) {
           IsRoot=isroot
           Path = path
           InBin=inBin;
           document.getElementById('tmpPath').value=Path;
-         stackID.push(data.ID);
-         stackPath.push(data.Path);
-        showTable(data.data,isroot,data.ID,data.Path,inBin);
+          showTable(res.data,isroot,res.ID,res.Path,inBin);
         }
       })
     };
-
-    var Path;
-    var IsRoot;
-    var InBin;
-    var stackPath = new Stack();
-    var stackID = new Stack();
-
-    function Last()  {
-      //let node = obj;
-      //let filename = node.parentElement.parentElement.children[1].innerHTML;
-      //let filepath = node.parentElement.parentElement.children[4].innerHTML;
-      let isroot=IsRoot;
-      let filepath=Path;
-      console.log(filepath)
-      let ii=0,point=-1;
-      for(let i=filepath.length-1;i>=0;i--){
-        if (filepath[i]!='/') continue;
-        else {
-          ii++;
-        }
-        if(ii==3){
-          point=i;
-          break;
-        }
-      } 
-      let filepath1="";
-      let filename1="";
-      ii=0;
-      for(let i=point+1;;i++){
-        if(filepath[i]=="/"){
-          break;
-        }
-        filename1+=filepath[i];
-      }
-      for(let i=0;i<=point;i++){
-        filepath1+=filepath[i];
-      }
-      readDir(isroot,filename1,filepath1);
-    };
   
-    function Last1(){
+    function ReadDirWithPop(){
       let isroot=IsRoot;
       let filepath=Path;
       let inBin=InBin;
-      stackID.pop();
-      stackPath.pop();
-      if(stackID.size()<1 || stackPath.size()<1){
+      if(stackID.size()<=1 || stackPath.size()<=1){
         return;
       }
+      stackID.pop();
+      stackPath.pop();
       readDir(isroot,stackID.peek(),stackPath.peek(),inBin);
+    };
+
+    function ReadDirWithPush(isroot,id,path,inBin){
+      stackID.push(id);
+      stackPath.push(path);
+      readDir(isroot,id,path,inBin);
     };
 
     function rTime(date) {
@@ -202,6 +174,7 @@ function Stack(){
     }
 
     function showTable(arr,isroot,rootID,rootPath,inBin) {
+      data=arr
       var out = "";
       var unit=[" ","B","KB","MB"];
       for (let i = 0; i < arr.length; i++) {
@@ -231,7 +204,7 @@ function Stack(){
           + "<td hidden=true>" + arr[i].Path + "</td>"
           + "<td hidden=true>" + arr[i].Type + "</td>"
           + "<td>" + rootID + "</td>"
-          + "<td>" + rootPath + "</td>"
+          + "<td>" + i + "</td>"
           + "</tr>";
       }
       document.getElementById("content").innerHTML = out;
@@ -240,23 +213,18 @@ function Stack(){
         //readDir(isroot,ID,path,inBin)
 
     function explore(obj,isroot,inBin) {
-      let node = obj;
-      let filename = node.parentElement.children[1].innerHTML;
-      let filetype = node.parentElement.children[5].innerHTML;
-      let filepath = node.parentElement.children[4].innerHTML;
-      let rootid   = node.parentElement.children[6].innerHTML;
-      let rootpath   = node.parentElement.children[7].innerHTML;
-      console.log(filepath,"+",filename)
+      let id = obj.parentElement.children[7].innerHTML;
+      //console.log(filepath,"+",filename)
       //alert(id,filepath,filetype);
-      if (filetype == ".dir") { //文件夹类型,要你指定
+      if (data[id].Type == "dir") { //文件夹类型,要你指定
         //更进一步
-        readDir(isroot,rootid,filepath,inBin);
+        ReadDirWithPush(isroot,data[id].ID,data[id].Path,inBin);
       } else {
         if(isroot){
-          document.getElementById('srcName').value=filename;
-          document.getElementById('srcPath').value=filepath;
+          document.getElementById('srcName').value=data[id].Name;
+          document.getElementById('srcPath').value=data[id].Path;
         } else {
-          document.getElementById('desPath').value=filepath+filename+"/";
+          document.getElementById('desPath').value=data[id].Path;
         }
         
       }
@@ -452,8 +420,8 @@ function Stack(){
 
   <div>
     <form class="special">
-    <input class="page" type="button" name="button" value="选择恢复文件" onclick="readDir(1,-1,'/',0)">
-    <input class="page" type="button" name="button" value="选择恢复路径" onclick="readDir(0,-1,'/',0)">
+    <input class="page" type="button" name="button" value="选择恢复文件" onclick="ReadDirWithPush(1,-1,'/',0)">
+    <input class="page" type="button" name="button" value="选择恢复路径" onclick="ReadDirWithPush(0,-1,'/',0)">
     </form>
     
     <form class="special">
@@ -472,7 +440,7 @@ function Stack(){
       <input class="page" type="button" name="button" value="恢复" onclick="recover()">
       <!-- <input class="page" type="button" name="button" value="比较" onclick="compare()"> -->
       <input class="page" type="button" name="button" value="删除备份" onclick="Delete()">
-      <input class="page" type="button" name="button" value="返回上一级" onclick="Last1()">
+      <input class="page" type="button" name="button" value="返回上一级" onclick="ReadDirWithPop()">
 
     </form>
   </div>
