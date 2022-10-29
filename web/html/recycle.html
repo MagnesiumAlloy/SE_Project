@@ -124,9 +124,9 @@ function recover(){
       var out = "";
       for(let i = 0; i < arr.length; i++) {
           out += "<tr  onclick="+"edit22(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td hidden=true>"+arr[i].ID+"</td>"
                    +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].UsedId+"</td>"
+                   +"<td hidden=true>"+arr[i].UsedId+"</td>"
                    +"<td>"+arr[i].Path+"</td>"
                 +"</tr>";
       }
@@ -137,9 +137,9 @@ function recover(){
       var out = "";
       for(let i = 0; i < arr.length; i++) {
           out += "<tr  onclick="+"edit44(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
+                   +"<td hidden=true>"+arr[i].ID+"</td>"
                    +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Author+"</td>"
+                   +"<td hidden=true>"+arr[i].Author+"</td>"
                    +"<td>"+arr[i].deleteTime+"</td>"
                 +"</tr>";
       }
@@ -373,9 +373,7 @@ function recover(){
 
 <table id="manage">
   <tr>
-    <th>序号</th>
     <th>文件名</th>
-    <th>删除者</th>
     <th>原路径</th>
     <th>删除时间</th>
   </tr>
