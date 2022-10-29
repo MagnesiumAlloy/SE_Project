@@ -151,7 +151,6 @@ var data
       for (let i = 0; i < arr.length; i++) {
         var aa=0;
         if (arr[i].Name == "") continue;
-        if(arr[i].Type !="dir"&&!isroot) continue;
         if(arr[i].Type=="dir"){
           arr[i].Size="";
         }
@@ -193,6 +192,7 @@ var data
           document.getElementById('tmpId').value=data[id].ID;
           document.getElementById('srcName').value=data[id].Name;
           document.getElementById('srcPath').value=data[id].Path;
+      }
     }
 
 
@@ -361,6 +361,7 @@ var data
 
 <table id="manage">
   <tr>
+    <th class="firstC"></th>
     <th>文件名</th>
     <th>删除时间</th>
     <th>文件大小<th>

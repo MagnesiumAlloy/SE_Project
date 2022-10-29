@@ -116,13 +116,22 @@ func Delete(path string) error {
 		return err
 	}
 	if err := checkIsDir(path, true, false); err == nil {
+		var PID uint
+		if father, err := handler.NewFileHandler(&model.Data{BinPath: "/", InBin: true}).GetTarget(); err == nil {
+			PID = father.ID
+		} else {
+			return err
+		}
 		//is dir
 		var files []model.Data
 		if files, err = handler.NewFileHandler(&model.Data{Path: path, InBin: false}).GetAllInDir(); err != nil {
 			return err
 		}
 		for i := range files {
-			files[i].BinPath = "/" + path[len(filepath.Dir(files[i].Path)):]
+			files[i].BinPath = "/" + path[len(filepath.Dir(path)):]
+			if i == 0 {
+				files[i].PID = PID
+			}
 			if files[i].BinPath == "" {
 				files[i].BinPath = "/" + files[i].Name
 			}
@@ -229,12 +238,21 @@ func Recycle(path string) error {
 		if err != nil {
 			return err
 		}
+		var PID uint
+		if father, err := handler.NewFileHandler(&model.Data{Path: "/", InBin: false}).GetTarget(); err == nil {
+			PID = father.ID
+		} else {
+			return err
+		}
 		//is dir
 		var files []model.Data
 		if files, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true}).GetAllInDir(); err != nil {
 			return err
 		}
 		for i := range files {
+			if i == 0 {
+				files[i].PID = PID
+			}
 			files[i].InBin = false
 			if err = handler.NewFileHandler(&files[i]).Recycle(); err != nil {
 				return err
