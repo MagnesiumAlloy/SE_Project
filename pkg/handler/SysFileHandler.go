@@ -125,6 +125,12 @@ func SysCopy(srcPath, desPath string, perm uint32, modTime time.Time) error {
 		return err
 	}
 	if src.IsDir() {
+		path := filepath.Dir(filepath.Join(desPath, filepath.Base(srcPath)))
+		if _, err := os.Stat(path); err != nil {
+			if err := os.Mkdir(path, os.ModePerm); err != nil {
+				return err
+			}
+		}
 		if list, err := os.ReadDir(srcPath); err == nil {
 			for _, item := range list {
 				if err := SysCopy(filepath.Join(srcPath, item.Name()), filepath.Join(desPath, item.Name()), perm, modTime); err != nil {
@@ -163,7 +169,7 @@ func SysCompare(srcPath, desPath string) error {
 	if srcMd5, err = SysGetFileMd5(srcPath); err != nil {
 		return err
 	}
-	if desMd5, err = SysGetFileMd5(srcPath); err != nil {
+	if desMd5, err = SysGetFileMd5(desPath); err != nil {
 		return err
 	}
 	if srcMd5 != desMd5 {
@@ -203,6 +209,12 @@ func SysMove(srcPath, desPath string) error {
 			}
 		}
 	*/
+	path := filepath.Dir(desPath)
+	if _, err := os.Stat(path); err != nil {
+		if err := os.Mkdir(path, os.ModePerm); err != nil {
+			return err
+		}
+	}
 	return os.Rename(srcPath, desPath)
 }
 
