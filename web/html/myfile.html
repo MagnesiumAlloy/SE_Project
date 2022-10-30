@@ -10,7 +10,7 @@
   </script>
 
   <script>
-
+ var dt=localStorage.getItem("USER");
 var Path;
 var IsRoot;
 var InBin;
@@ -65,6 +65,7 @@ var data
         url: "/recover",
         type: "POST",
         data: {
+          UserId:dt*1,
           srcPath:srcPath,
           desPath: desPath,
           ID: ID
@@ -95,6 +96,7 @@ var data
         type: "POST",
         dataType: "json",
         data: {
+          UserId:dt*1,
           ID: ID,
           desName: desName,
           desPath: desPath,
@@ -116,6 +118,7 @@ var data
       const srcName = document.getElementById('srcName').value;
       const srcPath = document.getElementById('srcPath').value;
       $.ajax({
+        UserId:dt*1,
         url: "/delete"+"?name="+srcName+"&path="+srcPath,
         type: "DELETE",
         dataType: "json",
@@ -138,6 +141,7 @@ var data
         type: "GET",
         dataType: "json",
         data: {
+          UserId:dt*1,
           path: path,
           ID: ID,
           isroot: isroot,
