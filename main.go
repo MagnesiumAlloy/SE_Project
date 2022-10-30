@@ -13,8 +13,8 @@ import (
 
 func main() {
 
-	//initFileSys()
-	//initDB()
+	initFileSys()
+	initDB()
 
 	r := router.SetupRouter()
 	// Listen and Server in 0.0.0.0:8080
@@ -58,6 +58,7 @@ func initDB() {
 			handler.GetDB().Where(&model.Data{Path: filepath.Dir(x.Path)}).First(&f)
 			x.PID = f.ID
 		}
+		x.InBin = false
 		handler.GetDB().Create(&x)
 	}
 	res, _ = handler.ReadAllFileAndDir(model.Bin)
@@ -67,7 +68,7 @@ func initDB() {
 			x.Path = "/"
 		} else {
 			var f model.Data
-			handler.GetDB().Where(&model.Data{Path: filepath.Dir(x.Path)}).First(&f)
+			handler.GetDB().Where(&model.Data{BinPath: filepath.Dir(x.Path)}).First(&f)
 			x.PID = f.ID
 		}
 		x.InBin = true

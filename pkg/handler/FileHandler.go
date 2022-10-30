@@ -43,7 +43,7 @@ func (fileHandler *FileHandler) GetTarget() (*model.Data, error) {
 func (fileHandler *FileHandler) GetAllInDir() ([]model.Data, error) {
 	var result []model.Data
 	if fileHandler.Obj.InBin {
-		if err := fileHandler.Where("bin_path LIKE ?", fileHandler.Obj.Path+"%").Where("in_bin", fileHandler.Obj.InBin).Find(&result).Error; err != nil {
+		if err := fileHandler.Where("bin_path LIKE ?", fileHandler.Obj.BinPath+"%").Where("in_bin", fileHandler.Obj.InBin).Find(&result).Error; err != nil {
 			return nil, err
 		}
 	} else {
@@ -117,7 +117,7 @@ func (fileHandler *FileHandler) Clean() error {
 
 func (fileHandler *FileHandler) Recycle() error {
 	var qryRes []model.Data
-	if err := fileHandler.Where("path", fileHandler.Obj.Path).Where("in_bin", false).Find(&qryRes).Error; err == nil {
+	if err := fileHandler.Where("path", fileHandler.Obj.Path).Where("in_bin", false).Find(&qryRes).Error; err == nil && len(qryRes) > 0 {
 		for _, obj := range qryRes {
 			if err := fileHandler.Delete(&obj).Error; err != nil {
 				return err
