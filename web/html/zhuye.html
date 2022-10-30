@@ -11,6 +11,8 @@
    
    
 <script>
+  var dt=localStorage.getItem("USER");
+
   function my(){
        $.ajax({
            url: "/fileData",
@@ -127,13 +129,12 @@
 
 
   <div class="about">
-    <h2 class="about_tit1">欢迎你,</h2>
+    <h2 class="about_tit1" id="tmp">欢迎您</h2>
     <h3 class="about_tit">要不断的努力，才能成为更好的自己</h3>
     <img class="about_bgc" src="static/img/213.jpg" alt="">
   </div>
 
   <div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
-
 
 </body>
 </html>

@@ -176,6 +176,12 @@ var data
         return new Date(+new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
     }
 
+    function file1(data){
+        aa=" ";
+        if(data) return Number(data).toFixed(2);
+        else return aa;
+    }
+
     function showTable(arr,isroot,rootID,rootPath,inBin) {
       data=arr
       var out = "";
@@ -203,7 +209,7 @@ var data
           +"<td><button type=button class= "+"hiddenbox "+"onclick="+"select(this,"+isroot+","+inBin+")"+">选择</button></td>"
           + "<td onclick=" + "explore(this,"+isroot+","+inBin+")"+">" + arr[i].Name + "</td>"
           + "<td>" + rTime(arr[i].ModTime) + "</td>"
-          + "<td>" + arr[i].Size + unit[aa] + "</td>"
+          + "<td>" + file1(arr[i].Size) + unit[aa] + "</td>"
           + "<td hidden=true>" + arr[i].Path + "</td>"
           + "<td hidden=true>" + arr[i].Type + "</td>"
           + "<td hidden=true>" + rootID + "</td>"
