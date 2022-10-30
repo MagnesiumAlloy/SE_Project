@@ -17,6 +17,7 @@
                 success: function (result) {
                     console.log(result);//打印服务端返回的数据(调试用)
                     if (result.status == 200) {
+                        localStorage.USER=document.getElementById('user').value;
                        location.href="/zhuye";
                     } else {
                         alert("错误");
@@ -39,7 +40,7 @@
                 <span class="form_title">用户登录</span>
                 <div class="form_input">
                     <span>账号：</span>
-                    <input class="inputs" type="text" name="username" placeholder="账号">
+                    <input class="inputs" type="text" name="username" placeholder="账号" id="user">
                 </div>
                 <div class="form_input">
                     <span>密码：</span>
