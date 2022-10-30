@@ -2,12 +2,15 @@ package handler
 
 import (
 	"SE_Project/pkg/model"
+	"bufio"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -236,4 +239,162 @@ func ReadAllFileAndDir(root string) ([]model.Data, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+func SysWritePackedFile(root string, list []model.Data, path string) (*model.Data, error) {
+	if SysCheckFileExist(path) == nil {
+		if err := sysCleanFile(path); err != nil {
+			return nil, err
+		}
+	}
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	writer := bufio.NewWriter(file)
+	writer.WriteString(fmt.Sprint(len(list)) + "\n")
+	for _, item := range list {
+		writer.WriteString(item.Type + " " + item.Path + " " + fmt.Sprint(item.Size) + " " + fmt.Sprint(item.Perm) + " " + fmt.Sprint(item.ModTime.Unix()) + "\n")
+	}
+	writer.Flush()
+	p := make([]byte, 4096)
+	for _, item := range list {
+		if item.Type == model.Dir {
+			continue
+		}
+		rfile, err := os.Open(filepath.Join(root, item.Path))
+		if err != nil {
+			return nil, err
+		}
+		defer rfile.Close()
+		reader := bufio.NewReader(rfile)
+		bd := int(item.Size+4095) / 4096
+		for t := 0; t < bd; t++ {
+			len, err := reader.Read(p)
+			if err != nil {
+				return nil, err
+			}
+			for i := 0; i < len; i++ {
+				writer.WriteByte(p[i])
+			}
+			writer.Flush()
+		}
+
+	}
+	handler, err := SysReadFileInfo(path)
+	if err != nil {
+		return nil, err
+	}
+	return handler, nil
+}
+
+func SysRecoverPackedFile(path, desPath string) ([]model.Data, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	reader := bufio.NewReader(file)
+	str, err := reader.ReadString('\n')
+	if err != nil {
+		return nil, err
+	}
+	n, err := strconv.Atoi(str[:len(str)-1])
+	if err != nil {
+		return nil, err
+	}
+	list := make([]model.Data, n)
+	for i := 0; i < n; i++ {
+		str, err = reader.ReadString(' ')
+		if err != nil {
+			return nil, err
+		}
+		list[i].Type = str[:len(str)-1]
+
+		str, err = reader.ReadString(' ')
+		if err != nil {
+			return nil, err
+		}
+		list[i].Path = str[:len(str)-1]
+		list[i].Path = filepath.Join(desPath, list[i].Path)
+
+		str, err = reader.ReadString(' ')
+		if err != nil {
+			return nil, err
+		}
+		x, err := strconv.Atoi(str[:len(str)-1])
+		if err != nil {
+			return nil, err
+		}
+		list[i].Size = uint64(x)
+
+		str, err = reader.ReadString(' ')
+		if err != nil {
+			return nil, err
+		}
+		x, err = strconv.Atoi(str[:len(str)-1])
+		if err != nil {
+			return nil, err
+		}
+		list[i].Perm = uint32(x)
+
+		str, err = reader.ReadString('\n')
+		if err != nil {
+			return nil, err
+		}
+		x, err = strconv.Atoi(str[:len(str)-1])
+		if err != nil {
+			return nil, err
+		}
+		list[i].ModTime = time.Unix(int64(x), 0)
+	}
+	p := make([]byte, 4096)
+	for _, item := range list {
+		if item.Type == model.Dir {
+			if _, err := os.Stat(item.Path); err != nil {
+				if err := os.Mkdir(item.Path, os.ModePerm); err != nil {
+					return nil, err
+				}
+			}
+			continue
+		}
+		bd := item.Size / 4096
+		if SysCheckFileExist(item.Path) == nil {
+			if err := sysCleanFile(item.Path); err != nil {
+				return nil, err
+			}
+		}
+
+		wfile, err := os.OpenFile(item.Path, os.O_WRONLY|os.O_CREATE, os.ModePerm)
+		if err != nil {
+			return nil, err
+		}
+		defer wfile.Close()
+		writer := bufio.NewWriter(wfile)
+		for i := 0; i < int(bd); i++ {
+			_, err := io.ReadFull(reader, p)
+			if err != nil && err != io.ErrUnexpectedEOF {
+				return nil, err
+			}
+			writer.Write(p)
+			writer.Flush()
+		}
+		for i := 0; i < int(item.Size%4096); i++ {
+			b, err := reader.ReadByte()
+			if err != nil {
+				return nil, err
+			}
+			if err := writer.WriteByte(b); err != nil {
+				return nil, err
+			}
+		}
+		writer.Flush()
+	}
+	for _, item := range list {
+		if err := SysModifyInfo(item.Path, item.Perm, item.ModTime); err != nil {
+			return nil, err
+		}
+	}
+	return list, nil
 }

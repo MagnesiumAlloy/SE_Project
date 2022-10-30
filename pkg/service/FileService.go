@@ -164,6 +164,37 @@ func Delete(path string) error {
 	return nil
 }
 
+func BackupPackedData(srcPath, desPath string) error {
+	if err := checkFileExist(srcPath, false, false); err != nil {
+		return err
+	}
+	var list []model.Data
+	if list, err = handler.ReadAllFileAndDir(srcPath); err != nil {
+		return err
+	}
+	for i, item := range list {
+		list[i].Path = item.Path[len(filepath.Dir(srcPath)):]
+		println(item.Type, item.Path, item.Size, item.ModTime.String())
+	}
+	obj, err = handler.SysWritePackedFile(filepath.Dir(srcPath), list, desPath)
+	print(obj)
+	return nil
+}
+
+func RecoverPackedData(srcPath, desPath string) error {
+	if err := checkFileExist(srcPath, false, false); err != nil {
+		return err
+	}
+	list, err := handler.SysRecoverPackedFile(srcPath, desPath)
+	if err != nil {
+		return err
+	}
+	for _, item := range list {
+		println(item.Type, item.Path, item.Size, item.ModTime.String())
+	}
+	return nil
+}
+
 func Backup(srcPath, desPath string) error {
 	if err := checkFileExist(srcPath, false, false); err != nil {
 		return err

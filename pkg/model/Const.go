@@ -10,6 +10,7 @@ const (
 	Video         = "video"
 	Zip           = "zip"
 	Dir           = "dir"
+	file          = "file"
 	OtherFileType = "other"
 )
 
