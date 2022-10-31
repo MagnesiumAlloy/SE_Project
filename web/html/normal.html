@@ -11,6 +11,7 @@
 
   
 <script>
+   var dt=localStorage.getItem("USER");
   function backup(){
         const srcPath = document.getElementById('srcPath').value;
         const srcName = document.getElementById('srcName').value;
@@ -20,6 +21,7 @@
             type:"POST",
             dataType:"json",
             data:{
+              UserId:dt*1,
               srcName: srcName,
               srcPath: srcPath,
               desPath: desPath
@@ -40,6 +42,7 @@
            type:"get",
            dataType:"json",
            data:{
+            UserId:dt*1,
             path: path,
             name: name,
             isroot: isroot
