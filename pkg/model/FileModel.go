@@ -14,7 +14,7 @@ type Data struct {
 	Type      string    `form:"type"`
 	Size      uint64    `form:"size"`
 	ZipSize   uint64    `form:"zipsize"`
-	UserId    uint64    `form:"userid"`
+	UserId    uint      `form:"userid"`
 	InBin     bool      `form:"inbin"`
 	BinPath   string    `form:"binpath"`
 	ModTime   time.Time `form:"modtime"`

@@ -22,11 +22,12 @@ func (userHandler *UserHandler) Login() error {
 	return nil
 }
 
-func (userHandler *UserHandler) CheckUserExist() error {
-	if err := userHandler.Where(userHandler.User).First(&model.User{}).Error; err != nil {
-		return err
+func (userHandler *UserHandler) CheckUserExist() (uint, error) {
+	var res model.User
+	if err := userHandler.Where(userHandler.User).First(&res).Error; err != nil {
+		return 0, err
 	}
-	return nil
+	return res.ID, nil
 }
 
 func (userHandler *UserHandler) GetSaltedPassword() (string, error) {
@@ -39,6 +40,26 @@ func (userHandler *UserHandler) GetSaltedPassword() (string, error) {
 
 func (userHandler *UserHandler) Register() error {
 	if err := userHandler.Create(userHandler.User).Error; err != nil {
+		return err
+	}
+	return userHandler.NewUserInit()
+}
+
+func (userHandler *UserHandler) NewUserInit() error {
+	var obj *model.Data
+	if obj, err = NewFileHandler(&model.Data{}).GetTarget(); err != nil {
+		return err
+	}
+	obj.UserId = userHandler.User.ID
+	obj.ID = 0
+	if err := NewFileHandler(&model.Data{}).Create(obj).Error; err != nil {
+		return err
+	}
+	obj.Path = ""
+	obj.BinPath = "/"
+	obj.InBin = true
+	obj.ID = 0
+	if err := NewFileHandler(&model.Data{}).Create(obj).Error; err != nil {
 		return err
 	}
 	return nil

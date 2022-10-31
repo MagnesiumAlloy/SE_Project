@@ -24,7 +24,7 @@ func checkIsDir(path string, isRoot bool, inBin bool) error {
 
 }
 
-func ReadDir(path string, ID *int, isRoot bool, inBin bool) ([]model.Data, error) {
+func ReadDir(path string, ID *int, isRoot bool, inBin bool, userID uint) ([]model.Data, error) {
 	var res []model.Data
 	if err := checkIsDir(path, isRoot, inBin); err != nil {
 		return nil, err
@@ -32,24 +32,24 @@ func ReadDir(path string, ID *int, isRoot bool, inBin bool) ([]model.Data, error
 	if isRoot {
 		if inBin {
 			if path == "/" {
-				if obj, err := handler.NewFileHandler(&model.Data{BinPath: path, InBin: inBin}).GetTarget(); err != nil {
+				if obj, err := handler.NewFileHandler(&model.Data{BinPath: path, InBin: inBin, UserId: userID}).GetTarget(); err != nil {
 					return nil, err
 				} else {
 					*ID = int(obj.ID)
 				}
 			}
-			if res, err = handler.NewFileHandler(&model.Data{PID: uint(*ID), InBin: inBin}).ReadDir(); err != nil {
+			if res, err = handler.NewFileHandler(&model.Data{PID: uint(*ID), InBin: inBin, UserId: userID}).ReadDir(); err != nil {
 				return nil, err
 			}
 		} else {
 			if path == "/" {
-				if obj, err := handler.NewFileHandler(&model.Data{Path: path, InBin: inBin}).GetTarget(); err != nil {
+				if obj, err := handler.NewFileHandler(&model.Data{Path: path, InBin: inBin, UserId: userID}).GetTarget(); err != nil {
 					return nil, err
 				} else {
 					*ID = int(obj.ID)
 				}
 			}
-			if res, err = handler.NewFileHandler(&model.Data{PID: uint(*ID), InBin: inBin}).ReadDir(); err != nil {
+			if res, err = handler.NewFileHandler(&model.Data{PID: uint(*ID), InBin: inBin, UserId: userID}).ReadDir(); err != nil {
 				return nil, err
 			}
 		}
@@ -59,14 +59,14 @@ func ReadDir(path string, ID *int, isRoot bool, inBin bool) ([]model.Data, error
 	}
 }
 
-func checkFileExist(path string, isRoot bool, inBin bool) error {
+func checkFileExist(path string, isRoot bool, inBin bool, userID uint) error {
 	if isRoot {
 		if inBin {
-			if err := handler.NewFileHandler(&model.Data{BinPath: path, InBin: inBin}).CheckTargetExist(); err != nil {
+			if err := handler.NewFileHandler(&model.Data{BinPath: path, InBin: inBin, UserId: userID}).CheckTargetExist(); err != nil {
 				return err
 			}
 		} else {
-			if err := handler.NewFileHandler(&model.Data{Path: path, InBin: inBin}).CheckTargetExist(); err != nil {
+			if err := handler.NewFileHandler(&model.Data{Path: path, InBin: inBin, UserId: userID}).CheckTargetExist(); err != nil {
 				return err
 			}
 		}
@@ -76,11 +76,11 @@ func checkFileExist(path string, isRoot bool, inBin bool) error {
 	}
 	return nil
 }
-func Recover(srcPath, desPath string) error {
-	if err = checkFileExist(srcPath, true, false); err != nil {
+func Recover(srcPath, desPath string, userID uint) error {
+	if err = checkFileExist(srcPath, true, false, userID); err != nil {
 		return err
 	}
-	if obj, err = handler.NewFileHandler(&model.Data{Path: srcPath, InBin: false}).GetTarget(); err != nil {
+	if obj, err = handler.NewFileHandler(&model.Data{Path: srcPath, InBin: false, UserId: userID}).GetTarget(); err != nil {
 		return err
 	}
 	if err = handler.SysCopy(filepath.Join(model.Root, obj.Path), filepath.Join(desPath, filepath.Base(srcPath)), obj.Perm, obj.ModTime); err != nil {
@@ -89,20 +89,20 @@ func Recover(srcPath, desPath string) error {
 	return nil
 }
 
-func Compare(srcPath, desPath string) error {
-	if err := checkFileExist(srcPath, false, false); err != nil {
+func Compare(srcPath, desPath string, userID uint) error {
+	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
 	if err := handler.SysCheckIsDir(srcPath); err == nil {
 		return errors.New("source file is not a file")
 	}
-	if err := checkFileExist(desPath, true, false); err != nil {
+	if err := checkFileExist(desPath, true, false, userID); err != nil {
 		return err
 	}
-	if err := handler.NewFileHandler(&model.Data{Path: desPath, InBin: false, Type: model.Dir}).CheckTargetExist(); err == nil {
+	if err := handler.NewFileHandler(&model.Data{Path: desPath, InBin: false, Type: model.Dir, UserId: userID}).CheckTargetExist(); err == nil {
 		return errors.New("des file is not a file")
 	}
-	if obj, err = handler.NewFileHandler(&model.Data{Path: desPath, InBin: false}).GetTarget(); err != nil {
+	if obj, err = handler.NewFileHandler(&model.Data{Path: desPath, InBin: false, UserId: userID}).GetTarget(); err != nil {
 		return err
 	}
 	if err = handler.SysCompare(srcPath, filepath.Join(model.Root, obj.Path)); err != nil {
@@ -111,20 +111,20 @@ func Compare(srcPath, desPath string) error {
 	return nil
 }
 
-func Delete(path string) error {
-	if err := checkFileExist(path, true, false); err != nil {
+func Delete(path string, userID uint) error {
+	if err := checkFileExist(path, true, false, userID); err != nil {
 		return err
 	}
 	if err := checkIsDir(path, true, false); err == nil {
 		var PID uint
-		if father, err := handler.NewFileHandler(&model.Data{BinPath: "/", InBin: true}).GetTarget(); err == nil {
+		if father, err := handler.NewFileHandler(&model.Data{BinPath: "/", InBin: true, UserId: userID}).GetTarget(); err == nil {
 			PID = father.ID
 		} else {
 			return err
 		}
 		//is dir
 		var files []model.Data
-		if files, err = handler.NewFileHandler(&model.Data{Path: path, InBin: false}).GetAllInDir(); err != nil {
+		if files, err = handler.NewFileHandler(&model.Data{Path: path, InBin: false, UserId: userID}).GetAllInDir(); err != nil {
 			return err
 		}
 		for i := range files {
@@ -141,13 +141,13 @@ func Delete(path string) error {
 			}
 		}
 	} else {
-		obj, err := handler.NewFileHandler(&model.Data{Path: path, InBin: false}).GetTarget()
+		obj, err := handler.NewFileHandler(&model.Data{Path: path, InBin: false, UserId: userID}).GetTarget()
 		if err != nil {
 			return err
 		}
 		obj.BinPath = "/" + obj.Name
 		obj.InBin = true
-		if father, err := handler.NewFileHandler(&model.Data{BinPath: "/", InBin: true}).GetTarget(); err == nil {
+		if father, err := handler.NewFileHandler(&model.Data{BinPath: "/", InBin: true, UserId: userID}).GetTarget(); err == nil {
 			obj.PID = father.ID
 		} else {
 			return err
@@ -164,8 +164,8 @@ func Delete(path string) error {
 	return nil
 }
 
-func BackupPackedData(srcPath, desPath string) error {
-	if err := checkFileExist(srcPath, false, false); err != nil {
+func BackupPackedData(srcPath, desPath string, userID uint) error {
+	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
 	var list []model.Data
@@ -181,8 +181,8 @@ func BackupPackedData(srcPath, desPath string) error {
 	return nil
 }
 
-func RecoverPackedData(srcPath, desPath string) error {
-	if err := checkFileExist(srcPath, false, false); err != nil {
+func RecoverPackedData(srcPath, desPath string, userID uint) error {
+	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
 	list, err := handler.SysRecoverPackedFile(srcPath, desPath)
@@ -195,8 +195,8 @@ func RecoverPackedData(srcPath, desPath string) error {
 	return nil
 }
 
-func Backup(srcPath, desPath string) error {
-	if err := checkFileExist(srcPath, false, false); err != nil {
+func Backup(srcPath, desPath string, userID uint) error {
+	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
 	var list []model.Data
@@ -206,10 +206,11 @@ func Backup(srcPath, desPath string) error {
 	for _, item := range list {
 		item.Path = filepath.Join(desPath, item.Path[len(filepath.Dir(srcPath)):])
 		var f *model.Data
-		if f, err = handler.NewFileHandler(&model.Data{Path: filepath.Dir(item.Path)}).GetTarget(); err != nil {
+		if f, err = handler.NewFileHandler(&model.Data{Path: filepath.Dir(item.Path), UserId: userID}).GetTarget(); err != nil {
 			return err
 		}
 		item.PID = f.ID
+		item.UserId = userID
 		if err := handler.NewFileHandler(&item).Backup(); err != nil {
 			return err
 		}
@@ -221,22 +222,22 @@ func Backup(srcPath, desPath string) error {
 	return nil
 }
 
-func BackupWithKey(srcPath, desPath, key string) error {
-	if err := checkFileExist(srcPath, false, false); err != nil {
+func BackupWithKey(srcPath, desPath, key string, userID uint) error {
+	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
 	//todo
 	return nil
 }
 
-func Clean(path string) error {
-	if err := checkFileExist(path, true, true); err != nil {
+func Clean(path string, userID uint) error {
+	if err := checkFileExist(path, true, true, userID); err != nil {
 		return err
 	}
 	if err := checkIsDir(path, true, true); err == nil {
 		//is dir
 		var files []model.Data
-		if files, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true}).GetAllInDir(); err != nil {
+		if files, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true, UserId: userID}).GetAllInDir(); err != nil {
 			return err
 		}
 		for i := range files {
@@ -245,7 +246,7 @@ func Clean(path string) error {
 			}
 		}
 	} else {
-		obj, err := handler.NewFileHandler(&model.Data{BinPath: path, InBin: true}).GetTarget()
+		obj, err := handler.NewFileHandler(&model.Data{BinPath: path, InBin: true, UserId: userID}).GetTarget()
 		if err != nil {
 			return err
 		}
@@ -260,24 +261,24 @@ func Clean(path string) error {
 	return nil
 }
 
-func Recycle(path string) error {
-	if err := checkFileExist(path, true, true); err != nil {
+func Recycle(path string, userID uint) error {
+	if err := checkFileExist(path, true, true, userID); err != nil {
 		return err
 	}
 	if err := checkIsDir(path, true, true); err == nil {
-		obj, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true}).GetTarget()
+		obj, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true, UserId: userID}).GetTarget()
 		if err != nil {
 			return err
 		}
 		var PID uint
-		if father, err := handler.NewFileHandler(&model.Data{Path: "/", InBin: false}).GetTarget(); err == nil {
+		if father, err := handler.NewFileHandler(&model.Data{Path: filepath.Dir(obj.Path), InBin: false, UserId: userID}).GetTarget(); err == nil {
 			PID = father.ID
 		} else {
 			return err
 		}
 		//is dir
 		var files []model.Data
-		if files, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true}).GetAllInDir(); err != nil {
+		if files, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true, UserId: userID}).GetAllInDir(); err != nil {
 			return err
 		}
 		for i := range files {
@@ -290,12 +291,12 @@ func Recycle(path string) error {
 			}
 		}
 	} else {
-		obj, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true}).GetTarget()
+		obj, err = handler.NewFileHandler(&model.Data{BinPath: path, InBin: true, UserId: userID}).GetTarget()
 		if err != nil {
 			return err
 		}
 		obj.InBin = false
-		if father, err := handler.NewFileHandler(&model.Data{Path: filepath.Dir(obj.Path), InBin: false}).GetTarget(); err == nil {
+		if father, err := handler.NewFileHandler(&model.Data{Path: filepath.Dir(obj.Path), InBin: false, UserId: userID}).GetTarget(); err == nil {
 			obj.PID = father.ID
 		} else {
 			return err

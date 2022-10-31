@@ -4,7 +4,6 @@ import (
 	"SE_Project/pkg/model"
 	svc "SE_Project/pkg/service"
 	"SE_Project/pkg/validator"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -16,6 +15,7 @@ var err error
 func Recover(c *gin.Context) {
 	srcPath := c.PostForm("srcPath")
 	desPath := c.PostForm("desPath")
+	UserId, _ := strconv.Atoi(c.PostForm("UserId"))
 	if err = validator.CheckNameAndPath([]string{}, []string{srcPath, desPath}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -23,7 +23,7 @@ func Recover(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.Recover(srcPath, desPath); err != nil {
+	if err = svc.Recover(srcPath, desPath, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -41,6 +41,7 @@ func Recover(c *gin.Context) {
 func Compare(c *gin.Context) {
 	srcPath := c.PostForm("srcPath")
 	desPath := c.PostForm("desPath")
+	UserId, _ := strconv.Atoi(c.PostForm("UserId"))
 	if err = validator.CheckNameAndPath([]string{}, []string{srcPath, desPath}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -48,7 +49,7 @@ func Compare(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.Compare(srcPath, desPath); err != nil {
+	if err = svc.Compare(srcPath, desPath, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -62,6 +63,7 @@ func Compare(c *gin.Context) {
 
 func Delete(c *gin.Context) {
 	path := c.Query("path")
+	UserId, _ := strconv.Atoi(c.Query("UserId"))
 	if err = validator.CheckNameAndPath([]string{}, []string{path}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -69,7 +71,7 @@ func Delete(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.Delete(path); err != nil {
+	if err = svc.Delete(path, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -86,7 +88,7 @@ func ReadDir(c *gin.Context) {
 	isRoot := c.Query("isroot") == "1"
 	ID, _ := strconv.Atoi(c.Query("ID"))
 	inBin := c.Query("inBin") == "1"
-	log.Println(path, isRoot)
+	UserId, _ := strconv.Atoi(c.Query("UserId"))
 	var file []model.Data
 	if err = validator.CheckNameAndPath([]string{}, []string{path}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -95,7 +97,7 @@ func ReadDir(c *gin.Context) {
 		})
 		return
 	}
-	if file, err = svc.ReadDir(path, &ID, isRoot, inBin); err != nil {
+	if file, err = svc.ReadDir(path, &ID, isRoot, inBin, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -112,6 +114,8 @@ func ReadDir(c *gin.Context) {
 func Backup(c *gin.Context) {
 	srcPath := c.PostForm("srcPath")
 	desPath := c.PostForm("desPath")
+	UserId, _ := strconv.Atoi(c.PostForm("UserId"))
+
 	if err = validator.CheckNameAndPath([]string{}, []string{srcPath, desPath}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -119,7 +123,7 @@ func Backup(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.Backup(srcPath, desPath); err != nil {
+	if err = svc.Backup(srcPath, desPath, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -135,6 +139,8 @@ func BackupWithKey(c *gin.Context) {
 	srcPath := c.PostForm("srcPath")
 	desPath := c.PostForm("desPath")
 	key := c.PostForm("key")
+	UserId, _ := strconv.Atoi(c.PostForm("UserId"))
+
 	if err = validator.CheckNameAndPath([]string{}, []string{srcPath, desPath}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -142,7 +148,7 @@ func BackupWithKey(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.BackupWithKey(srcPath, desPath, key); err != nil {
+	if err = svc.BackupWithKey(srcPath, desPath, key, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -156,6 +162,8 @@ func BackupWithKey(c *gin.Context) {
 
 func Clean(c *gin.Context) {
 	path := c.Query("path")
+	UserId, _ := strconv.Atoi(c.Query("UserId"))
+
 	if err = validator.CheckNameAndPath([]string{}, []string{path}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -163,7 +171,7 @@ func Clean(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.Clean(path); err != nil {
+	if err = svc.Clean(path, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -177,6 +185,8 @@ func Clean(c *gin.Context) {
 
 func Recycle(c *gin.Context) {
 	path := c.PostForm("path")
+	UserId, _ := strconv.Atoi(c.PostForm("UserId"))
+
 	if err = validator.CheckNameAndPath([]string{}, []string{path}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -184,7 +194,7 @@ func Recycle(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.Recycle(path); err != nil {
+	if err = svc.Recycle(path, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),

@@ -119,7 +119,7 @@ var data
       const srcPath = document.getElementById('srcPath').value;
       $.ajax({
         UserId:dt*1,
-        url: "/delete"+"?name="+srcName+"&path="+srcPath,
+        url: "/delete"+"?name="+srcName+"&path="+srcPath+"&UserId="+(dt*1),
         type: "DELETE",
         dataType: "json",
         success: function (data) {

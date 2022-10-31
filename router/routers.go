@@ -110,6 +110,7 @@ func SetupRouter() *gin.Engine {
 	})
 
 	r.POST("/Login", Controller.Login)
+	r.POST("/AdminLogin", Controller.AdminLogin)
 
 	r.POST("/register", Controller.Register)
 
