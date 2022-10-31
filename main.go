@@ -3,18 +3,17 @@ package main
 import (
 	"SE_Project/pkg/handler"
 	"SE_Project/pkg/model"
+	"SE_Project/pkg/service"
 	"SE_Project/router"
 	"os"
 	"os/user"
 	"path/filepath"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
 
-	initFileSys()
-	initDB()
+	//initFileSys()
+	//initDB()
 
 	r := router.SetupRouter()
 	// Listen and Server in 0.0.0.0:8080
@@ -42,11 +41,8 @@ func initDB() {
 	handler.GetDB().AutoMigrate(&model.User{})
 	handler.GetDB().AutoMigrate(&model.Data{})
 	handler.GetDB().Exec("DELETE FROM data")
+	handler.GetDB().Exec("DELETE FROM users")
 	//handler.GetDB().Raw("ALTER TABLE data ADD UNIQUE KEY(path, name);alter table data modify name varchar(256);")
-	pwd, _ := bcrypt.GenerateFromPassword([]byte("123"), bcrypt.DefaultCost)
-	handler.GetDB().Create(&model.User{UserName: "user", Password: string(pwd), UserType: model.NormalUserType})
-	pwd, _ = bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
-	handler.GetDB().Create(&model.User{UserName: "admin", Password: string(pwd), UserType: model.AdminType})
 
 	res, _ := handler.ReadAllFileAndDir(model.Root)
 	for _, x := range res {
@@ -75,4 +71,7 @@ func initDB() {
 		x.BinPath = x.Path
 		handler.GetDB().Create(&x)
 	}
+
+	service.Register("user", "123")
+	//service.Register("admin", "admin")
 }

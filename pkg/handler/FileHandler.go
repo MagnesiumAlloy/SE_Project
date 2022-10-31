@@ -43,11 +43,11 @@ func (fileHandler *FileHandler) GetTarget() (*model.Data, error) {
 func (fileHandler *FileHandler) GetAllInDir() ([]model.Data, error) {
 	var result []model.Data
 	if fileHandler.Obj.InBin {
-		if err := fileHandler.Where("bin_path LIKE ?", fileHandler.Obj.BinPath+"%").Where("in_bin", fileHandler.Obj.InBin).Find(&result).Error; err != nil {
+		if err := fileHandler.Where("bin_path LIKE ?", fileHandler.Obj.BinPath+"%").Where("in_bin", fileHandler.Obj.InBin).Where("user_id", fileHandler.Obj.UserId).Find(&result).Error; err != nil {
 			return nil, err
 		}
 	} else {
-		if err := fileHandler.Where("path LIKE ?", fileHandler.Obj.Path+"%").Where("in_bin", fileHandler.Obj.InBin).Find(&result).Error; err != nil {
+		if err := fileHandler.Where("path LIKE ?", fileHandler.Obj.Path+"%").Where("in_bin", fileHandler.Obj.InBin).Where("user_id", fileHandler.Obj.UserId).Find(&result).Error; err != nil {
 			return nil, err
 		}
 	}
@@ -64,7 +64,7 @@ func (fileHandler *FileHandler) Update() error {
 
 func (fileHandler *FileHandler) MoveToBin() error {
 	var qryRes []model.Data
-	if err := fileHandler.Where("path", fileHandler.Obj.Path).Where("in_bin", true).Find(&qryRes).Error; err == nil {
+	if err := fileHandler.Where("path", fileHandler.Obj.Path).Where("in_bin", true).Where("user_id", fileHandler.Obj.UserId).Find(&qryRes).Error; err == nil {
 		for _, obj := range qryRes {
 			if err := fileHandler.Delete(&obj).Error; err != nil {
 				return err
@@ -81,13 +81,8 @@ func (fileHandler *FileHandler) MoveToBin() error {
 func (fileHandler *FileHandler) Backup() error {
 	var res model.Data
 
-	if err := fileHandler.Where("path", fileHandler.Obj.Path).Where("in_bin", false).First(&res).Error; err != nil {
+	if err := fileHandler.Where("path", fileHandler.Obj.Path).Where("in_bin", false).Where("user_id", fileHandler.Obj.UserId).First(&res).Error; err != nil {
 		//record not found
-		var father model.Data
-		if err := fileHandler.Where("path", filepath.Dir(fileHandler.Obj.Path)).Where("in_bin", false).Find(&father).Error; err != nil {
-			return err
-		}
-		fileHandler.Obj.PID = father.ID
 		if err := fileHandler.Create(&fileHandler.Obj).Error; err != nil {
 			return err
 		}
@@ -117,7 +112,7 @@ func (fileHandler *FileHandler) Clean() error {
 
 func (fileHandler *FileHandler) Recycle() error {
 	var qryRes []model.Data
-	if err := fileHandler.Where("path", fileHandler.Obj.Path).Where("in_bin", false).Find(&qryRes).Error; err == nil && len(qryRes) > 0 {
+	if err := fileHandler.Where("path", fileHandler.Obj.Path).Where("in_bin", false).Where("user_id", fileHandler.Obj.UserId).Find(&qryRes).Error; err == nil && len(qryRes) > 0 {
 		for _, obj := range qryRes {
 			if err := fileHandler.Delete(&obj).Error; err != nil {
 				return err

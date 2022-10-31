@@ -12,7 +12,7 @@
             $.ajax({
                 //几个参数需要注意一下
                 dataType: "json",
-                url: "/Login" ,
+                url: "/AdminLogin" ,
                 type: "POST", 
                 data: $('#form1').serialize(),
                 success: function (result) {
@@ -39,10 +39,7 @@
             <img class="bgc" src="static/img/213.jpg" alt="">
             <div class="submit">
                 <span class="form_title">管理员登录</span>
-                <div class="form_input">
-                    <span>账号：</span>
-                    <input class="inputs" type="text" name="username" placeholder="账号">
-                </div>
+
                 <div class="form_input">
                     <span>密码：</span>
                     <input class="inputs" type="password" name="password" placeholder="密码">

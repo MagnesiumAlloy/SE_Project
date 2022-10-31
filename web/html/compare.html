@@ -41,9 +41,12 @@ var data
           console.log(data);
           if (data.status == 200) {
             alert("两文件相同")
-          } else {
+          } 
+        },
+        error:function(data){
+          
             alert("两文件不同");
-          }
+          
         }
       })
     };
@@ -91,6 +94,7 @@ var data
         type: "GET",
         dataType: "json",
         data: {
+          UserId :dt*1,
           path: path,
           ID: ID,
           isroot: isroot,

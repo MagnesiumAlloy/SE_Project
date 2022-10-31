@@ -18,7 +18,7 @@
                 success: function (result) {
                     console.log(result);//打印服务端返回的数据(调试用)
                     if (result.status == 200) {
-                        localStorage.setItem("USER",document.getElementById('user').value);
+                        localStorage.setItem("USER",result.UserId);
                        location.href="/zhuye";
                     } else {
                         alert("错误");
