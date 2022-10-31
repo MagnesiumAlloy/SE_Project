@@ -4,14 +4,15 @@ const (
 	AdminType      = "Admin"
 	NormalUserType = "Normal"
 	//file
-	Document      = "doc"
-	Image         = "image"
-	Audio         = "audio"
-	Video         = "video"
-	Zip           = "zip"
-	Dir           = "dir"
-	file          = "file"
-	OtherFileType = "other"
+	Document        = "doc"
+	Image           = "image"
+	Audio           = "audio"
+	Video           = "video"
+	Zip             = "zip"
+	Dir             = "dir"
+	file            = "file"
+	OtherFileType   = "other"
+	CloudBackupType = ".cloud"
 )
 
 var Root string

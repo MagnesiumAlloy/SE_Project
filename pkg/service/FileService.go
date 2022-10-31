@@ -76,18 +76,6 @@ func checkFileExist(path string, isRoot bool, inBin bool, userID uint) error {
 	}
 	return nil
 }
-func Recover(srcPath, desPath string, userID uint) error {
-	if err = checkFileExist(srcPath, true, false, userID); err != nil {
-		return err
-	}
-	if obj, err = handler.NewFileHandler(&model.Data{Path: srcPath, InBin: false, UserId: userID}).GetTarget(); err != nil {
-		return err
-	}
-	if err = handler.SysCopy(filepath.Join(model.Root, obj.Path), filepath.Join(desPath, filepath.Base(srcPath)), obj.Perm, obj.ModTime); err != nil {
-		return err
-	}
-	return nil
-}
 
 func Compare(srcPath, desPath string, userID uint) error {
 	if err := checkFileExist(srcPath, false, false, userID); err != nil {
@@ -195,7 +183,7 @@ func RecoverPackedData(srcPath, desPath string, userID uint) error {
 	return nil
 }
 
-func Backup(srcPath, desPath string, userID uint) error {
+func BackupData(srcPath, desPath string, userID uint) error {
 	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
@@ -222,11 +210,51 @@ func Backup(srcPath, desPath string, userID uint) error {
 	return nil
 }
 
-func BackupWithKey(srcPath, desPath, key string, userID uint) error {
+func RecoverData(srcPath, desPath string, userID uint) error {
+	if err = checkFileExist(srcPath, true, false, userID); err != nil {
+		return err
+	}
+	if obj, err = handler.NewFileHandler(&model.Data{Path: srcPath, InBin: false, UserId: userID}).GetTarget(); err != nil {
+		return err
+	}
+	if err = handler.SysCopy(filepath.Join(model.Root, obj.Path), filepath.Join(desPath, filepath.Base(srcPath)), obj.Perm, obj.ModTime); err != nil {
+		return err
+	}
+	return nil
+}
+func BackupWithKey(srcPath, key string, userID uint) error {
 	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
 	//todo
+	return nil
+}
+
+func Backup(srcPath, desPath, key string, userID uint, pack bool, encrypt bool) error {
+	if pack {
+		path := filepath.Join(desPath, filepath.Dir(srcPath)) + model.CloudBackupType
+		if err := BackupPackedData(srcPath, path, userID); err != nil {
+			return err
+		}
+		if encrypt {
+			if err := BackupWithKey(path, key, userID); err != nil {
+				return err
+			}
+		}
+
+		//sql
+		obj, err = handler.SysReadFileInfo(path)
+		if err != nil {
+			return err
+		}
+		if err := handler.NewFileHandler(obj).Backup(); err != nil {
+			return err
+		}
+	} else {
+		if err := BackupData(srcPath, desPath, userID); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
