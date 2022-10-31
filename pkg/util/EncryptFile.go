@@ -1,5 +1,5 @@
 package util
 
-func EncryptFile(path string) error {
-
+func EncryptFile(path string, pwd string) error {
+	return nil
 }
