@@ -61,6 +61,7 @@ var data
       const srcName = document.getElementById('srcName').value;
       const srcPath = document.getElementById('srcPath').value;
       const ID      = document.getElementById('tmpId').value
+      const pwd      = document.getElementById('pwd').value
       $.ajax({
         url: "/recover",
         type: "POST",
@@ -68,7 +69,8 @@ var data
           UserId:dt*1,
           srcPath:srcPath,
           desPath: desPath,
-          ID: ID
+          ID: ID,
+          password:pwd
         },
         datatype: "json",
         success: function (res) {
@@ -218,6 +220,7 @@ var data
           + "<td hidden=true>" + arr[i].Type + "</td>"
           + "<td hidden=true>" + rootID + "</td>"
           + "<td hidden=true>" + i + "</td>"
+          + "<td hidden=true>" + arr[i].pw + "</td>"
           + "</tr>";
       }
       document.getElementById("content").innerHTML = out;
@@ -251,15 +254,24 @@ var data
       let filepath = node.parentElement.parentElement.children[4].innerHTML;
       let rootid   = node.parentElement.parentElement.children[6].innerHTML;
       let id       = node.parentElement.parentElement.children[7].innerHTML;
+      let pw       = node.parentElement.parentElement.children[8].innerHTML;
       //alert(id,filepath,filetype);
         if(isroot){
+          if(pw){
+            document.getElementById('divShow').style.display = 'block';
+          } else {
+            document.getElementById('divShow').style.display = 'none';
+          }
           document.getElementById('tmpId').value=data[id].ID;
           document.getElementById('srcName').value=filename;
           document.getElementById('srcPath').value=filepath;
         } else {
           document.getElementById('desPath').value=filepath;
-       
         }
+    }
+
+    function test() {
+      document.getElementById('divShow').style.display = 'block';
     }
 
   </script>
@@ -456,6 +468,7 @@ var data
       <p>&ensp;当前文件夹: <input class="page" type="text" size="20" name="pathfile" id="tmpPath"></p>
       <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpRoot"></p>
       <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpId"></p>
+      <div id="divShow" style="display: none;" >请输入密码：<input class="page" type="password" size="20" name="password" id="pwd"></div>
 
 
       <input class="page" type="button" name="button" value="恢复" onclick="recover()">

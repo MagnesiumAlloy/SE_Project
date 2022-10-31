@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-	initFileSys()
+	//initFileSys()
 	//initDB()
 
 	r := router.SetupRouter()
