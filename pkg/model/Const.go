@@ -13,6 +13,7 @@ const (
 	file            = "file"
 	OtherFileType   = "other"
 	CloudBackupType = ".cloud"
+	CloudTempType   = ".ctmp"
 )
 
 var Root string

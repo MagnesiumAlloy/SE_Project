@@ -32,3 +32,11 @@ func PrefixReplace(oldpre, newpre, s string) (string, error) {
 	}
 	return newpre + s[len(oldpre):], nil
 }
+
+func PasswordPadding(pwd string) []byte {
+	res := []byte(pwd)
+	for i := 0; i < 16-len(pwd); i++ {
+		res = append(res, byte(pwd[i%len(pwd)]+100))
+	}
+	return res
+}

@@ -123,7 +123,7 @@ func Backup(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.Backup(srcPath, desPath, uint(UserId), pack); err != nil {
+	if err = svc.Backup(srcPath, desPath, "", uint(UserId), pack, false); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -139,6 +139,7 @@ func BackupWithKey(c *gin.Context) {
 	srcPath := c.PostForm("srcPath")
 	desPath := c.PostForm("desPath")
 	key := c.PostForm("key")
+	pack := c.PostForm("pack") == "1"
 	UserId, _ := strconv.Atoi(c.PostForm("UserId"))
 
 	if err = validator.CheckNameAndPath([]string{}, []string{srcPath, desPath}); err != nil {
@@ -148,7 +149,7 @@ func BackupWithKey(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.BackupWithKey(srcPath, desPath, key, uint(UserId)); err != nil {
+	if err = svc.Backup(srcPath, desPath, key, uint(UserId), pack, true); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),

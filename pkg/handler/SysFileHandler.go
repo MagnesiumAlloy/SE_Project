@@ -2,6 +2,7 @@ package handler
 
 import (
 	"SE_Project/pkg/model"
+	"SE_Project/pkg/util"
 	"bufio"
 	"crypto/md5"
 	"encoding/hex"
@@ -397,4 +398,98 @@ func SysRecoverPackedFile(path, desPath string) ([]model.Data, error) {
 		}
 	}
 	return list, nil
+}
+
+func SysEncryptFile(path, pkey string) error {
+	key := util.PasswordPadding(pkey)
+	srcPath := path + model.CloudTempType
+	if err := SysMove(path, srcPath); err != nil {
+		return err
+	}
+	file, err := os.Open(srcPath)
+	if err != nil {
+		return err
+	}
+	var inputLen uint64 = 0
+	var i uint64
+	r := bufio.NewReader(file)
+	p := make([]byte, 4096)
+	info, _ := file.Stat()
+	input := make([]byte, info.Size())
+	output := make([]byte, info.Size())
+	for {
+		len, err := r.Read(p)
+		for i = 0; i < uint64(len); i++ {
+			input[inputLen+i] = p[i]
+		}
+		inputLen += uint64(len)
+		if err != nil {
+			break
+		}
+	}
+
+	util.AES128_CBC_Encrypt(input, output, key, inputLen)
+
+	wfile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	w := bufio.NewWriter(wfile)
+	for i = 0; i < inputLen/4096; i++ {
+		c := 4096 * i
+		for j := 0; j > 4096; j++ {
+			w.WriteByte(output[c+uint64(j)])
+		}
+		w.Flush()
+	}
+	for i = inputLen / 4096 * 4096; i < inputLen; i++ {
+		w.WriteByte(output[i])
+	}
+	w.Flush()
+
+	return os.Remove(srcPath)
+}
+
+func SysDecryptFile(srcPath, desPath, pkey string) error {
+	var i uint64
+	var inputLen uint64 = 0
+	key := util.PasswordPadding(pkey)
+	rfile, err := os.Open(srcPath)
+	if err != nil {
+		return err
+	}
+	info, _ := rfile.Stat()
+	r := bufio.NewReader(rfile)
+	input := make([]byte, info.Size())
+	output := make([]byte, info.Size())
+	p := make([]byte, 4096)
+	for {
+		len, err := r.Read(p)
+		for i = 0; i < uint64(len); i++ {
+			input[inputLen+i] = p[i]
+		}
+		inputLen += uint64(len)
+		if err != nil {
+			break
+		}
+	}
+	util.AES128_CBC_Decrypt(input, output, key, inputLen)
+	wfile, err := os.OpenFile(desPath, os.O_WRONLY|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	w := bufio.NewWriter(wfile)
+	for i = 0; i < inputLen/4096; i++ {
+		c := 4096 * i
+		for j := 0; j > 4096; j++ {
+			w.WriteByte(output[c+uint64(j)])
+		}
+		w.Flush()
+	}
+	for i = inputLen / 4096 * 4096; i < inputLen; i++ {
+		w.WriteByte(output[i])
+	}
+	w.Flush()
+
+	return nil
 }

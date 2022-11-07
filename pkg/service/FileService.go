@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var err error
@@ -152,10 +154,7 @@ func Delete(path string, userID uint) error {
 	return nil
 }
 
-func BackupPackedData(srcPath, desPath string, userID uint) error {
-	if err := checkFileExist(srcPath, false, false, userID); err != nil {
-		return err
-	}
+func BackupPackedData(srcPath, desPath string) error {
 	var list []model.Data
 	if list, err = handler.ReadAllFileAndDir(srcPath); err != nil {
 		return err
@@ -164,16 +163,14 @@ func BackupPackedData(srcPath, desPath string, userID uint) error {
 		list[i].Path = item.Path[len(filepath.Dir(srcPath)):]
 		println(item.Type, item.Path, item.Size, item.ModTime.String())
 	}
-	obj, err = handler.SysWritePackedFile(filepath.Dir(srcPath), list, desPath)
-	print(obj)
+	if obj, err = handler.SysWritePackedFile(filepath.Dir(srcPath), list, filepath.Join(model.Root, desPath)); err != nil {
+		return err
+	}
 	return nil
 }
 
-func RecoverPackedData(srcPath, desPath string, userID uint) error {
-	if err := checkFileExist(srcPath, false, false, userID); err != nil {
-		return err
-	}
-	list, err := handler.SysRecoverPackedFile(srcPath, desPath)
+func RecoverPackedData(srcPath, desPath string) error {
+	list, err := handler.SysRecoverPackedFile(filepath.Join(model.Root, srcPath), desPath)
 	if err != nil {
 		return err
 	}
@@ -184,9 +181,7 @@ func RecoverPackedData(srcPath, desPath string, userID uint) error {
 }
 
 func BackupData(srcPath, desPath string, userID uint) error {
-	if err := checkFileExist(srcPath, false, false, userID); err != nil {
-		return err
-	}
+
 	var list []model.Data
 	if list, err = handler.ReadAllFileAndDir(srcPath); err != nil {
 		return err
@@ -210,42 +205,40 @@ func BackupData(srcPath, desPath string, userID uint) error {
 	return nil
 }
 
-func RecoverData(srcPath, desPath string, userID uint) error {
-	if err = checkFileExist(srcPath, true, false, userID); err != nil {
-		return err
-	}
-	if obj, err = handler.NewFileHandler(&model.Data{Path: srcPath, InBin: false, UserId: userID}).GetTarget(); err != nil {
-		return err
-	}
+func RecoverData(srcPath, desPath string, obj *model.Data) error {
 	if err = handler.SysCopy(filepath.Join(model.Root, obj.Path), filepath.Join(desPath, filepath.Base(srcPath)), obj.Perm, obj.ModTime); err != nil {
 		return err
 	}
 	return nil
 }
-func BackupWithKey(srcPath, key string, userID uint) error {
+
+func Backup(srcPath, desPath, key string, userID uint, pack bool, encrypt bool) error {
 	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
-	//todo
-	return nil
-}
-
-func Backup(srcPath, desPath, key string, userID uint, pack bool, encrypt bool) error {
 	if pack {
 		path := filepath.Join(desPath, filepath.Dir(srcPath)) + model.CloudBackupType
-		if err := BackupPackedData(srcPath, path, userID); err != nil {
+		if err := BackupPackedData(srcPath, path); err != nil {
 			return err
 		}
 		if encrypt {
-			if err := BackupWithKey(path, key, userID); err != nil {
+			if err := handler.SysEncryptFile(filepath.Join(model.Root, path), key); err != nil {
 				return err
 			}
 		}
 
 		//sql
-		obj, err = handler.SysReadFileInfo(path)
+		obj, err = handler.SysReadFileInfo(filepath.Join(model.Root, path))
 		if err != nil {
 			return err
+		}
+		if encrypt {
+			var encryptKey []byte
+			if encryptKey, err = bcrypt.GenerateFromPassword([]byte(key), bcrypt.DefaultCost); err != nil {
+				return err
+			}
+			obj.Key = string(encryptKey)
+			obj.Encrypted = true
 		}
 		if err := handler.NewFileHandler(obj).Backup(); err != nil {
 			return err
@@ -256,6 +249,30 @@ func Backup(srcPath, desPath, key string, userID uint, pack bool, encrypt bool) 
 		}
 	}
 	return nil
+}
+func Recover(srcPath, desPath, key string, userID uint) error {
+	if err = checkFileExist(srcPath, true, false, userID); err != nil {
+		return err
+	}
+	if obj, err = handler.NewFileHandler(&model.Data{Path: srcPath, InBin: false, UserId: userID}).GetTarget(); err != nil {
+		return err
+	}
+	if obj.Encrypted {
+		if err := bcrypt.CompareHashAndPassword([]byte(obj.Key), []byte(key)); err != nil {
+			return err
+		}
+		if err := handler.SysDecryptFile(filepath.Join(model.Root, srcPath), filepath.Join(model.Root, srcPath)+model.CloudTempType, key); err != nil {
+			return err
+		}
+		if err := RecoverPackedData(filepath.Join(model.Root, srcPath)+model.CloudTempType, desPath); err != nil {
+			return err
+		}
+		return handler.SysClean(filepath.Join(model.Root, srcPath) + model.CloudTempType)
+	}
+	if filepath.Ext(srcPath) == model.CloudBackupType {
+		return RecoverPackedData(srcPath, desPath)
+	}
+	return RecoverData(srcPath, desPath, obj)
 }
 
 func Clean(path string, userID uint) error {
