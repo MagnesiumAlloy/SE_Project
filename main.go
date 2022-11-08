@@ -3,7 +3,6 @@ package main
 import (
 	"SE_Project/pkg/handler"
 	"SE_Project/pkg/model"
-	"SE_Project/pkg/service"
 	"SE_Project/router"
 	"os"
 	"os/user"
@@ -12,8 +11,8 @@ import (
 
 func main() {
 
-	//initFileSys()
-	//initDB()
+	initFileSys()
+	initDB()
 
 	r := router.SetupRouter()
 	// Listen and Server in 0.0.0.0:8080
@@ -26,6 +25,7 @@ func initFileSys() {
 	model.Bin = user.HomeDir + "/Cloud_Bin"
 	model.Root = user.HomeDir + "/Cloud_Backup"
 	//create if not exist
+
 	if err := handler.SysCheckFileExist(model.Bin); err != nil {
 		os.Mkdir(model.Bin, os.ModePerm)
 	}
@@ -72,6 +72,6 @@ func initDB() {
 		handler.GetDB().Create(&x)
 	}
 
-	service.Register("user", "123")
+	//service.Register("user", "123")
 	//service.Register("admin", "admin")
 }

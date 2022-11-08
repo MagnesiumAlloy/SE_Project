@@ -17,6 +17,16 @@ import (
 
 var err error
 
+func SysNewUserDir(userID uint) error {
+	if err := os.Mkdir(filepath.Join(model.Root, fmt.Sprint(userID)), os.ModePerm); err != nil {
+		return err
+	}
+	if err := os.Mkdir(filepath.Join(model.Bin, fmt.Sprint(userID)), os.ModePerm); err != nil {
+		return err
+	}
+	return nil
+}
+
 func SysCheckIsDir(path string) error {
 	folderinfo, err := os.Stat(path)
 	if err != nil {
@@ -416,7 +426,8 @@ func SysEncryptFile(path, pkey string) error {
 	p := make([]byte, 4096)
 	info, _ := file.Stat()
 	input := make([]byte, info.Size())
-	output := make([]byte, info.Size())
+	leng := len(input)
+	output := make([]byte, (leng+16)/16*16)
 	for {
 		len, err := r.Read(p)
 		for i = 0; i < uint64(len); i++ {
@@ -429,20 +440,20 @@ func SysEncryptFile(path, pkey string) error {
 	}
 
 	util.AES128_CBC_Encrypt(input, output, key, inputLen)
-
+	outputLen := uint64(len(output))
 	wfile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	w := bufio.NewWriter(wfile)
-	for i = 0; i < inputLen/4096; i++ {
+	for i = 0; i < outputLen/4096; i++ {
 		c := 4096 * i
-		for j := 0; j > 4096; j++ {
+		for j := 0; j < 4096; j++ {
 			w.WriteByte(output[c+uint64(j)])
 		}
 		w.Flush()
 	}
-	for i = inputLen / 4096 * 4096; i < inputLen; i++ {
+	for i = outputLen / 4096 * 4096; i < outputLen; i++ {
 		w.WriteByte(output[i])
 	}
 	w.Flush()
@@ -473,20 +484,20 @@ func SysDecryptFile(srcPath, desPath, pkey string) error {
 			break
 		}
 	}
-	util.AES128_CBC_Decrypt(input, output, key, inputLen)
+	outputLen := util.AES128_CBC_Decrypt(input, output, key, inputLen)
 	wfile, err := os.OpenFile(desPath, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	w := bufio.NewWriter(wfile)
-	for i = 0; i < inputLen/4096; i++ {
+	for i = 0; i < outputLen/4096; i++ {
 		c := 4096 * i
-		for j := 0; j > 4096; j++ {
+		for j := 0; j < 4096; j++ {
 			w.WriteByte(output[c+uint64(j)])
 		}
 		w.Flush()
 	}
-	for i = inputLen / 4096 * 4096; i < inputLen; i++ {
+	for i = outputLen / 4096 * 4096; i < outputLen; i++ {
 		w.WriteByte(output[i])
 	}
 	w.Flush()

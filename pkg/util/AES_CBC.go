@@ -1,6 +1,9 @@
 package util
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
 var (
 	AesSBox = [16 * 16]byte{
@@ -97,12 +100,23 @@ func GF0E(x byte) byte {
 	return GF02(x) ^ GF02(GF02(x)) ^ GF02(GF02(GF02(x)))
 }
 
+func outputstate(s [4][4]byte) {
+	for i := 0; i < 4; i++ {
+		for j := 0; j < 4; j++ {
+			fmt.Printf(fmt.Sprint(s[i][j]), ' ')
+		}
+		fmt.Println(' ')
+	}
+	fmt.Println()
+}
+
 func cipher(input, output []byte, key [11][4][4]byte) {
 	var i, j, round int
 	var tmp, state [4][4]byte
 	for i = 0; i < 16; i++ {
 		state[i%4][i/4] = input[i] ^ key[0][i%4][i/4]
 	}
+	outputstate(state)
 	for round = 1; round <= 10; round++ {
 		for j = 0; j < 4; j++ {
 			for i = 0; i < 4; i++ {
@@ -110,7 +124,7 @@ func cipher(input, output []byte, key [11][4][4]byte) {
 				tmp[i][j] = state[i][j]
 			}
 		}
-		for i = 1; i < 4; i++ {
+		for i = 0; i < 4; i++ {
 			for j = 0; j < 4; j++ {
 				state[i][j] = tmp[i][(j+i)%4]
 			}
@@ -122,7 +136,7 @@ func cipher(input, output []byte, key [11][4][4]byte) {
 				1123
 				3112
 			*/
-			for i = 1; i < 4; i++ {
+			for i = 0; i < 4; i++ {
 				for j = 0; j < 4; j++ {
 					tmp[i][j] = state[i][j]
 				}
@@ -139,6 +153,7 @@ func cipher(input, output []byte, key [11][4][4]byte) {
 				state[i][j] ^= key[round][i][j]
 			}
 		}
+		outputstate(state)
 	}
 	for i = 0; i < 16; i++ {
 		output[i] = state[i%4][i/4]
@@ -152,8 +167,9 @@ func invCipher(input, output []byte, key [11][4][4]byte) {
 		state[i%4][i/4] = input[i] ^ key[10][i%4][i/4]
 		tmp[i%4][i/4] = state[i%4][i/4]
 	}
-	for round = 10; round >= 1; round++ {
-		for i = 1; i < 4; i++ {
+	outputstate(state)
+	for round = 10; round >= 1; round-- {
+		for i = 0; i < 4; i++ {
 			for j = 0; j < 4; j++ {
 				state[i][j] = tmp[i][(j-i+4)%4]
 			}
@@ -168,11 +184,13 @@ func invCipher(input, output []byte, key [11][4][4]byte) {
 				state[i][j] ^= key[round-1][i][j]
 			}
 		}
+		outputstate(state)
+
 		if round > 1 {
 			/*
 				EBD9
 			*/
-			for i = 1; i < 4; i++ {
+			for i = 0; i < 4; i++ {
 				for j = 0; j < 4; j++ {
 					tmp[i][j] = state[i][j]
 				}
@@ -182,7 +200,7 @@ func invCipher(input, output []byte, key [11][4][4]byte) {
 					state[i][j] = GF0E(tmp[i][j]) ^ GF0B(tmp[(i+1)%4][j]) ^ GF0D(tmp[(i+2)%4][j]) ^ GF09(tmp[(i+3)%4][j])
 				}
 			}
-			for i = 1; i < 4; i++ {
+			for i = 0; i < 4; i++ {
 				for j = 0; j < 4; j++ {
 					tmp[i][j] = state[i][j]
 				}
@@ -195,8 +213,9 @@ func invCipher(input, output []byte, key [11][4][4]byte) {
 	}
 }
 
-func keyExpand(pkey []byte, key [11][4][4]byte) {
+func keyExpand(pkey []byte) (key [11][4][4]byte) {
 	var i, j, round int
+
 	for j = 0; j < 4; j++ {
 		for i = 0; i < 4; i++ {
 			key[0][i][j] = pkey[j*4+i]
@@ -210,12 +229,12 @@ func keyExpand(pkey []byte, key [11][4][4]byte) {
 			key[round][i][3] = key[round][i][2] ^ key[round-1][i][3]
 		}
 	}
+	return key
 }
 
 func AES128_CBC_Encrypt(input, output []byte, pkey []byte, inputLen uint64) {
 	var ptr, i uint64
-	var key [11][4][4]byte
-	keyExpand(pkey, key)
+	key := keyExpand(pkey)
 	iv := make([]byte, 16)
 	for i = 0; i < 16; i++ {
 		iv[i] = 0
@@ -226,6 +245,8 @@ func AES128_CBC_Encrypt(input, output []byte, pkey []byte, inputLen uint64) {
 			input[l+i] ^= iv[i]
 		}
 		cipher(input[l:l+16], output[l:l+16], key)
+		tmp := make([]byte, 16)
+		invCipher(output[l:l+16], tmp, key)
 		for i = 0; i < 16; i++ {
 			iv[i] = output[l+i]
 		}
@@ -238,23 +259,22 @@ func AES128_CBC_Encrypt(input, output []byte, pkey []byte, inputLen uint64) {
 
 }
 
-func AES128_CBC_Decrypt(input, output []byte, pkey []byte, inputLen uint64) {
+func AES128_CBC_Decrypt(input, output []byte, pkey []byte, inputLen uint64) uint64 {
 	var ptr, i uint64
-	var key [11][4][4]byte
-	keyExpand(pkey, key)
+	key := keyExpand(pkey)
 	iv := make([]byte, 16)
 	for i = 0; i < 16; i++ {
 		iv[i] = 0
 	}
-	for ptr = 0; ptr < inputLen/16; ptr++ {
+	for ptr = 0; ptr < (inputLen-1)/16; ptr++ {
 		l := ptr * 16
 		invCipher(input[l:l+16], output[l:l+16], key)
 		for i = 0; i < 16; i++ {
 			output[l+i] ^= iv[i]
-			iv[i] = output[l+i]
+			iv[i] = input[l+i]
 		}
 	}
-	var lastBlock []byte
+	lastBlock := make([]byte, 16)
 	invCipher(input[inputLen-16:], lastBlock, key)
 	for i = 0; i < 16; i++ {
 		lastBlock[i] ^= iv[i]
@@ -263,4 +283,5 @@ func AES128_CBC_Decrypt(input, output []byte, pkey []byte, inputLen uint64) {
 	for i = 0; i < uint64(len(lastBlock)); i++ {
 		output[ptr*16+i] = lastBlock[i]
 	}
+	return inputLen - 16 + uint64(len(lastBlock))
 }

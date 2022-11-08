@@ -14,10 +14,8 @@
 <script>
  var dt=localStorage.getItem("USER");
     function Clean(){
-        const srcName = document.getElementById('srcName').value;
-        const srcPath = document.getElementById('srcPath').value;
         $.ajax({
-            url: "/clean?name="+srcName+"&path="+srcPath,
+            url: "/clean?path="+document.getElementById('srcPath').value+"&ID="+document.getElementById('tmpId').value,
             type:"DELETE",
             dataType:"json",
             success:function (data) {
@@ -179,7 +177,7 @@ var data
           + "<td onclick=" + "explore(this,"+isroot+","+inBin+")"+">" + arr[i].Name + "</td>"
           + "<td>" + rTime(arr[i].ModTime) + "</td>"
           + "<td>" + file1(arr[i].Size) + unit[aa] + "</td>"
-          + "<td hidden=true>" + arr[i].Path + "</td>"
+          + "<td hidden=true>" + arr[i].BinPath + "</td>"
           + "<td hidden=true>" + arr[i].Type + "</td>"
           + "<td hidden=true>" + rootID + "</td>"
           + "<td hidden=true>" + i + "</td>"
@@ -199,7 +197,7 @@ var data
       } else {
           document.getElementById('tmpId').value=data[id].ID;
           document.getElementById('srcName').value=data[id].Name;
-          document.getElementById('srcPath').value=data[id].Path;
+          document.getElementById('srcPath').value=data[id].BinPath;
       }
     }
 

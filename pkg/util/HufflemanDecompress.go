@@ -1,6 +1,7 @@
 package util
 
 import (
+	"SE_Project/pkg/model"
 	"bufio"
 	"os"
 	"strconv"
@@ -98,7 +99,7 @@ func buildTrie(mp map[int]string) {
 }
 
 func decode(path string) error {
-	desPath := path + "rec"
+	desPath := path + model.CloudTempType
 	wfile, err := os.OpenFile(desPath, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return err
@@ -142,15 +143,15 @@ func decode(path string) error {
 	return nil
 }
 
-func Decompress(path string) (string, error) {
+func Decompress(path string) error {
 
 	mp, _, err := readRawData(path)
 	if err != nil {
-		return "", err
+		return err
 	}
 	buildTrie(mp)
 	if err := decode(path); err != nil {
-		return "", err
+		return err
 	}
-	return "", nil
+	return nil
 }

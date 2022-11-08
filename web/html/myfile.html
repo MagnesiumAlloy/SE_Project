@@ -70,7 +70,7 @@ var data
           srcPath:srcPath,
           desPath: desPath,
           ID: ID,
-          password:pwd
+          key:pwd
         },
         datatype: "json",
         success: function (res) {
@@ -121,7 +121,7 @@ var data
       const srcPath = document.getElementById('srcPath').value;
       $.ajax({
         UserId:dt*1,
-        url: "/delete"+"?name="+srcName+"&path="+srcPath+"&UserId="+(dt*1),
+        url: "/delete"+"?name="+srcName+"&path="+srcPath+"&UserId="+(dt*1)+"&ID="+document.getElementById('tmpId').value,
         type: "DELETE",
         dataType: "json",
         success: function (data) {
@@ -212,7 +212,7 @@ var data
         }
        
         out += "<tr>"
-          +"<td><button type=button class= "+"hiddenbox "+"onclick="+"select(this,"+isroot+","+inBin+")"+">选择</button></td>"
+          +"<td><button type=button class= "+"hiddenbox "+"onclick="+"select(this.parentElement.parentElement,"+isroot+","+inBin+")"+">选择</button></td>"
           + "<td onclick=" + "explore(this,"+isroot+","+inBin+")"+">" + arr[i].Name + "</td>"
           + "<td>" + rTime(arr[i].ModTime) + "</td>"
           + "<td>" + file1(arr[i].Size) + unit[aa] + "</td>"
@@ -220,7 +220,7 @@ var data
           + "<td hidden=true>" + arr[i].Type + "</td>"
           + "<td hidden=true>" + rootID + "</td>"
           + "<td hidden=true>" + i + "</td>"
-          + "<td hidden=true>" + arr[i].pw + "</td>"
+          + "<td hidden=true>" + arr[i].Encrypted + "</td>"
           + "</tr>";
       }
       document.getElementById("content").innerHTML = out;
@@ -235,13 +235,7 @@ var data
         //更进一步
         ReadDirWithPush(isroot,data[id].ID,data[id].Path,inBin);
       } else {
-        if(isroot){
-          document.getElementById('tmpId').value=data[id].ID;
-          document.getElementById('srcName').value=data[id].Name;
-          document.getElementById('srcPath').value=data[id].Path;
-        } else {
-          document.getElementById('desPath').value=data[id].Path;
-        }
+        select(obj.parentElement,isroot,inBin)
         
       }
     }
@@ -249,15 +243,15 @@ var data
 
     function select(obj,isroot,inBin) {
       let node = obj; //鼠标点击处
-      let filename = node.parentElement.parentElement.children[1].innerHTML; //文件名 
-      let filetype = node.parentElement.parentElement.children[5].innerHTML; //文件类型
-      let filepath = node.parentElement.parentElement.children[4].innerHTML; //文件路径
-      let rootid   = node.parentElement.parentElement.children[6].innerHTML; //父亲节点ID
-      let id       = node.parentElement.parentElement.children[7].innerHTML; //文件ID
-      let pw       = node.parentElement.parentElement.children[8].innerHTML; //备份密码
+      let filename = node.children[1].innerHTML; //文件名 
+      let filetype = node.children[5].innerHTML; //文件类型
+      let filepath = node.children[4].innerHTML; //文件路径
+      let rootid   = node.children[6].innerHTML; //父亲节点ID
+      let id       = node.children[7].innerHTML; //文件ID
+      let pw       = node.children[8].innerHTML; //备份密码
       //alert(id,filepath,filetype);
         if(isroot){ //是否是硬盘文件
-          if(pw){
+          if(pw=="true"){
             document.getElementById('divShow').style.display = 'block'; //显示密码框
           } else {
             document.getElementById('divShow').style.display = 'none'; //不显示密码框

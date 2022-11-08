@@ -2,6 +2,8 @@ package handler
 
 import (
 	"SE_Project/pkg/model"
+	"fmt"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -42,21 +44,27 @@ func (userHandler *UserHandler) Register() error {
 	if err := userHandler.Create(userHandler.User).Error; err != nil {
 		return err
 	}
-	return userHandler.NewUserInit()
-}
-
-func (userHandler *UserHandler) NewUserInit() error {
-	var obj *model.Data
-	if obj, err = NewFileHandler(&model.Data{}).GetTarget(); err != nil {
+	if err := userHandler.NewUserInit(userHandler.User.ID); err != nil {
 		return err
 	}
-	obj.UserId = userHandler.User.ID
-	obj.ID = 0
+	if err := SysNewUserDir(userHandler.User.ID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (userHandler *UserHandler) NewUserInit(userID uint) error {
+	obj := &model.Data{
+		Name:    fmt.Sprint(userID),
+		Path:    "/" + fmt.Sprint(userID),
+		Type:    model.Dir,
+		UserId:  userID,
+		ModTime: time.Now(),
+	}
 	if err := NewFileHandler(&model.Data{}).Create(obj).Error; err != nil {
 		return err
 	}
-	obj.Path = ""
-	obj.BinPath = "/"
+	obj.BinPath = obj.Path
 	obj.InBin = true
 	obj.ID = 0
 	if err := NewFileHandler(&model.Data{}).Create(obj).Error; err != nil {

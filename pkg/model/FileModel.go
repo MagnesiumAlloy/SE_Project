@@ -20,5 +20,5 @@ type Data struct {
 	ModTime   time.Time `form:"modtime"`
 	Perm      uint32    `form:"perm"`
 	Encrypted bool      `form:"encrypt"`
-	Key       string    `form"key"`
+	Key       string    `form:"key"`
 }

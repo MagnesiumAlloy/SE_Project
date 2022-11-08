@@ -38,7 +38,7 @@ func Register(userName string, password string) error {
 	var err error
 	//check if exist
 	if _, err = handler.NewUserHandler(&model.User{UserName: userName}).CheckUserExist(); err == nil {
-		return errors.New("username already exists!")
+		return errors.New("username already exists")
 	}
 	if salted_pwd, err = bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost); err != nil {
 		return err

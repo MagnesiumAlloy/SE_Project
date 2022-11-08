@@ -1,10 +1,10 @@
 package util
 
 import (
+	"SE_Project/pkg/model"
 	"bufio"
 	"container/heap"
 	"fmt"
-	"io"
 	"os"
 )
 
@@ -82,7 +82,7 @@ func getCnt(path string, size uint64) ([]int, error) {
 	return cnt, nil
 }
 
-func dfs(u int, s string, mp map[int]string, nd []node) {
+func dfs(u int, s string, mp []string, nd []node) {
 	if u < 256 {
 		mp[u] = s
 		return
@@ -95,7 +95,7 @@ func dfs(u int, s string, mp map[int]string, nd []node) {
 	}
 }
 
-func genMap(cnt []int) (map[int]string, error) {
+func genMap(cnt []int) ([]string, error) {
 	c := 255
 	nd := make([]node, 256)
 	Q := make(PriorityQueue, 256)
@@ -119,7 +119,7 @@ func genMap(cnt []int) (map[int]string, error) {
 		heap.Push(&Q, &Item{value: c, priority: x.priority + y.priority})
 	}
 	root := heap.Pop(&Q).(*Item).value
-	mp := make(map[int]string)
+	mp := make([]string, 256)
 	dfs(root, "", mp, nd)
 	for i := 0; i < 256; i++ {
 		println(byte(i), mp[i])
@@ -127,8 +127,8 @@ func genMap(cnt []int) (map[int]string, error) {
 	return mp, nil
 }
 
-func writeFile(mp map[int]string, path string, size uint64) error {
-	desPath := path + "_tmp_"
+func writeFile(mp []string, path string, size uint64) error {
+	desPath := path[:len(path)-len(model.CloudTempType)]
 	wfile, err := os.OpenFile(desPath, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return err
@@ -156,17 +156,17 @@ func writeFile(mp map[int]string, path string, size uint64) error {
 	var cnt int
 	cnt = 0
 	str := ""
-	for i := 0; i < int(size+4096)/4096; i++ {
-		len, _ := io.ReadFull(r, p)
-		for j := 0; j < len; j++ {
-			str = mp[int(p[j])]
+	for {
+		len, err := r.Read(p)
+		for i := 0; i < len; i++ {
+			str = mp[uint8(p[i])]
 			for _, bit := range str {
 				cnt++
 				byteToWrite <<= 1
 				if bit == '1' {
 					byteToWrite |= 1
 				}
-				if cnt == 8 {
+				if cnt&8 != 0 {
 					cnt = 0
 					w.WriteByte(byteToWrite)
 					byteToWrite = 0
@@ -174,6 +174,9 @@ func writeFile(mp map[int]string, path string, size uint64) error {
 			}
 		}
 		w.Flush()
+		if err != nil {
+			break
+		}
 	}
 	if cnt > 0 {
 		for cnt < 8 {
@@ -186,22 +189,22 @@ func writeFile(mp map[int]string, path string, size uint64) error {
 	return nil
 }
 
-func Compress(path string) (string, error) {
+func Compress(path string) error {
 	info, err := os.Stat(path)
 	if err != nil {
-		return "", nil
+		return nil
 	}
 	cnt, err := getCnt(path, uint64(info.Size()))
 	if err != nil {
-		return "", err
+		return err
 	}
 	mp, err := genMap(cnt)
 	if err != nil {
-		return "", err
+		return err
 	}
 	if err := writeFile(mp, path, uint64(info.Size())); err != nil {
-		return "", err
+		return err
 	}
 	//var md5 string
-	return "", nil
+	return nil
 }

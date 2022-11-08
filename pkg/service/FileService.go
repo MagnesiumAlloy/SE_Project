@@ -3,7 +3,9 @@ package service
 import (
 	"SE_Project/pkg/handler"
 	"SE_Project/pkg/model"
+	"SE_Project/pkg/util"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -34,6 +36,9 @@ func ReadDir(path string, ID *int, isRoot bool, inBin bool, userID uint) ([]mode
 	if isRoot {
 		if inBin {
 			if path == "/" {
+				if userID != 0 {
+					path = filepath.Join(path, fmt.Sprint(userID))
+				}
 				if obj, err := handler.NewFileHandler(&model.Data{BinPath: path, InBin: inBin, UserId: userID}).GetTarget(); err != nil {
 					return nil, err
 				} else {
@@ -45,6 +50,9 @@ func ReadDir(path string, ID *int, isRoot bool, inBin bool, userID uint) ([]mode
 			}
 		} else {
 			if path == "/" {
+				if userID != 0 {
+					path = filepath.Join(path, fmt.Sprint(userID))
+				}
 				if obj, err := handler.NewFileHandler(&model.Data{Path: path, InBin: inBin, UserId: userID}).GetTarget(); err != nil {
 					return nil, err
 				} else {
@@ -80,6 +88,7 @@ func checkFileExist(path string, isRoot bool, inBin bool, userID uint) error {
 }
 
 func Compare(srcPath, desPath string, userID uint) error {
+	desPath = filepath.Join(desPath, fmt.Sprint(userID))
 	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
@@ -102,12 +111,13 @@ func Compare(srcPath, desPath string, userID uint) error {
 }
 
 func Delete(path string, userID uint) error {
+	binPath := "/" + fmt.Sprint(userID)
 	if err := checkFileExist(path, true, false, userID); err != nil {
 		return err
 	}
 	if err := checkIsDir(path, true, false); err == nil {
 		var PID uint
-		if father, err := handler.NewFileHandler(&model.Data{BinPath: "/", InBin: true, UserId: userID}).GetTarget(); err == nil {
+		if father, err := handler.NewFileHandler(&model.Data{BinPath: binPath, InBin: true, UserId: userID}).GetTarget(); err == nil {
 			PID = father.ID
 		} else {
 			return err
@@ -118,13 +128,11 @@ func Delete(path string, userID uint) error {
 			return err
 		}
 		for i := range files {
-			files[i].BinPath = "/" + path[len(filepath.Dir(path)):]
 			if i == 0 {
 				files[i].PID = PID
 			}
-			if files[i].BinPath == "" {
-				files[i].BinPath = "/" + files[i].Name
-			}
+			files[i].BinPath = filepath.Join(binPath, files[i].Path[len(filepath.Dir(path)):])
+
 			files[i].InBin = true
 			if err = handler.NewFileHandler(&files[i]).MoveToBin(); err != nil {
 				return err
@@ -135,9 +143,9 @@ func Delete(path string, userID uint) error {
 		if err != nil {
 			return err
 		}
-		obj.BinPath = "/" + obj.Name
+		obj.BinPath = filepath.Join(binPath, obj.Name)
 		obj.InBin = true
-		if father, err := handler.NewFileHandler(&model.Data{BinPath: "/", InBin: true, UserId: userID}).GetTarget(); err == nil {
+		if father, err := handler.NewFileHandler(&model.Data{BinPath: binPath, InBin: true, UserId: userID}).GetTarget(); err == nil {
 			obj.PID = father.ID
 		} else {
 			return err
@@ -147,7 +155,7 @@ func Delete(path string, userID uint) error {
 		}
 
 	}
-	if err := handler.SysMove(filepath.Join(model.Root, path), filepath.Join(model.Bin, filepath.Base(path))); err != nil {
+	if err := handler.SysMove(filepath.Join(model.Root, path), filepath.Join(model.Bin, binPath, filepath.Base(path))); err != nil {
 		return err
 	}
 
@@ -163,15 +171,31 @@ func BackupPackedData(srcPath, desPath string) error {
 		list[i].Path = item.Path[len(filepath.Dir(srcPath)):]
 		println(item.Type, item.Path, item.Size, item.ModTime.String())
 	}
-	if obj, err = handler.SysWritePackedFile(filepath.Dir(srcPath), list, filepath.Join(model.Root, desPath)); err != nil {
+	desPath = filepath.Join(model.Root, desPath) + model.CloudTempType
+	if obj, err = handler.SysWritePackedFile(filepath.Dir(srcPath), list, desPath); err != nil {
+		return err
+	}
+	if err := util.Compress(desPath); err != nil {
+		return err
+	}
+	if err := os.Remove(desPath); err != nil {
 		return err
 	}
 	return nil
 }
 
 func RecoverPackedData(srcPath, desPath string) error {
-	list, err := handler.SysRecoverPackedFile(filepath.Join(model.Root, srcPath), desPath)
+
+	srcPath = filepath.Join(model.Root, srcPath)
+	if err := util.Decompress(srcPath); err != nil {
+		return err
+	}
+
+	list, err := handler.SysRecoverPackedFile(srcPath+model.CloudTempType, desPath)
 	if err != nil {
+		return err
+	}
+	if err := handler.SysClean(srcPath + model.CloudTempType); err != nil {
 		return err
 	}
 	for _, item := range list {
@@ -213,11 +237,13 @@ func RecoverData(srcPath, desPath string, obj *model.Data) error {
 }
 
 func Backup(srcPath, desPath, key string, userID uint, pack bool, encrypt bool) error {
+	desPath = filepath.Join(desPath, fmt.Sprint(userID))
+
 	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
 	if pack {
-		path := filepath.Join(desPath, filepath.Dir(srcPath)) + model.CloudBackupType
+		path := filepath.Join(desPath, filepath.Base(srcPath)) + model.CloudBackupType
 		if err := BackupPackedData(srcPath, path); err != nil {
 			return err
 		}
@@ -232,6 +258,13 @@ func Backup(srcPath, desPath, key string, userID uint, pack bool, encrypt bool) 
 		if err != nil {
 			return err
 		}
+		obj.UserId = userID
+		obj.Path = obj.Path[len(model.Root):]
+		var f *model.Data
+		if f, err = handler.NewFileHandler(&model.Data{Path: filepath.Dir(obj.Path), UserId: userID}).GetTarget(); err != nil {
+			return err
+		}
+		obj.PID = f.ID
 		if encrypt {
 			var encryptKey []byte
 			if encryptKey, err = bcrypt.GenerateFromPassword([]byte(key), bcrypt.DefaultCost); err != nil {
@@ -264,7 +297,7 @@ func Recover(srcPath, desPath, key string, userID uint) error {
 		if err := handler.SysDecryptFile(filepath.Join(model.Root, srcPath), filepath.Join(model.Root, srcPath)+model.CloudTempType, key); err != nil {
 			return err
 		}
-		if err := RecoverPackedData(filepath.Join(model.Root, srcPath)+model.CloudTempType, desPath); err != nil {
+		if err := RecoverPackedData(srcPath+model.CloudTempType, desPath); err != nil {
 			return err
 		}
 		return handler.SysClean(filepath.Join(model.Root, srcPath) + model.CloudTempType)
