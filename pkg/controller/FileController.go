@@ -16,6 +16,7 @@ func Recover(c *gin.Context) {
 	srcPath := c.PostForm("srcPath")
 	desPath := c.PostForm("desPath")
 	UserId, _ := strconv.Atoi(c.PostForm("UserId"))
+	key := c.PostForm("key")
 	if err = validator.CheckNameAndPath([]string{}, []string{srcPath, desPath}); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -23,7 +24,7 @@ func Recover(c *gin.Context) {
 		})
 		return
 	}
-	if err = svc.Recover(srcPath, desPath, uint(UserId)); err != nil {
+	if err = svc.Recover(srcPath, desPath, key, uint(UserId)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
