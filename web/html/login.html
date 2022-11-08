@@ -9,7 +9,11 @@
     <script type="text/javascript">
     localStorage.setItem("USER","陌生人");
         function login(){
-            $.ajax({
+            const txt=document.getElementById('pwd').value;
+            re = /^[a-zA-Z0-9.]*$/gi ;
+            if (re.test(txt))
+            {
+                $.ajax({
                 //几个参数需要注意一下
                 dataType: "json",
                 url: "/Login" ,
@@ -29,6 +33,10 @@
                     alert("异常！");
                 }
             });
+            } else {
+                alert("只允许输入英文及数字");
+                return;
+            } 
         }
     </script>
 </head>
@@ -45,7 +53,7 @@
                 </div>
                 <div class="form_input">
                     <span>密码：</span>
-                    <input class="inputs" type="password" name="password" placeholder="密码">
+                    <input class="inputs" type="password" name="password" placeholder="16位及以内" id="pwd">
                 </div>
                 <div type="hiddden">
                     <input type="hidden" class="inputs" type="text" name="usertype" value="Normal">

@@ -9,7 +9,13 @@
 
     <script type="text/javascript">
         function register(){
-            $.ajax({
+            const txt1=document.getElementById('pwd1').value;
+            const txt2=document.getElementById('pwd2').value;
+            if(txt1==txt2){
+              re = /^[a-zA-Z0-9.]*$/gi ;
+            if (re.test(txt1))
+            {
+                $.ajax({
                 //几个参数需要注意一下
                 dataType: "json",
                 url: "/register" ,
@@ -28,7 +34,16 @@
                     alert("异常！");
                 }
             });
-        }
+            } else {
+                alert("只允许输入英文及数字");
+                return;
+            } 
+        } else {
+          alert("两次密码不一致");
+          return;
+        }    
+     }
+
     </script>
 
 </head>
@@ -46,11 +61,11 @@
             </div>
             <div class="form_input">
                 <span>密码：</span>
-                <input class="inputs" type="password" size="20" name="password" placeholder="密码">
+                <input class="inputs" type="password" size="20" name="password" placeholder="16位及以内" id="pwd1">
             </div>
             <div class="form_input">
                 <span>确认密码：</span>
-                <input class="inputs" type="password" size="20" name="pwd_again" placeholder="确认密码">
+                <input class="inputs" type="password" size="20" name="pwd_again" placeholder="16位及以内" id="pwd2">
             </div>
 
             <div class="btn_submit">
