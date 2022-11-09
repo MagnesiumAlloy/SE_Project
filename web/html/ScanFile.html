@@ -1,319 +1,373 @@
-  <link rel="stylesheet" type="text/css" href="static/css/main.css" />
-  <meta charset="UTF-8">
-  <html>
-  <head>
-    <title>文件删除</title>
-    
-    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
-    </script>
+<link rel="stylesheet" type="text/css" href="static/css/main.css" />
+<meta charset="UTF-8">
+<html>
 
-<script src="static/js/myfile.js">
-</script>
+<head>
+  <title>文件删除</title>
 
-    <script type="text/javascript">
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+  </script>
 
-      function deleteFile(){
-        const pp3 = document.getElementById('pp3').value;
-        const pp4 = document.getElementById('pp4').value;
-        $.ajax({
-                //几个参数需要注意一下
-                dataType: "json",
-                url: "/deleteFile" ,
-                type: "DELETE", 
-                data: {
-                  name: pp3,
-                  file: pp4
-                },
-                success:function (data) {
-                console.log(data);
-                if(data.status==200){
-                  top.location.href='/ScanFile';
-                } else {
-                  alert("删除失败");
-                }
-            }
-            });
-      }
+  <script src="static/js/myfile.js">
+  </script>
 
-        function scan(){
-            $.ajax({
-                //几个参数需要注意一下
-                dataType: "json",
-                url: "/Scan" ,
-                type: "POST", 
-                data: $('#scan').serialize(),
-                success: function (result) {
-                    console.log(result);//打印服务端返回的数据(调试用)
-                    if (result.status == 200) {
-                       location.href="/ScanUser";
-                    } else {
-                        alert("错误");
-                    }
-                },
-                error : function() {
-                    console.log("failed");
-                    alert("异常！");
-                }
-            });
-        }
+  <script type="text/javascript">
+  </script>
 
-        function delete1(){
-            $.ajax({
-                //几个参数需要注意一下
-                dataType: "json",
-                url: "/Delete1" ,
-                type: "POST", 
-                data: $('#delete').serialize(),
-                success: function (result) {
-                    console.log(result);//打印服务端返回的数据(调试用)
-                    if (result.status == 200) {
-                       location.href="/DeleteUser";
-                    } else {
-                        alert("错误");
-                    }
-                },
-                error : function() {
-                    console.log("failed");
-                    alert("异常！");
-                }
-            });
-        }
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+  </script>
 
-        function delete2(){
-            $.ajax({
-                //几个参数需要注意一下
-                dataType: "json",
-                url: "/Delete2" ,
-                type: "POST", 
-                data: $('#delete2').serialize(),
-                success: function (result) {
-                    console.log(result);//打印服务端返回的数据(调试用)
-                    if (result.status == 200) {
-                       location.href="/DeleteFile";
-                    } else {
-                        alert("错误");
-                    }
-                },
-                error : function() {
-                    console.log("failed");
-                    alert("异常！");
-                }
-            });
-        }
-    </script>
+  <script src="static/js/myfile.js">
+  </script>
 
-<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
-</script>
+  <script>
+    var dt=localStorage.getItem("USER");
+var Path;
+var IsRoot;
+var InBin;
+var stackPath = new Stack();
+var stackID = new Stack();
+var data
 
-<script src="static/js/myfile.js">
-</script>
-
-<script>
-  function file2(){
-       $.ajax({
-           url: "/ScanFile",
-           type:"get",
-           dataType:"json",
-           success:function (data) {
-               console.log(data);
-               myFunction(data.data);
-           }
-       })};  
-
-
-  function myFunction(arr) {
-      var out = "";
-      for(let i = 0; i < arr.length; i++) {
-          out += "<tr  onclick="+"edit44(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].fileName+"</td>"
-                   +"<td>"+arr[i].filePath+"</td>"
-                   +"<td>"+arr[i].UserId+"</td>"
-                   +"<td>"+arr[i].backupTime+"</td>"
-                   +"<td>"+arr[i].size+"</td>"
-                   +"<td>"+arr[i].fileType+"</td>"
-                +"</tr>";
-      }
-      document.getElementById("file1").innerHTML=out;
-  }
-
-  function myy(filepath){
-       $.ajax({
-           url: "/innerData",
-           type:"get",
-           dataType:"json",
-           data: {
-            filepath:filepath
-           },
-           success:function (res) {
-               console.log(res);
-               myFunction(res.data);
-           }
-       })};
-
-  
-
-     function edit44(obj){
-            let node=obj;
-            let filename=node.children[1].innerHTML;
-            let filepath=node.children[2].innerHTML;
-            //alert(id,filepath,filetype);
-              const pp3 = document.getElementById('pp3')
-              const pp4 = document.getElementById('pp4')
-              pp3.value = filename;
-              pp4.value = filepath;
-            
+    function Stack(){
+     this.items = [];
+     // 添加一个新元素到栈顶位置。push()
+     Stack.prototype.push = function(element){
+        this.items.push(element);
      }
-
-</script>
-
-
-<style>
-  table{
-    font-size: 1.5em;
-    margin: auto;
-  }
-  body{
-    background-image: linear-gradient(#e66465, #9198e5);
-    background-size: 100% 100%;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-position: center center;
-  }
-  form.special{
-    width: 100%;
-    margin: auto;
-    margin-top: 40px;
-    font-size: 1.5em;
-    text-align: center;
-  }
-  table{
-    font-size: 1.5em;
-    margin: auto;
-    margin-bottom: 10em;
-  }
-  input.page{
-    border-radius: 7px;
-    padding: 5px;
-    margin-bottom: 4em;
-    margin-left: 1em;
-    font-size: 0.7em;
-  }
-  div.columns{
-    column-count:2;
-    column-gap:40px;
-    column-rule-style:dotted;
-  }
-  input.page[type=submit]{
-    background-color: #d44773;
-    transition-duration: 0.4s;
-    box-shadow: 0 6px #999;
-    font-weight:bold;
-    padding: 14px 20px;
-    margin: 8px 15px;
-    border:none;
-    border-radius: 6px;
-    clear: both;
-  }
-  input.page[type=submit]:hover{
-    background-color: #f1dd78;
-  }
-  input.page[type=button] {
-    background-color: #d44773;
-    transition-duration: 0.4s;
-    box-shadow: 0 6px #999;
-    font-weight: bold;
-    padding: 14px 20px;
-    margin: 8px 15px;
-    border: none;
-    border-radius: 6px;
-    clear: both;
-  }
-
-  input.page[type=button]:hover {
-    background-color: #f1dd78;
-  }
-
-  *:focus{
-    background-color: #f6f607;
-  }
-  body{
-    background-image: linear-gradient(#e66465, #9198e5);
-    background-size: 100% 100%;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-position: center center;
-  }
-</style>
-  </head>
+      // 移除栈顶的元素pop()
+     Stack.prototype.pop = function(){
+         return this.items.pop();
+     }
+     //  返回栈顶的元素，不对栈做任何修改peek()
+     Stack.prototype.peek = function(){
+         return this.items[this.items.length-1];
+     }
+     // 判断栈是否空isEmpty()
+     Stack.prototype.isEmpty = function(){
+         if(this.items.length == 0){
+             return true;
+         }else {
+             return false;
+         }
+     }
+     // 返回栈里的元素个数size()
+     Stack.prototype.size = function(){
+         return this.items.length;
+     }
+     // 将栈结构的内容以字符形式返回toString()
+     Stack.prototype.toString = function(){
+         var str = '';
+         for(var i =0;i<this.items.length;i++){
+             str += this.items[i] + ' ';
+         }
+         return str;
+      }
+    }
 
 
-  <ul class="nav1" class="out">
-    <li class="border1">
-      <a class="li1" href="/adminMain">管理员首页</a>
-    </li>
-
-    <li class="border1">
-      <a href="#">基本数据维护</a>
-      <ul class="nav2">
-        <li>
-          <a href="#">用户信息</a>
-          <ul class="nav3">
-            <form id="scan">
-              <a class="kuang" type="button"  name= "flag" value="用户浏览" href='/ScanUser'>用户浏览</a>
-           </form>
-          </ul>
-        </li>
-        <li>
-          <a href="#">文件信息</a>
-          <ul class="nav3">
-            <li>
-              <form id="delete2">
-                <a class="kuang" type="button"  name= "flag" value="文件浏览" href='/ScanFile'>文件浏览</a>
-              </form>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-
-    <li class="border1">
-      <a href="/about">关于我们</a>
-    </li>
-
-    <li class="border1">
-      <a href="/">退出系统</a>
-    </li>
-
-  </ul>
-
-  <body>
-
-    <form class="special" > 
-      <input class="page" type="button" name="button" value="显示文件" onclick="file2()">
-
+    function readDir(isroot,ID,path,inBin) {
+      $.ajax({
+        url: "/readDir",
+        type: "GET",
+        dataType: "json",
+        data: {
+          UserId:0,
+          path: path,
+          ID: ID,
+          isroot: isroot,
+          inBin: inBin
+        },
+        success: function (res) {
+          IsRoot=isroot
+          Path = path
+          InBin=inBin;
+          document.getElementById('tmpPath').value=Path;
+          showTable(res.data,isroot,res.ID,res.Path,inBin);
+        }
+      })
+    };
   
+    function ReadDirWithPop(){
+      let isroot=IsRoot;
+      let filepath=Path;
+      let inBin=InBin;
+      if(stackID.size()<=1 || stackPath.size()<=1){
+        return;
+      }
+      stackID.pop();
+      stackPath.pop();
+      readDir(isroot,stackID.peek(),stackPath.peek(),inBin);
+    };
+
+    function ReadDirWithPush(isroot,id,path,inBin){
+      stackID.push(id);
+      stackPath.push(path);
+      readDir(isroot,id,path,inBin);
+    };
+
+    function rTime(date) {
+        var json_date = new Date(date).toJSON();
+        return new Date(+new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+    }
+
+    function file1(data){
+        aa=" ";
+        if(data) return Number(data).toFixed(2);
+        else return aa;
+    }
+
+    function showTable(arr,isroot,rootID,rootPath,inBin) {
+      data=arr
+      var out = "";
+      var unit=[" ","B","KB","MB"];
+      for (let i = 0; i < arr.length; i++) {
+        var aa=0;
+        if (arr[i].Name == "") continue;
+        if(arr[i].Type !="dir"&&!isroot) continue;
+        if(arr[i].Type=="dir"){
+          arr[i].Size="";
+        }
+        if(arr[i].Size==""){
+          aa=0;
+        } else if(arr[i].Size<1024){
+          aa=1;
+        } else if(arr[i].Size<1048576){
+          aa=2;
+          arr[i].Size=arr[i].Size/1024.0;
+        } else {
+          aa=3;
+          arr[i].Size=arr[i].Size/1024.0/1024.0;
+        }
+   
+        out += "<tr>"
+          +"<td><button type=button class= "+"hiddenbox "+"onclick="+"select(this.parentElement.parentElement,"+isroot+","+inBin+")"+">选择</button></td>"
+          + "<td onclick=" + "explore(this,"+isroot+","+inBin+")"+">" + arr[i].Name + "</td>"
+          + "<td>" + rTime(arr[i].ModTime) + "</td>"
+          + "<td>" + file1(arr[i].Size) + unit[aa] + "</td>"
+          + "<td hidden=true>" + arr[i].Path + "</td>"
+          + "<td>" + arr[i].Type + "</td>"
+          + "<td hidden=true>" + rootID + "</td>"
+          + "<td hidden=true>" + i + "</td>"
+          + "<td >" + arr[i].Encrypted + "</td>"
+          + "<td >" + arr[i].UserId + "</td>"
+          + "</tr>";
+      }
+      document.getElementById("content").innerHTML = out;
+    }
+
+        //readDir(isroot,ID,path,inBin)
+
+    function explore(obj,isroot,inBin) {
+      let id = obj.parentElement.children[7].innerHTML;
+      //console.log(filepath,"+",filename)
+      if (data[id].Type == "dir") { //文件夹类型,要你指定
+        //更进一步
+        ReadDirWithPush(isroot,data[id].ID,data[id].Path,inBin);
+      } else {
+        select(obj.parentElement,isroot,inBin)
+        
+      }
+    }
+
+
+    function select(obj,isroot,inBin) {
+      let node = obj; //鼠标点击处
+      let filename = node.children[1].innerHTML; //文件名 
+      let filetype = node.children[5].innerHTML; //文件类型
+      let filepath = node.children[4].innerHTML; //文件路径
+      let rootid   = node.children[6].innerHTML; //父亲节点ID
+      let id       = node.children[7].innerHTML; //文件ID
+      let pw       = node.children[8].innerHTML; //备份密码
+      //alert(id,filepath,filetype);
+        if(isroot){ //是否是硬盘文件
+          if(pw=="true"){
+            document.getElementById('divShow').style.display = 'block'; //显示密码框
+          } else {
+            document.getElementById('divShow').style.display = 'none'; //不显示密码框
+          }
+          document.getElementById('tmpId').value=data[id].ID; //赋值 
+          document.getElementById('srcName').value=filename; 
+          document.getElementById('srcPath').value=filepath;
+        } else {
+          document.getElementById('desPath').value=filepath;
+        }
+    }
+
+  </script>
+
+
+  <style>
+    table {
+      font-size: 1.5em;
+      margin: auto;
+    }
+
+    body {
+      background-image: linear-gradient(#e66465, #9198e5);
+      background-size: 100% 100%;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+
+    form.special {
+      width: 100%;
+      margin: auto;
+      margin-top: 40px;
+      font-size: 1.5em;
+      text-align: center;
+    }
+
+    table {
+      font-size: 1.5em;
+      margin: auto;
+      margin-bottom: 10em;
+    }
+
+    input.page {
+      border-radius: 7px;
+      padding: 5px;
+      margin-bottom: 4em;
+      margin-left: 1em;
+      font-size: 0.7em;
+    }
+
+    div.columns {
+      column-count: 2;
+      column-gap: 40px;
+      column-rule-style: dotted;
+    }
+
+    input.page[type=submit] {
+      background-color: #d44773;
+      transition-duration: 0.4s;
+      box-shadow: 0 6px #999;
+      font-weight: bold;
+      padding: 14px 20px;
+      margin: 8px 15px;
+      border: none;
+      border-radius: 6px;
+      clear: both;
+    }
+
+    input.page[type=submit]:hover {
+      background-color: #f1dd78;
+    }
+
+    input.page[type=button] {
+      background-color: #d44773;
+      transition-duration: 0.4s;
+      box-shadow: 0 6px #999;
+      font-weight: bold;
+      padding: 14px 20px;
+      margin: 8px 15px;
+      border: none;
+      border-radius: 6px;
+      clear: both;
+    }
+
+    input.page[type=button]:hover {
+      background-color: #f1dd78;
+    }
+
+    *:focus {
+      background-color: #f6f607;
+    }
+
+    body {
+      background-image: linear-gradient(#e66465, #9198e5);
+      background-size: 100% 100%;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+  </style>
+</head>
+
+
+<ul class="nav1" class="out">
+  <li class="border1">
+    <a class="li1" href="/adminMain">管理员首页</a>
+  </li>
+
+  <li class="border1">
+    <a href="#">基本数据维护</a>
+    <ul class="nav2">
+      <li>
+        <a href="#">用户信息</a>
+        <ul class="nav3">
+          <form id="scan">
+            <a class="kuang" type="button" name="flag" value="用户浏览" href='/ScanUser'>用户浏览</a>
+          </form>
+        </ul>
+      </li>
+      <li>
+        <a href="#">文件信息</a>
+        <ul class="nav3">
+          <li>
+            <form id="delete2">
+              <a class="kuang" type="button" name="flag" value="文件浏览" href='/ScanFile'>文件浏览</a>
+            </form>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+
+  <li class="border1">
+    <a href="/about">关于我们</a>
+  </li>
+
+  <li class="border1">
+    <a href="/">退出系统</a>
+  </li>
+
+</ul>
+
+<body>
+
+  <form class="special">
+    <input class="page" type="button" name="button" value="显示用户文件" onclick="ReadDirWithPush(1,-1,'/',0)">
+    </form>
+    
+    <form class="special">
+
+      <input class="page" type="text" size="20" name="error" id="error" value="${error}" hidden>
+
+      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="srcPath"></p>
+      <p>文件：&ensp; &ensp; &ensp;<input class="page" type="text" size="20" name="pathfileName" id="srcName"></p>
+
+      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="desPath"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="pathfileName" id="desName"></p>
+      <p>&ensp;当前文件夹: <input class="page" type="text" size="20" name="pathfile" id="tmpPath"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpRoot"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpId"></p>
+
+      <input class="page" type="button" name="button" value="返回上一级" onclick="ReadDirWithPop()">
+
     </form>
   </div>
-  <br><br>
-  <div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
-  
-  <table id="manage">
-    <tr>
-      <th>序号</th>
-      <th>文件名称</th>
-      <th>文件路径</th>
-      <th>备份者</th>
-      <th>备份时间</th>
-      <th>文件大小</th>
-      <th>文件类别</th>
-    </tr>
-    <tbody id="file1">
+  <div><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;"
+      onchange="getFile(value)"></div>
+      <br><br>
 
-    </tbody>
-  </table>
-
+      <table border="5">
+        <tr>
+          <th class="firstC"></th>
+          <th>文件名称</th>
+          <th>修改时间</th>
+          <th>文件大小</th>
+          <th>文件类型</th>
+          <th>是否加密</th>
+          <th>备份者</th>
+        </tr>
+        <tbody id="file1">
+    
+        </tbody>
+      </table>
 
   </div>
-  </body>
-  </html>
+</body>
+
+</html>
