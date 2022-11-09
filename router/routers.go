@@ -129,5 +129,10 @@ func SetupRouter() *gin.Engine {
 	r.DELETE("/clean", Controller.Clean)
 
 	r.POST("/recycle", Controller.Recycle)
+
+	r.POST("/Modify", Controller.UpdatePassword)
+
+	r.GET("/readUser", Controller.ReadUser)
+
 	return r
 }

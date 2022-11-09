@@ -72,3 +72,18 @@ func (userHandler *UserHandler) NewUserInit(userID uint) error {
 	}
 	return nil
 }
+
+func (userHandler *UserHandler) UpdatePassword() error {
+	if err := userHandler.Model(userHandler.User).Update("password", userHandler.User.Password).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (userHandler *UserHandler) ReadUser() ([]model.User, error) {
+	var res []model.User
+	if err := userHandler.Find(&res).Error; err != nil {
+		return nil, err
+	}
+	return res, nil
+}

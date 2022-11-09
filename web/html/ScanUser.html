@@ -1,6 +1,7 @@
 <link rel="stylesheet" type="text/css" href="static/css/main.css" />
 <meta charset="UTF-8">
 <html>
+
 <head>
     <title>用户浏览</title>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
@@ -9,209 +10,220 @@
 
     <script type="text/javascript">
 
-    function path1(){
-       $.ajax({
-           url: "/readUser",
-           type:"GET",
-           dataType:"json",
-           success:function (data) {
-               console.log(data);
-               myFunction(data.data);
-           }
-       })}; 
+        function path1() {
+            $.ajax({
+                url: "/readUser",
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    myFunction(data.data);
+                }
+            })
+        };
 
 
-    function myFunction(arr) {
-      var out = "";
-      for(let i = 0; i < arr.length; i++) {
-          out += "<tr  onclick="+"edit(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].usedSpace+"</td>"
-                   +"<td>"+arr[i].RegTime+"</td>"
-                +"</tr>";
-      }
-      document.getElementById("content1").innerHTML=out;
-  }
+        function myFunction(arr) {
+            var out = "";
+            for (let i = 0; i < arr.length; i++) {
+                out += "<tr  onclick=" + "edit(this)" + ">"
+                    + "<td>" + arr[i].ID + "</td>"
+                    + "<td>" + arr[i].UserName + "</td>"
+                    + "<td>" + arr[i].UsedSpace + "</td>"
+                    + "<td>" + arr[i].CreatedAt + "</td>"
+                    + "</tr>";
+            }
+            document.getElementById("content1").innerHTML = out;
+        }
 
-        function scan(){
+        function scan() {
             $.ajax({
                 //几个参数需要注意一下
                 dataType: "json",
-                url: "/Scan" ,
-                type: "POST", 
+                url: "/Scan",
+                type: "POST",
                 data: $('#scan').serialize(),
                 success: function (result) {
                     console.log(result);//打印服务端返回的数据(调试用)
                     if (result.status == 200) {
-                       location.href="/ScanUser";
+                        location.href = "/ScanUser";
                     } else {
                         alert("错误");
                     }
                 },
-                error : function() {
+                error: function () {
                     console.log("failed");
                     alert("异常！");
                 }
             });
         }
 
-        function delete1(){
+        function delete1() {
             $.ajax({
                 //几个参数需要注意一下
                 dataType: "json",
-                url: "/Delete1" ,
-                type: "POST", 
+                url: "/Delete1",
+                type: "POST",
                 data: $('#delete').serialize(),
                 success: function (result) {
                     console.log(result);//打印服务端返回的数据(调试用)
                     if (result.status == 200) {
-                       location.href="/DeleteUser";
+                        location.href = "/DeleteUser";
                     } else {
                         alert("错误");
                     }
                 },
-                error : function() {
+                error: function () {
                     console.log("failed");
                     alert("异常！");
                 }
             });
         }
 
-        function delete2(){
+        function delete2() {
             $.ajax({
                 //几个参数需要注意一下
                 dataType: "json",
-                url: "/Delete2" ,
-                type: "POST", 
+                url: "/Delete2",
+                type: "POST",
                 data: $('#delete2').serialize(),
                 success: function (result) {
                     console.log(result);//打印服务端返回的数据(调试用)
                     if (result.status == 200) {
-                       location.href="/DeleteFile";
+                        location.href = "/DeleteFile";
                     } else {
                         alert("错误");
                     }
                 },
-                error : function() {
+                error: function () {
                     console.log("failed");
                     alert("异常！");
                 }
             });
         }
 
-        function edit(obj){
-            let node=obj;
-            let id=node.children[0].innerHTML;
-            let name=node.children[1].innerHTML;
+        function edit(obj) {
+            let node = obj;
+            let id = node.children[0].innerHTML;
+            let name = node.children[1].innerHTML;
             //alert(id,filepath,filetype);
-              const pp3 = document.getElementById('pp3')
-              const pp4 = document.getElementById('pp4')
-              pp3.value = id;
-              pp4.value = name;
-     }
+            const pp3 = document.getElementById('pp3')
+            const pp4 = document.getElementById('pp4')
+            pp3.value = id;
+            pp4.value = name;
+        }
 
-     function deleteUsr(){
-        const pp3 = document.getElementById('pp3').value;
-        const pp4 = document.getElementById('pp4').value;
-        $.ajax({
-            url: "/cleanUsr",
-            type:"DELETE",
-            dataType:"json",
-            data:{
-              id : pp3,
-              name: pp4,
-            },
-            success:function (data) {
-                console.log(data);
-                if(data.status==200){
-                  top.location.href='/ScanUser';
-                } else {
-                  alert("删除失败");
+        function deleteUsr() {
+            const pp3 = document.getElementById('pp3').value;
+            const pp4 = document.getElementById('pp4').value;
+            $.ajax({
+                url: "/cleanUsr",
+                type: "DELETE",
+                dataType: "json",
+                data: {
+                    id: pp3,
+                    name: pp4,
+                },
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == 200) {
+                        top.location.href = '/ScanUser';
+                    } else {
+                        alert("删除失败");
+                    }
                 }
-            }
-        })}; 
+            })
+        };
 
     </script>
 
 
-<style>
-    table{
-      font-size: 1.5em;
-      margin: auto;
-    }
-    body{
-      background-image: linear-gradient(#e66465, #9198e5);
-      background-size: 100% 100%;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      background-position: center center;
-    }
-    form.special{
-      width: 100%;
-      margin: auto;
-      margin-top: 40px;
-      font-size: 1.5em;
-      text-align: center;
-    }
-    table{
-      font-size: 1.5em;
-      margin: auto;
-      margin-bottom: 10em;
-    }
-    input.page{
-      border-radius: 7px;
-      padding: 5px;
-      margin-bottom: 4em;
-      margin-left: 1em;
-      font-size: 0.7em;
-    }
-    div.columns{
-      column-count:2;
-      column-gap:40px;
-      column-rule-style:dotted;
-    }
-    input.page[type=submit]{
-      background-color: #d44773;
-      transition-duration: 0.4s;
-      box-shadow: 0 6px #999;
-      font-weight:bold;
-      padding: 14px 20px;
-      margin: 8px 15px;
-      border:none;
-      border-radius: 6px;
-      clear: both;
-    }
-    input.page[type=submit]:hover{
-      background-color: #f1dd78;
-    }
-    input.page[type=button] {
-      background-color: #d44773;
-      transition-duration: 0.4s;
-      box-shadow: 0 6px #999;
-      font-weight: bold;
-      padding: 14px 20px;
-      margin: 8px 15px;
-      border: none;
-      border-radius: 6px;
-      clear: both;
-    }
+    <style>
+        table {
+            font-size: 1.5em;
+            margin: auto;
+        }
 
-    input.page[type=button]:hover {
-      background-color: #f1dd78;
-    }
+        body {
+            background-image: linear-gradient(#e66465, #9198e5);
+            background-size: 100% 100%;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
 
-    *:focus{
-      background-color: #f6f607;
-    }
-    body{
-      background-image: linear-gradient(#e66465, #9198e5);
-      background-size: 100% 100%;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      background-position: center center;
-    }
-  </style>
+        form.special {
+            width: 100%;
+            margin: auto;
+            margin-top: 40px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        table {
+            font-size: 1.5em;
+            margin: auto;
+            margin-bottom: 10em;
+        }
+
+        input.page {
+            border-radius: 7px;
+            padding: 5px;
+            margin-bottom: 4em;
+            margin-left: 1em;
+            font-size: 0.7em;
+        }
+
+        div.columns {
+            column-count: 2;
+            column-gap: 40px;
+            column-rule-style: dotted;
+        }
+
+        input.page[type=submit] {
+            background-color: #d44773;
+            transition-duration: 0.4s;
+            box-shadow: 0 6px #999;
+            font-weight: bold;
+            padding: 14px 20px;
+            margin: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            clear: both;
+        }
+
+        input.page[type=submit]:hover {
+            background-color: #f1dd78;
+        }
+
+        input.page[type=button] {
+            background-color: #d44773;
+            transition-duration: 0.4s;
+            box-shadow: 0 6px #999;
+            font-weight: bold;
+            padding: 14px 20px;
+            margin: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            clear: both;
+        }
+
+        input.page[type=button]:hover {
+            background-color: #f1dd78;
+        }
+
+        *:focus {
+            background-color: #f6f607;
+        }
+
+        body {
+            background-image: linear-gradient(#e66465, #9198e5);
+            background-size: 100% 100%;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+    </style>
 </head>
 
 
@@ -227,8 +239,8 @@
                 <a href="#">用户信息</a>
                 <ul class="nav3">
                     <form id="scan">
-                        <a class="kuang" type="button"  name= "flag" value="用户浏览" href='/ScanUser'>用户浏览</a>
-                     </form>
+                        <a class="kuang" type="button" name="flag" value="用户浏览" href='/ScanUser'>用户浏览</a>
+                    </form>
                 </ul>
             </li>
             <li>
@@ -236,7 +248,7 @@
                 <ul class="nav3">
                     <li>
                         <form id="delete2">
-                               <a class="kuang" type="button"  name= "flag" value="文件浏览" href='/ScanFile'>文件浏览</a>
+                            <a class="kuang" type="button" name="flag" value="文件浏览" href='/ScanFile'>文件浏览</a>
                         </form>
                     </li>
                 </ul>
@@ -256,17 +268,18 @@
 
 <body>
 
-<div>
+    <div>
 
-    <form class="special" > 
-        <input class="page" type="button" name="button" value="显示用户" onclick="path1()">
-        <br><br><br>
-    
-      </form>
+        <form class="special">
+            <input class="page" type="button" name="button" value="显示用户" onclick="path1()">
+            <br><br><br>
+
+        </form>
     </div>
     <br><br>
-    <div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
-    
+    <div><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;"
+            onchange="getFile(value)"></div>
+
     <table id="manage">
         <tr>
             <th>序号</th>
@@ -278,6 +291,7 @@
 
         </tbody>
     </table>
-  
+
 </body>
+
 </html>

@@ -4,6 +4,7 @@ import (
 	"SE_Project/pkg/model"
 	svc "SE_Project/pkg/service"
 	"net/http"
+	"strconv"
 
 	"log"
 
@@ -78,5 +79,36 @@ func Register(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
+	})
+}
+
+func UpdatePassword(c *gin.Context) {
+	userID, _ := strconv.Atoi(c.PostForm("UserId"))
+	password := c.PostForm("oldpwd")
+	newPassword := c.PostForm("newpwd")
+	if err := svc.UpdatePassword(uint(userID), password, newPassword); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
+}
+
+func ReadUser(c *gin.Context) {
+	var users []model.User
+	if users, err = svc.ReadUser(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+		"data":   users,
 	})
 }
