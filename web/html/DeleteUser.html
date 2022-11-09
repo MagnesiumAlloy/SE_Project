@@ -1,6 +1,7 @@
 <link rel="stylesheet" type="text/css" href="static/css/main.css" />
 <meta charset="UTF-8">
 <html>
+
 <head>
   <title>用户删除</title>
   <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
@@ -10,88 +11,94 @@
   </script>
 
   <script>
-    function file1(){
-         $.ajax({
-             url: "/fileData",
-             type:"get",
-             dataType:"json",
-             success:function (data) {
-                 console.log(data);
-                 myFunction(data.data);
-             }
-         })};  
-  
-    function myFunction(arr) {
-        var out = "";
-        for(let i = 0; i < arr.length; i++) {
-            out += "<tr  onclick="+"edit44(this)"+">"
-                     +"<td>"+arr[i].ID+"</td>"
-                     +"<td>"+arr[i].Name+"</td>"
-                     +"<td>"+arr[i].Used+"</td>"
-                     +"<td>"+arr[i].registerTime+"</td>"
-                  +"</tr>";
+    function file1() {
+      $.ajax({
+        url: "/fileData",
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+          console.log(data);
+          myFunction(data.data);
         }
-        document.getElementById("user1").innerHTML=out;
+      })
+    };
+
+    function myFunction(arr) {
+      var out = "";
+      for (let i = 0; i < arr.length; i++) {
+        out += "<tr  onclick=" + "edit44(this)" + ">"
+          + "<td>" + arr[i].ID + "</td>"
+          + "<td>" + arr[i].Name + "</td>"
+          + "<td>" + arr[i].Used + "</td>"
+          + "<td>" + arr[i].registerTime + "</td>"
+          + "</tr>";
+      }
+      document.getElementById("user1").innerHTML = out;
     }
-  
-    function myy(filepath){
-         $.ajax({
-             url: "/innerData",
-             type:"get",
-             dataType:"json",
-             data: {
-              filepath:filepath
-             },
-             success:function (res) {
-                 console.log(res);
-                 myFunction(res.data);
-             }
-         })};
-  
-    
-  
-       function edit44(obj){
-              let node=obj;
-              let id=node.children[0].innerHTML;
-              let username=node.children[1].innerHTML;
-              let space=node.children[2].innerHTML;
-              let RegTime=node.children[3].innerHTML;
-              //alert(id,filepath,filetype);
-                const pp3 = document.getElementById('pp3')
-                const pp4 = document.getElementById('pp4')
-                pp3.value = id;
-                pp4.value = username;
-              
-       }
-  
+
+    function myy(filepath) {
+      $.ajax({
+        url: "/innerData",
+        type: "get",
+        dataType: "json",
+        data: {
+          filepath: filepath
+        },
+        success: function (res) {
+          console.log(res);
+          myFunction(res.data);
+        }
+      })
+    };
+
+
+
+    function edit44(obj) {
+      let node = obj;
+      let id = node.children[0].innerHTML;
+      let username = node.children[1].innerHTML;
+      let space = node.children[2].innerHTML;
+      let RegTime = node.children[3].innerHTML;
+      //alert(id,filepath,filetype);
+      const pp3 = document.getElementById('pp3')
+      const pp4 = document.getElementById('pp4')
+      pp3.value = id;
+      pp4.value = username;
+
+    }
+
   </script>
 
   <style>
-    form.page{
+    form.page {
       width: 100%;
       margin: auto;
       margin-top: 40px;
       font-size: 1.5em;
       text-align: center;
     }
-    table{
+
+    table {
       font-size: 1.2em;
       margin: auto;
       margin-bottom: 10em;
     }
-    .pageInput{
+
+    .pageInput {
       border-radius: 7px;
       padding: 5px;
       margin-bottom: 4em;
       margin-left: 1em;
       font-size: 0.7em;
     }
-    textarea{
+
+    textarea {
       border-radius: 7px;
       padding: 5px;
       font-size: 0.7em;
     }
-    button{
+
+    button {
       position: absolute;
       right: 19em;
       top: 58em;
@@ -99,14 +106,15 @@
       background-color: #d44773;
       transition-duration: 0.4s;
       box-shadow: 0 6px #999;
-      font-weight:bold;
+      font-weight: bold;
       padding: 14px 20px;
       margin: 8px 15px;
-      border:none;
+      border: none;
       border-radius: 6px;
       clear: both;
     }
-    select{
+
+    select {
       transform: translatex(-1em);
       border-radius: 7px;
       padding: 5px;
@@ -114,53 +122,66 @@
       margin-left: 2em;
       font-size: 0.7em;
     }
+
     .pageInput[name=bookName] {
       margin-right: 0.5em;
     }
-    .special{
+
+    .special {
       margin-right: 4em;
     }
-    .pageInput[type=reset]{
+
+    .pageInput[type=reset] {
       margin-left: 4em;
       float: right;
     }
-    .special,.pageInput[type=reset]{
+
+    .special,
+    .pageInput[type=reset] {
       background-color: #d44773;
       transition-duration: 0.4s;
       box-shadow: 0 6px #999;
-      font-weight:bold;
+      font-weight: bold;
       padding: 14px 20px;
       margin: 8px 15px;
-      border:none;
+      border: none;
       border-radius: 6px;
       clear: both;
     }
-    .special:hover,.pageInput[type=reset]:hover,button:hover{
+
+    .special:hover,
+    .pageInput[type=reset]:hover,
+    button:hover {
       background-color: #f1dd78;
     }
 
-    *:focus{
+    *:focus {
       background-color: #f6f607;
     }
-    div.columns{
-      column-count:2;
-      column-gap:40px;
-      column-rule-style:dotted;
+
+    div.columns {
+      column-count: 2;
+      column-gap: 40px;
+      column-rule-style: dotted;
     }
-    div.f2{
+
+    div.f2 {
       display: inline-block;
       transform: translateX(-3em);
     }
-    div.f3{
+
+    div.f3 {
       display: inline-block;
       transform: translateX(-1.5em);
     }
-    div.f4{
+
+    div.f4 {
       display: inline-block;
       transform: translateX(-1.5em);
       margin-bottom: 2em;
     }
-    body{
+
+    body {
       background-image: linear-gradient(#e66465, #9198e5);
       background-size: 100% 100%;
       background-attachment: fixed;
@@ -182,12 +203,12 @@
       <li>
         <a href="#">用户信息</a>
         <ul class="nav3">
-              <form id="scan">
-                <li><a onclick="scan()">用户浏览</a></li>
-              </form>
-              <form id="delete">
-                <li><a onclick="delete1()">用户删除</a></li>
-              </form>
+          <form id="scan">
+            <li><a onclick="scan()">用户浏览</a></li>
+          </form>
+          <form id="delete">
+            <li><a onclick="delete1()">用户删除</a></li>
+          </form>
         </ul>
       </li>
       <li>
@@ -195,7 +216,7 @@
         <ul class="nav3">
           <li>
             <form id="delete2">
-              <a class="kuang" type="button"  name= "flag" value="文件浏览" href='/ScanFile'>文件浏览</a>
+              <a class="kuang" type="button" name="flag" value="文件浏览" href='/ScanFile'>文件浏览</a>
             </form>
           </li>
         </ul>
@@ -216,30 +237,31 @@
 
 <body>
   <input class="page" type="submit" name="button" value="显示用户" onclick="file1()">
-<div class="columns">
+  <div class="columns">
 
-  <table id="manage">
-    <tr>
-      <th>序号</th>
-      <th>用户名</th>
-      <th>已用空间</th>
-      <th>注册时间</th>
-    </tr>
-    <tbody id="user1">
+    <table id="manage">
+      <tr>
+        <th>序号</th>
+        <th>用户名</th>
+        <th>已用空间</th>
+        <th>注册时间</th>
+      </tr>
+      <tbody id="user1">
 
-    </tbody>
-  </table>
+      </tbody>
+    </table>
 
 
     <div class="f5">
-      <form class="special" >
-        <p>编号：<input class="page"type="text" size="20" name="id" id="pp3"></p>
-        <p>用户名：<input class="page"type="text" size="20" name="fileName" id="pp4"></p>
-      <input class="special" type="submit"  value="删除" onclick="return window.confirm('确定删除吗')">
+      <form class="special">
+        <p>编号：<input class="page" type="text" size="20" name="id" id="pp3"></p>
+        <p>用户名：<input class="page" type="text" size="20" name="fileName" id="pp4"></p>
+        <input class="special" type="submit" value="删除" onclick="return window.confirm('确定删除吗')">
       </form>
     </div>
 
 
-</div>
+  </div>
 </body>
+
 </html>

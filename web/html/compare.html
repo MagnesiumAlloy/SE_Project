@@ -1,5 +1,6 @@
 <link rel="stylesheet" type="text/css" href="static/css/main.css" />
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>我的回收</title>
@@ -10,20 +11,20 @@
   <script src="static/js/myfile.js">
   </script>
 
-  
-<script>
-var dt=localStorage.getItem("USER");
-var Path;
-var IsRoot;
-var InBin;
-var stackPath = new Stack();
-var stackID = new Stack();
-var data
+
+  <script>
+    var dt = localStorage.getItem("USER");
+    var Path;
+    var IsRoot;
+    var InBin;
+    var stackPath = new Stack();
+    var stackID = new Stack();
+    var data
 
     function compare() {
       const desName = document.getElementById('desName').value;
       const desPath = document.getElementById('desPath').value;
-      const ID      = document.getElementById('tmpId').value
+      const ID = document.getElementById('tmpId').value
       const srcName = document.getElementById('srcName').value;
       const srcPath = document.getElementById('srcPath').value;
       $.ajax({
@@ -41,129 +42,129 @@ var data
           console.log(data);
           if (data.status == 200) {
             alert("两文件相同")
-          } 
+          }
         },
-        error:function(data){
-          
-            alert("两文件不同");
-          
+        error: function (data) {
+
+          alert("两文件不同");
+
         }
       })
     };
 
-    function Stack(){
-     this.items = [];
-     // 添加一个新元素到栈顶位置。push()
-     Stack.prototype.push = function(element){
+    function Stack() {
+      this.items = [];
+      // 添加一个新元素到栈顶位置。push()
+      Stack.prototype.push = function (element) {
         this.items.push(element);
-     }
+      }
       // 移除栈顶的元素pop()
-     Stack.prototype.pop = function(){
-         return this.items.pop();
-     }
-     //  返回栈顶的元素，不对栈做任何修改peek()
-     Stack.prototype.peek = function(){
-         return this.items[this.items.length-1];
-     }
-     // 判断栈是否空isEmpty()
-     Stack.prototype.isEmpty = function(){
-         if(this.items.length == 0){
-             return true;
-         }else {
-             return false;
-         }
-     }
-     // 返回栈里的元素个数size()
-     Stack.prototype.size = function(){
-         return this.items.length;
-     }
-     // 将栈结构的内容以字符形式返回toString()
-     Stack.prototype.toString = function(){
-         var str = '';
-         for(var i =0;i<this.items.length;i++){
-             str += this.items[i] + ' ';
-         }
-         return str;
+      Stack.prototype.pop = function () {
+        return this.items.pop();
+      }
+      //  返回栈顶的元素，不对栈做任何修改peek()
+      Stack.prototype.peek = function () {
+        return this.items[this.items.length - 1];
+      }
+      // 判断栈是否空isEmpty()
+      Stack.prototype.isEmpty = function () {
+        if (this.items.length == 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      // 返回栈里的元素个数size()
+      Stack.prototype.size = function () {
+        return this.items.length;
+      }
+      // 将栈结构的内容以字符形式返回toString()
+      Stack.prototype.toString = function () {
+        var str = '';
+        for (var i = 0; i < this.items.length; i++) {
+          str += this.items[i] + ' ';
+        }
+        return str;
       }
     }
 
 
-    function readDir(isroot,ID,path,inBin) {
+    function readDir(isroot, ID, path, inBin) {
       $.ajax({
         url: "/readDir",
         type: "GET",
         dataType: "json",
         data: {
-          UserId :dt*1,
+          UserId: dt * 1,
           path: path,
           ID: ID,
           isroot: isroot,
           inBin: inBin
         },
         success: function (res) {
-          IsRoot=isroot
+          IsRoot = isroot
           Path = path
-          InBin=inBin;
-          document.getElementById('tmpPath').value=Path;
-          showTable(res.data,isroot,res.ID,res.Path,inBin);
+          InBin = inBin;
+          document.getElementById('tmpPath').value = Path;
+          showTable(res.data, isroot, res.ID, res.Path, inBin);
         }
       })
     };
-  
-    function ReadDirWithPop(){
-      let isroot=IsRoot;
-      let filepath=Path;
-      let inBin=InBin;
-      if(stackID.size()<=1 || stackPath.size()<=1){
+
+    function ReadDirWithPop() {
+      let isroot = IsRoot;
+      let filepath = Path;
+      let inBin = InBin;
+      if (stackID.size() <= 1 || stackPath.size() <= 1) {
         return;
       }
       stackID.pop();
       stackPath.pop();
-      readDir(isroot,stackID.peek(),stackPath.peek(),inBin);
+      readDir(isroot, stackID.peek(), stackPath.peek(), inBin);
     };
 
-    function ReadDirWithPush(isroot,id,path,inBin){
+    function ReadDirWithPush(isroot, id, path, inBin) {
       stackID.push(id);
       stackPath.push(path);
-      readDir(isroot,id,path,inBin);
+      readDir(isroot, id, path, inBin);
     };
 
     function rTime(date) {
-        var json_date = new Date(date).toJSON();
-        return new Date(+new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+      var json_date = new Date(date).toJSON();
+      return new Date(+new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
     }
 
-    function file1(data){
-        aa=" ";
-        if(data) return Number(data).toFixed(2);
-        else return aa;
+    function file1(data) {
+      aa = " ";
+      if (data) return Number(data).toFixed(2);
+      else return aa;
     }
 
-    function showTable(arr,isroot,rootID,rootPath,inBin) {
-      data=arr
+    function showTable(arr, isroot, rootID, rootPath, inBin) {
+      data = arr
       var out = "";
-      var unit=[" ","B","KB","MB"];
+      var unit = [" ", "B", "KB", "MB"];
       for (let i = 0; i < arr.length; i++) {
-        var aa=0;
+        var aa = 0;
         if (arr[i].Name == "") continue;
-        if(arr[i].Type=="dir"){
-          arr[i].Size="";
+        if (arr[i].Type == "dir") {
+          arr[i].Size = "";
         }
-        if(arr[i].Size==""){
-          aa=0;
-        } else if(arr[i].Size<1024){
-          aa=1;
-        } else if(arr[i].Size<1048576){
-          aa=2;
-          arr[i].Size=arr[i].Size/1024.0;
+        if (arr[i].Size == "") {
+          aa = 0;
+        } else if (arr[i].Size < 1024) {
+          aa = 1;
+        } else if (arr[i].Size < 1048576) {
+          aa = 2;
+          arr[i].Size = arr[i].Size / 1024.0;
         } else {
-          aa=3;
-          arr[i].Size=arr[i].Size/1024.0/1024.0;
+          aa = 3;
+          arr[i].Size = arr[i].Size / 1024.0 / 1024.0;
         }
-       
+
         out += "<tr>"
-          +"<td><button type=button class= "+"hiddenbox "+"onclick="+"select(this,"+isroot+","+inBin+")"+">选择</button></td>"
-          + "<td onclick=" + "explore(this,"+isroot+","+inBin+")"+">" + arr[i].Name + "</td>"
+          + "<td><button type=button class= " + "hiddenbox " + "onclick=" + "select(this," + isroot + "," + inBin + ")" + ">选择</button></td>"
+          + "<td onclick=" + "explore(this," + isroot + "," + inBin + ")" + ">" + arr[i].Name + "</td>"
           + "<td>" + rTime(arr[i].ModTime) + "</td>"
           + "<td>" + file1(arr[i].Size) + unit[aa] + "</td>"
           + "<td hidden=true>" + arr[i].Path + "</td>"
@@ -175,98 +176,106 @@ var data
       document.getElementById("recycled").innerHTML = out;
     }
 
-        //readDir(isroot,ID,path,inBin)
+    //readDir(isroot,ID,path,inBin)
 
-    function explore(obj,isroot,inBin) {
+    function explore(obj, isroot, inBin) {
       let id = obj.parentElement.children[7].innerHTML;
-      let filename=obj.parentElement.children[1].innerHTML;
-      let filepath=obj.parentElement.children[4].innerHTML;
+      let filename = obj.parentElement.children[1].innerHTML;
+      let filepath = obj.parentElement.children[4].innerHTML;
       //console.log(filepath,"+",filename)
       if (data[id].Type == "dir") { //文件夹类型,要你指定
         //更进一步
-        ReadDirWithPush(isroot,data[id].ID,data[id].Path,inBin);
+        ReadDirWithPush(isroot, data[id].ID, data[id].Path, inBin);
       } else {
-        if(isroot){
-          document.getElementById('desName').value=filename;
-          document.getElementById('desPath').value=filepath;
+        if (isroot) {
+          document.getElementById('desName').value = filename;
+          document.getElementById('desPath').value = filepath;
         } else {
-          document.getElementById('tmpId').value=data[id].ID;
-          document.getElementById('srcName').value=filename;
-          document.getElementById('srcPath').value=filepath;
+          document.getElementById('tmpId').value = data[id].ID;
+          document.getElementById('srcName').value = filename;
+          document.getElementById('srcPath').value = filepath;
         }
       }
     }
 
 
-    function select(obj,isroot,inBin) {
+    function select(obj, isroot, inBin) {
       let node = obj;
       let filename = node.parentElement.parentElement.children[1].innerHTML;
       let filetype = node.parentElement.parentElement.children[5].innerHTML;
       let filepath = node.parentElement.parentElement.children[4].innerHTML;
-      let rootid   = node.parentElement.parentElement.children[6].innerHTML;
-      let id       = node.parentElement.parentElement.children[7].innerHTML;
-      if(isroot){
-          document.getElementById('desName').value=filename;
-          document.getElementById('desPath').value=filepath;
-        } else {
-          document.getElementById('tmpId').value=data[id].ID;
-          document.getElementById('srcName').value=filename;
-          document.getElementById('srcPath').value=filepath;
-        }
+      let rootid = node.parentElement.parentElement.children[6].innerHTML;
+      let id = node.parentElement.parentElement.children[7].innerHTML;
+      if (isroot) {
+        document.getElementById('desName').value = filename;
+        document.getElementById('desPath').value = filepath;
+      } else {
+        document.getElementById('tmpId').value = data[id].ID;
+        document.getElementById('srcName').value = filename;
+        document.getElementById('srcPath').value = filepath;
+      }
     }
 
-</script>
+  </script>
 
   <style>
-    table{
+    table {
       font-size: 1.5em;
       margin: auto;
     }
-    body{
+
+    body {
       background-image: linear-gradient(#e66465, #9198e5);
       background-size: 100% 100%;
       background-attachment: fixed;
       background-repeat: no-repeat;
       background-position: center center;
     }
-    form.special{
+
+    form.special {
       width: 100%;
       margin: auto;
       margin-top: 40px;
       font-size: 1.5em;
       text-align: center;
     }
-    table{
+
+    table {
       font-size: 1.5em;
       margin: auto;
       margin-bottom: 10em;
     }
-    input.page{
+
+    input.page {
       border-radius: 7px;
       padding: 5px;
       margin-bottom: 4em;
       margin-left: 1em;
       font-size: 0.7em;
     }
-    div.columns{
-      column-count:2;
-      column-gap:40px;
-      column-rule-style:dotted;
+
+    div.columns {
+      column-count: 2;
+      column-gap: 40px;
+      column-rule-style: dotted;
     }
-    input.page[type=submit]{
+
+    input.page[type=submit] {
       background-color: #d44773;
       transition-duration: 0.4s;
       box-shadow: 0 6px #999;
-      font-weight:bold;
+      font-weight: bold;
       padding: 14px 20px;
       margin: 8px 15px;
-      border:none;
+      border: none;
       border-radius: 6px;
       clear: both;
     }
-    input.page[type=submit]:hover{
+
+    input.page[type=submit]:hover {
       background-color: #f1dd78;
     }
+
     input.page[type=button] {
       background-color: #d44773;
       transition-duration: 0.4s;
@@ -283,10 +292,11 @@ var data
       background-color: #f1dd78;
     }
 
-    *:focus{
+    *:focus {
       background-color: #f6f607;
     }
-    body{
+
+    body {
       background-image: linear-gradient(#e66465, #9198e5);
       background-size: 100% 100%;
       background-attachment: fixed;
@@ -295,6 +305,7 @@ var data
     }
   </style>
 </head>
+
 <body>
 
 
@@ -302,7 +313,7 @@ var data
     <li class="border1">
       <a class="li1" href="/zhuye">用户主界面</a>
     </li>
-  
+
     <li class="border1">
       <a href="#">基本功能</a>
       <ul class="nav2">
@@ -312,7 +323,7 @@ var data
             <li>
               <!--            根据当前用户的id，返回其仓库的文件-->
               <form id="user1">
-                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/myfile'>文件浏览</a>
+                <a class="kuang" type="button" name="flag" value="私密上传" href='/myfile'>文件浏览</a>
               </form>
             </li>
             <li>
@@ -328,64 +339,67 @@ var data
 
             <li>
               <form id="user4">
-                <a class="kuang" type="button"  name= "flag" value="我的回收" href='/recycle'>我的回收</a>
+                <a class="kuang" type="button" name="flag" value="我的回收" href='/recycle'>我的回收</a>
               </form>
             </li>
-  
+
           </ul>
         </li>
       </ul>
     </li>
 
-  <li class="border1">
-    <a href="/Modify">修改密码</a>
-  </li>
+    <li class="border1">
+      <a href="/Modify">修改密码</a>
+    </li>
 
-  <li class="border1">
-    <a href="/about">关于我们</a>
-  </li>
+    <li class="border1">
+      <a href="/about">关于我们</a>
+    </li>
 
-  <li class="border1">
-    <a href="/">退出系统</a>
-  </li>
+    <li class="border1">
+      <a href="/">退出系统</a>
+    </li>
 
-</ul>
-<br>
+  </ul>
+  <br>
 
-<div>
-  <form class="special" > 
-    <input class="page" type="button" name="button" value="显示硬盘文件" onclick="ReadDirWithPush(0,-1,'/',0)">
-    <input class="page" type="button" name="button" value="显示备份文件" onclick="ReadDirWithPush(1,-1,'/',0)"><br><br><br>
+  <div>
+    <form class="special">
+      <input class="page" type="button" name="button" value="显示硬盘文件" onclick="ReadDirWithPush(0,-1,'/',0)">
+      <input class="page" type="button" name="button" value="显示备份文件" onclick="ReadDirWithPush(1,-1,'/',0)"><br><br><br>
 
-    <p>硬盘文件名：&ensp; &ensp;<input class="page" type="text" size="20" name="pathfileName" id="srcName"></p>
-    <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="srcPath"></p>
+      <p>硬盘文件名：&ensp; &ensp;<input class="page" type="text" size="20" name="pathfileName" id="srcName"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="srcPath"></p>
 
-    <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="desPath"></p>
-    <p>备份文件名：&ensp; &ensp;<input class="page" type="text" size="20" name="pathfileName" id="desName"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="fileName" id="desPath"></p>
+      <p>备份文件名：&ensp; &ensp;<input class="page" type="text" size="20" name="pathfileName" id="desName"></p>
 
-    <p>当前文件夹: &ensp; &ensp;<input class="page" type="text" size="20" name="pathfile" id="tmpPath"></p>
-    <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpRoot"></p>
-    <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpId"></p>
-  
-    <input class="page"type="button" name="button" value="比较" onclick="compare()">
-    <input class="page" type="button" name="button" value="返回上一级" onclick="ReadDirWithPop()">
+      <p>当前文件夹: &ensp; &ensp;<input class="page" type="text" size="20" name="pathfile" id="tmpPath"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpRoot"></p>
+      <p><input hidden="true" class="page" type="text" size="20" name="root" id="tmpId"></p>
 
-  </form>
-</div>
-<br><br>
-<div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
+      <input class="page" type="button" name="button" value="比较" onclick="compare()">
+      <input class="page" type="button" name="button" value="返回上一级" onclick="ReadDirWithPop()">
 
-<table id="manage">
-  <tr>
-    <th class="firstC"></th>
-    <th>文件名</th>
-    <th>修改时间</th>
-    <th>文件大小<th>
-  </tr>
-  <tbody id="recycled">
+    </form>
+  </div>
+  <br><br>
+  <div><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;"
+      onchange="getFile(value)"></div>
 
-  </tbody>
-</table>
+  <table id="manage">
+    <tr>
+      <th class="firstC"></th>
+      <th>文件名</th>
+      <th>修改时间</th>
+      <th>文件大小
+      <th>
+    </tr>
+    <tbody id="recycled">
+
+    </tbody>
+  </table>
 
 </body>
+
 </html>

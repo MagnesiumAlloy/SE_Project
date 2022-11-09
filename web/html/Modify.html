@@ -1,61 +1,62 @@
 <link rel="stylesheet" type="text/css" href="static/css/form.css" />
 <meta charset="UTF-8">
 <html>
+
 <head>
   <title>修改密码</title>
   <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
   </script>
 
   <script type="text/javascript">
-     var dt=localStorage.getItem("USER");
-     function modify(){
-            const txt1=document.getElementById('pwd1').value;
-            const txt2=document.getElementById('pwd2').value;
-            if(txt1==txt2){
-              re = /^[a-zA-Z0-9.]*$/gi ;
-            if (re.test(txt1))
-            {
-        const oldpwd = document.getElementById('oldpwd').value;
-        const newpwd = document.getElementById('pwd1').value;
-              $.ajax({
-              //几个参数需要注意一下
-              dataType: "json",
-              url: "/Modify" ,
-              type: "POST", 
-              data: {
-                UserId:dt*1,
-                oldpwd:oldpwd,
-                newpwd:newpwd
-              },
-              success: function (result) {
-                  console.log(result);//打印服务端返回的数据(调试用)
-                  if (result.status == 200) {
-                     location.href="/login";
-                  } else {
-                      alert("错误");
-                  }
-              },
-              error : function() {
-                  console.log("failed");
-                  alert("异常！");
+    var dt = localStorage.getItem("USER");
+    function modify() {
+      const txt1 = document.getElementById('pwd1').value;
+      const txt2 = document.getElementById('pwd2').value;
+      if (txt1 == txt2) {
+        re = /^[a-zA-Z0-9.]*$/gi;
+        if (re.test(txt1)) {
+          const oldpwd = document.getElementById('oldpwd').value;
+          const newpwd = document.getElementById('pwd1').value;
+          $.ajax({
+            //几个参数需要注意一下
+            dataType: "json",
+            url: "/Modify",
+            type: "POST",
+            data: {
+              UserId: dt * 1,
+              oldpwd: oldpwd,
+              newpwd: newpwd
+            },
+            success: function (result) {
+              console.log(result);//打印服务端返回的数据(调试用)
+              if (result.status == 200) {
+                location.href = "/login";
+              } else {
+                alert("修改失败");
               }
-           });
-            } else {
-                alert("只允许输入英文及数字");
-                return;
-            } 
+            },
+            error: function () {
+              console.log("failed");
+              alert("修改失败");
+            }
+          });
         } else {
-          alert("两次新密码不一致");
+          alert("只允许输入英文及数字");
           return;
-        }    
-     }
+        }
+      } else {
+        alert("两次新密码不一致");
+        return;
+      }
+    }
 
   </script>
 
 </head>
+
 <body>
 
-<form id="modify">
+  <form id="modify">
     <div class="from">
       <img class="bgc" src="static/img/214.jpg" alt="">
       <div class="submit">
@@ -75,13 +76,14 @@
         <div class="btn_submit">
           <a>
             <button type="button" class="btn" onclick="modify()">确定修改</button></a>
-          <a href="/zhuye" class="back"><button type="button"  class="home_href">回到用户页</button></a>
+          <a href="/zhuye" class="back"><button type="button" class="home_href">回到用户页</button></a>
         </div>
       </div>
     </div>
 
-</form>
+  </form>
 
 
 </body>
+
 </html>

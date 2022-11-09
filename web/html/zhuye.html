@@ -1,5 +1,6 @@
 <link rel="stylesheet" type="text/css" href="static/css/main.css" />
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>主界面</title>
@@ -8,77 +9,21 @@
 
   <script src="static/js/myfile.js">
   </script>
-   
-   
-<script>
-  var dt=localStorage.getItem("USER");
 
-  function my(){
-       $.ajax({
-           url: "/fileData",
-           type:"get",
-           dataType:"json",
-           success:function (data) {
-               console.log(data);
-               myFunction(data.data);
-           }
-       })};
 
-  function myFunction(arr) {
-      var out = "";
-      for(let i = 0; i < arr.length; i++) {
-          out += "<tr  onclick="+"edit(this)"+">"
-                   +"<td>"+arr[i].ID+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Name+"</td>"
-                   +"<td>"+arr[i].Path+"</td>"
-                   +"<td>"+arr[i].Type+"</td>"
-                +"</tr>";
-      }
-      document.getElementById("content").innerHTML=out;
-  }
-
-  function myy(filepath){
-       $.ajax({
-           url: "/innerData",
-           type:"get",
-           dataType:"json",
-           data: {
-            path:filepath
-           },
-           success:function (res) {
-               console.log(res);
-               myFunction(res.data);
-           }
-       })};
-    
-
-    function edit(obj){
-            let node=obj;
-            let id=node.children[0].innerHTML;
-            let filetype=node.children[4].innerHTML;
-            let filepath=node.children[3].innerHTML;
-            //alert(id,filepath,filetype);
-            if(filetype == "t1"){ //文件夹类型,要你指定
-              //更进一步
-              myy(filepath);
-            } else {
-              let f=document.forms[0];
-              f.action="/search?id="+id;
-              f.submit();
-            }
-     }
-
-</script>
+  <script>
+    var dt = localStorage.getItem("USER");
+  </script>
 
 </head>
+
 <body>
 
   <ul class="nav1" class="out">
     <li class="border1">
       <a class="li1" href="/zhuye">用户主界面</a>
     </li>
-  
+
     <li class="border1">
       <a href="#">基本功能</a>
       <ul class="nav2">
@@ -88,7 +33,7 @@
             <li>
               <!--            根据当前用户的id，返回其仓库的文件-->
               <form id="user1">
-                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/myfile'>文件浏览</a>
+                <a class="kuang" type="button" name="flag" value="私密上传" href='/myfile'>文件浏览</a>
               </form>
             </li>
             <li>
@@ -104,10 +49,10 @@
 
             <li>
               <form id="user4">
-                <a class="kuang" type="button"  name= "flag" value="私密上传" href='/recycle'>我的回收</a>
+                <a class="kuang" type="button" name="flag" value="私密上传" href='/recycle'>我的回收</a>
               </form>
             </li>
-  
+
           </ul>
         </li>
       </ul>
@@ -134,7 +79,7 @@
     <img class="about_bgc" src="static/img/213.jpg" alt="">
   </div>
 
-  <div ><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;" onchange="getFile(value)"></div>
 
 </body>
+
 </html>

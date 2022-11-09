@@ -10,6 +10,11 @@
 
     <script type="text/javascript">
 
+    function rTime(date) {
+      var json_date = new Date(date).toJSON();
+      return new Date(+new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+    }
+
         function path1() {
             $.ajax({
                 url: "/readUser",
@@ -22,118 +27,17 @@
             })
         };
 
-
         function myFunction(arr) {
             var out = "";
             for (let i = 0; i < arr.length; i++) {
                 out += "<tr  onclick=" + "edit(this)" + ">"
                     + "<td>" + arr[i].ID + "</td>"
                     + "<td>" + arr[i].UserName + "</td>"
-                    + "<td>" + arr[i].UsedSpace + "</td>"
-                    + "<td>" + arr[i].CreatedAt + "</td>"
+                    + "<td>" +  rTime(arr[i].CreatedAt) + "</td>"
                     + "</tr>";
             }
             document.getElementById("content1").innerHTML = out;
         }
-
-        function scan() {
-            $.ajax({
-                //几个参数需要注意一下
-                dataType: "json",
-                url: "/Scan",
-                type: "POST",
-                data: $('#scan').serialize(),
-                success: function (result) {
-                    console.log(result);//打印服务端返回的数据(调试用)
-                    if (result.status == 200) {
-                        location.href = "/ScanUser";
-                    } else {
-                        alert("错误");
-                    }
-                },
-                error: function () {
-                    console.log("failed");
-                    alert("异常！");
-                }
-            });
-        }
-
-        function delete1() {
-            $.ajax({
-                //几个参数需要注意一下
-                dataType: "json",
-                url: "/Delete1",
-                type: "POST",
-                data: $('#delete').serialize(),
-                success: function (result) {
-                    console.log(result);//打印服务端返回的数据(调试用)
-                    if (result.status == 200) {
-                        location.href = "/DeleteUser";
-                    } else {
-                        alert("错误");
-                    }
-                },
-                error: function () {
-                    console.log("failed");
-                    alert("异常！");
-                }
-            });
-        }
-
-        function delete2() {
-            $.ajax({
-                //几个参数需要注意一下
-                dataType: "json",
-                url: "/Delete2",
-                type: "POST",
-                data: $('#delete2').serialize(),
-                success: function (result) {
-                    console.log(result);//打印服务端返回的数据(调试用)
-                    if (result.status == 200) {
-                        location.href = "/DeleteFile";
-                    } else {
-                        alert("错误");
-                    }
-                },
-                error: function () {
-                    console.log("failed");
-                    alert("异常！");
-                }
-            });
-        }
-
-        function edit(obj) {
-            let node = obj;
-            let id = node.children[0].innerHTML;
-            let name = node.children[1].innerHTML;
-            //alert(id,filepath,filetype);
-            const pp3 = document.getElementById('pp3')
-            const pp4 = document.getElementById('pp4')
-            pp3.value = id;
-            pp4.value = name;
-        }
-
-        function deleteUsr() {
-            const pp3 = document.getElementById('pp3').value;
-            const pp4 = document.getElementById('pp4').value;
-            $.ajax({
-                url: "/cleanUsr",
-                type: "DELETE",
-                dataType: "json",
-                data: {
-                    id: pp3,
-                    name: pp4,
-                },
-                success: function (data) {
-                    console.log(data);
-                    if (data.status == 200) {
-                        top.location.href = '/ScanUser';
-                    } else {
-                        alert("删除失败");
-                    }
-                }
-            })
-        };
 
     </script>
 
@@ -277,8 +181,6 @@
         </form>
     </div>
     <br><br>
-    <div><input class="fileInput" id="fileUpload" type="file" name="button" style="display: none;"
-            onchange="getFile(value)"></div>
 
     <table id="manage">
         <tr>

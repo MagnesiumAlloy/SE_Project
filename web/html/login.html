@@ -23,6 +23,7 @@
                     console.log(result);//打印服务端返回的数据(调试用)
                     if (result.status == 200) {
                         localStorage.setItem("USER",result.UserId);
+                        alert("登陆成功");
                        location.href="/zhuye";
                     } else {
                         alert("用户名或密码错误");
