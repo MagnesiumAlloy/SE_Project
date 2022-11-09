@@ -88,7 +88,10 @@ func checkFileExist(path string, isRoot bool, inBin bool, userID uint) error {
 }
 
 func Compare(srcPath, desPath string, userID uint) error {
-	desPath = filepath.Join(desPath, fmt.Sprint(userID))
+	if desPath == "/" {
+		desPath = filepath.Join(desPath, fmt.Sprint(userID))
+	}
+
 	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err
 	}
@@ -237,7 +240,9 @@ func RecoverData(srcPath, desPath string, obj *model.Data) error {
 }
 
 func Backup(srcPath, desPath, key string, userID uint, pack bool, encrypt bool) error {
-	desPath = filepath.Join(desPath, fmt.Sprint(userID))
+	if desPath == "/" {
+		desPath = filepath.Join(desPath, fmt.Sprint(userID))
+	}
 
 	if err := checkFileExist(srcPath, false, false, userID); err != nil {
 		return err

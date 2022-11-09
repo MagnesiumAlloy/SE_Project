@@ -60,13 +60,16 @@ func (userHandler *UserHandler) NewUserInit(userID uint) error {
 		Type:    model.Dir,
 		UserId:  userID,
 		ModTime: time.Now(),
+		PID:     1,
 	}
+
 	if err := NewFileHandler(&model.Data{}).Create(obj).Error; err != nil {
 		return err
 	}
 	obj.BinPath = obj.Path
 	obj.InBin = true
 	obj.ID = 0
+	obj.PID = 2
 	if err := NewFileHandler(&model.Data{}).Create(obj).Error; err != nil {
 		return err
 	}
