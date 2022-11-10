@@ -116,7 +116,7 @@ func cipher(input, output []byte, key [11][4][4]byte) {
 	for i = 0; i < 16; i++ {
 		state[i%4][i/4] = input[i] ^ key[0][i%4][i/4]
 	}
-	outputstate(state)
+	//outputstate(state)
 	for round = 1; round <= 10; round++ {
 		for j = 0; j < 4; j++ {
 			for i = 0; i < 4; i++ {
@@ -130,12 +130,6 @@ func cipher(input, output []byte, key [11][4][4]byte) {
 			}
 		}
 		if round < 10 {
-			/*
-				2311
-				1231
-				1123
-				3112
-			*/
 			for i = 0; i < 4; i++ {
 				for j = 0; j < 4; j++ {
 					tmp[i][j] = state[i][j]
@@ -153,7 +147,7 @@ func cipher(input, output []byte, key [11][4][4]byte) {
 				state[i][j] ^= key[round][i][j]
 			}
 		}
-		outputstate(state)
+		//outputstate(state)
 	}
 	for i = 0; i < 16; i++ {
 		output[i] = state[i%4][i/4]
@@ -167,7 +161,7 @@ func invCipher(input, output []byte, key [11][4][4]byte) {
 		state[i%4][i/4] = input[i] ^ key[10][i%4][i/4]
 		tmp[i%4][i/4] = state[i%4][i/4]
 	}
-	outputstate(state)
+	//outputstate(state)
 	for round = 10; round >= 1; round-- {
 		for i = 0; i < 4; i++ {
 			for j = 0; j < 4; j++ {
@@ -184,7 +178,7 @@ func invCipher(input, output []byte, key [11][4][4]byte) {
 				state[i][j] ^= key[round-1][i][j]
 			}
 		}
-		outputstate(state)
+		//outputstate(state)
 
 		if round > 1 {
 			/*
@@ -234,23 +228,26 @@ func keyExpand(pkey []byte) (key [11][4][4]byte) {
 
 func AES128_CBC_Encrypt(input, output []byte, pkey []byte, inputLen uint64) {
 	var ptr, i uint64
+	//密钥扩展
 	key := keyExpand(pkey)
 	iv := make([]byte, 16)
 	for i = 0; i < 16; i++ {
 		iv[i] = 0
 	}
+	//数据分块加密
 	for ptr = 0; ptr < inputLen/16; ptr++ {
 		l := ptr * 16
+		//CBC
 		for i = 0; i < 16; i++ {
 			input[l+i] ^= iv[i]
 		}
+		//数据块加密
 		cipher(input[l:l+16], output[l:l+16], key)
-		tmp := make([]byte, 16)
-		invCipher(output[l:l+16], tmp, key)
 		for i = 0; i < 16; i++ {
 			iv[i] = output[l+i]
 		}
 	}
+	//数据块填充
 	lastBlock := Padding(input[ptr*16:], 16)
 	for i = 0; i < 16; i++ {
 		lastBlock[i] ^= iv[i]

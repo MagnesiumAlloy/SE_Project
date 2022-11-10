@@ -11,7 +11,7 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
 	r.Static("/static", "./web/static")
-	r.LoadHTMLGlob("web/html/*")
+	r.LoadHTMLGlob("./web/html/*")
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
@@ -133,6 +133,8 @@ func SetupRouter() *gin.Engine {
 	r.POST("/Modify", Controller.UpdatePassword)
 
 	r.GET("/readUser", Controller.ReadUser)
+
+	r.GET("/init", Controller.InitSys)
 
 	return r
 }

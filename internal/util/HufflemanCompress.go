@@ -1,7 +1,7 @@
 package util
 
 import (
-	"SE_Project/pkg/model"
+	"SE_Project/internal/model"
 	"bufio"
 	"container/heap"
 	"fmt"
@@ -121,9 +121,6 @@ func genMap(cnt []int) ([]string, error) {
 	root := heap.Pop(&Q).(*Item).value
 	mp := make([]string, 256)
 	dfs(root, "", mp, nd)
-	for i := 0; i < 256; i++ {
-		println(byte(i), mp[i])
-	}
 	return mp, nil
 }
 
@@ -194,17 +191,19 @@ func Compress(path string) error {
 	if err != nil {
 		return nil
 	}
+	//生成字符频次统计表
 	cnt, err := getCnt(path, uint64(info.Size()))
 	if err != nil {
 		return err
 	}
+	//采用优先队列、dfs生成字符转换表
 	mp, err := genMap(cnt)
 	if err != nil {
 		return err
 	}
+	//写压缩文件
 	if err := writeFile(mp, path, uint64(info.Size())); err != nil {
 		return err
 	}
-	//var md5 string
 	return nil
 }

@@ -31,6 +31,7 @@
               console.log(result);//打印服务端返回的数据(调试用)
               if (result.status == 200) {
                 location.href = "/login";
+                alert("修改成功");
               } else {
                 alert("修改失败");
               }
@@ -74,8 +75,7 @@
           <input class="inputs" type="password" name="newpwd2" placeholder="确定密码" id="pwd2">
         </div>
         <div class="btn_submit">
-          <a>
-            <button type="button" class="btn" onclick="modify()">确定修改</button></a>
+          <a><button type="button" class="btn" onclick="modify()">确定修改</button></a>
           <a href="/zhuye" class="back"><button type="button" class="home_href">回到用户页</button></a>
         </div>
       </div>

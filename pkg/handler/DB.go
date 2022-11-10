@@ -24,12 +24,13 @@ func dbConn(User, Password, Host, Db string, Port int) *gorm.DB {
 }
 
 func GetDB() (conn *gorm.DB) {
-	for {
-		conn = dbConn("root", "123456", "127.0.0.1", "SE_DB", 3306)
-		if conn != nil {
-			break
-		}
-		fmt.Println("本次未获取到mysql连接")
+
+	//conn = dbConn("root", "123456", "127.0.0.1", "SE_DB", 3306)
+	conn = dbConn("root", "123456", "172.17.0.1", "SE_DB", 3306)
+	if conn != nil {
+
+		return conn
 	}
-	return conn
+	fmt.Println("本次未获取到mysql连接")
+	return nil
 }

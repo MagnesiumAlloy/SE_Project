@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"SE_Project/pkg/model"
+	"SE_Project/internal/model"
 	"fmt"
 	"time"
 

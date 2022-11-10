@@ -1,12 +1,13 @@
 package service
 
 import (
+	"SE_Project/internal/model"
+	"SE_Project/internal/util"
 	"SE_Project/pkg/handler"
-	"SE_Project/pkg/model"
-	"SE_Project/pkg/util"
 	"errors"
 	"fmt"
 	"os"
+	"os/user"
 	"path/filepath"
 	"time"
 
@@ -53,6 +54,7 @@ func ReadDir(path string, ID *int, isRoot bool, inBin bool, userID uint) ([]mode
 				if userID != 0 {
 					path = filepath.Join(path, fmt.Sprint(userID))
 				}
+				println(path)
 				if obj, err := handler.NewFileHandler(&model.Data{Path: path, InBin: inBin, UserId: userID}).GetTarget(); err != nil {
 					return nil, err
 				} else {
@@ -170,10 +172,12 @@ func BackupPackedData(srcPath, desPath string) error {
 	if list, err = handler.ReadAllFileAndDir(srcPath); err != nil {
 		return err
 	}
-	for i, item := range list {
-		list[i].Path = item.Path[len(filepath.Dir(srcPath)):]
-		println(item.Type, item.Path, item.Size, item.ModTime.String())
-	}
+	/*
+		for i, item := range list {
+			list[i].Path = item.Path[len(filepath.Dir(srcPath)):]
+			println(item.Type, item.Path, item.Size, item.ModTime.String())
+		}
+	*/
 	desPath = filepath.Join(model.Root, desPath) + model.CloudTempType
 	if obj, err = handler.SysWritePackedFile(filepath.Dir(srcPath), list, desPath); err != nil {
 		return err
@@ -194,16 +198,18 @@ func RecoverPackedData(srcPath, desPath string) error {
 		return err
 	}
 
-	list, err := handler.SysRecoverPackedFile(srcPath+model.CloudTempType, desPath)
+	_, err := handler.SysRecoverPackedFile(srcPath+model.CloudTempType, desPath)
 	if err != nil {
 		return err
 	}
 	if err := handler.SysClean(srcPath + model.CloudTempType); err != nil {
 		return err
 	}
-	for _, item := range list {
-		println(item.Type, item.Path, item.Size, item.ModTime.String())
-	}
+	/*
+		for _, item := range list {
+			println(item.Type, item.Path, item.Size, item.ModTime.String())
+		}
+	*/
 	return nil
 }
 
@@ -214,7 +220,7 @@ func BackupData(srcPath, desPath string, userID uint) error {
 		return err
 	}
 	for _, item := range list {
-		item.Path = filepath.Join(desPath, item.Path[len(filepath.Dir(srcPath)):])
+		item.Path = filepath.Join(desPath, item.Path)
 		var f *model.Data
 		if f, err = handler.NewFileHandler(&model.Data{Path: filepath.Dir(item.Path), UserId: userID}).GetTarget(); err != nil {
 			return err
@@ -288,28 +294,39 @@ func Backup(srcPath, desPath, key string, userID uint, pack bool, encrypt bool) 
 	}
 	return nil
 }
+
+//文件恢复
 func Recover(srcPath, desPath, key string, userID uint) error {
+	//检查待恢复文件存在
 	if err = checkFileExist(srcPath, true, false, userID); err != nil {
 		return err
 	}
+	//获取文件
 	if obj, err = handler.NewFileHandler(&model.Data{Path: srcPath, InBin: false, UserId: userID}).GetTarget(); err != nil {
 		return err
 	}
+	//检查是否加密
 	if obj.Encrypted {
+		//比较密码
 		if err := bcrypt.CompareHashAndPassword([]byte(obj.Key), []byte(key)); err != nil {
 			return err
 		}
+		//文件解密
 		if err := handler.SysDecryptFile(filepath.Join(model.Root, srcPath), filepath.Join(model.Root, srcPath)+model.CloudTempType, key); err != nil {
 			return err
 		}
+		//文件解包
 		if err := RecoverPackedData(srcPath+model.CloudTempType, desPath); err != nil {
 			return err
 		}
+		//清除临时文件
 		return handler.SysClean(filepath.Join(model.Root, srcPath) + model.CloudTempType)
 	}
+	//检查是否打包存储
 	if filepath.Ext(srcPath) == model.CloudBackupType {
 		return RecoverPackedData(srcPath, desPath)
 	}
+	//恢复文件
 	return RecoverData(srcPath, desPath, obj)
 }
 
@@ -396,4 +413,82 @@ func Recycle(path string, userID uint) error {
 
 	return nil
 
+}
+
+func InitFileSys() {
+	user, _ := user.Current()
+	model.Bin = user.HomeDir + "/Cloud_Bin"
+	model.Root = user.HomeDir + "/Cloud_Backup"
+	//create if not exist
+
+	if err := handler.SysCheckFileExist(model.Bin); err == nil {
+		handler.SysClean(model.Bin)
+	}
+	os.Mkdir(model.Bin, os.ModePerm)
+
+	if err := handler.SysCheckFileExist(model.Root); err == nil {
+		handler.SysClean(model.Root)
+	}
+	os.Mkdir(model.Root, os.ModePerm)
+	base := filepath.Join(filepath.Dir(model.Root), "/user_files")
+
+	if err := handler.SysCheckFileExist(base); err == nil {
+		handler.SysClean(base)
+	}
+	os.Mkdir(base, os.ModePerm)
+	if err := handler.SysCopy("./web/static", base, uint32(os.ModePerm), time.Now()); err != nil {
+		return
+	}
+
+}
+
+func InitDB() {
+	/*
+		command := `./init.sh`
+		cmd := exec.Command("/bin/bash", "-c", command)
+
+		output, err := cmd.Output()
+		if err != nil {
+			fmt.Printf("Execute Shell:%s failed with error:%s", command, err.Error())
+			return
+		}
+		fmt.Printf("Execute Shell:%s finished with output:\n%s", command, string(output))
+	*/
+	//handler.GetDB().Debug().Raw("drop table data")
+	handler.GetDB().Migrator().DropTable(&model.User{})
+	handler.GetDB().Migrator().DropTable(&model.Data{})
+	handler.GetDB().AutoMigrate(&model.User{})
+	handler.GetDB().AutoMigrate(&model.Data{})
+	//handler.GetDB().Raw("ALTER TABLE data ADD UNIQUE KEY(path, name);alter table data modify name varchar(256);")
+
+	res, _ := handler.ReadAllFileAndDir(model.Root)
+	for _, x := range res {
+		x.Path = x.Path[len("/"+filepath.Base(model.Root)):]
+		if x.Path == "" {
+			x.Path = "/"
+		} else {
+			var f model.Data
+			handler.GetDB().Where(&model.Data{Path: filepath.Dir(x.Path)}).First(&f)
+			x.PID = f.ID
+		}
+		x.InBin = false
+		handler.GetDB().Create(&x)
+	}
+	res, _ = handler.ReadAllFileAndDir(model.Bin)
+	for _, x := range res {
+		x.Path = x.Path[len("/"+filepath.Base(model.Bin)):]
+		if x.Path == "" {
+			x.Path = "/"
+		} else {
+			var f model.Data
+			handler.GetDB().Where(&model.Data{BinPath: filepath.Dir(x.Path)}).First(&f)
+			x.PID = f.ID
+		}
+		x.InBin = true
+		x.BinPath = x.Path
+		handler.GetDB().Create(&x)
+	}
+
+	//service.Register("user", "123")
+	//service.Register("admin", "admin")
 }

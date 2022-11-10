@@ -1,7 +1,7 @@
 package Controller
 
 import (
-	"SE_Project/pkg/model"
+	"SE_Project/internal/model"
 	svc "SE_Project/pkg/service"
 	"SE_Project/pkg/validator"
 	"net/http"
@@ -208,4 +208,9 @@ func Recycle(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
 	})
+}
+
+func InitSys(c *gin.Context) {
+	svc.InitFileSys()
+	svc.InitDB()
 }

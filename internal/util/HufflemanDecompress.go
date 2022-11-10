@@ -1,7 +1,7 @@
 package util
 
 import (
-	"SE_Project/pkg/model"
+	"SE_Project/internal/model"
 	"bufio"
 	"os"
 	"strconv"
@@ -90,6 +90,7 @@ func insert(s string, id int) {
 }
 
 func buildTrie(mp map[int]string) {
+	T = []Trie{}
 	T = append(T, Trie{p: -1, ls: -1, rs: -1, v: -1})
 	rt = 0
 	tot = 1

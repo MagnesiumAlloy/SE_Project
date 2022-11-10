@@ -1,15 +1,17 @@
 <head>
     <meta name="referrer" content="no-referrer">
     <link href="static/css/index.css" rel="stylesheet" type="text/css" />
+
+    <script>
+        localStorage.setItem("USER","陌生人");
+    </script>
+
 </head>
 <meta charset="UTF-8">
 <html>
 
 <body>
-
-
     <div class="home">
-
         <div class="content">
             <div class="stars"></div>
             <img class="bgc" src="static/img/22.png" height="100%" width="100%" alt="图片1">
@@ -33,9 +35,8 @@
                     <div style="position:absolute; z-index:2; left:50px; top:50px;font-size:40px;color: #f44336"></div>
                 </div>
                 <div class="nav">
-                    <label for="img6" class="up leftjianbian">
-                        << /label>
-                            <label for="img2" class="down rightjianbian">></label>
+                    <label for="img" class="up leftjianbian"></label>
+                    <label for="img2" class="down rightjianbian"></label>
                 </div>
             </div>
             <!--//2-->
@@ -46,9 +47,8 @@
                     </div>
                 </div>
                 <div class="nav">
-                    <label for="img1" class="up leftjianbian">
-                        << /label>
-                            <label for="img3" class="down rightjianbian">></label>
+                    <label for="img1" class="up leftjianbian"></label>
+                    <label for="img3" class="down rightjianbian"></label>
                 </div>
             </div>
             <!--//3-->
@@ -60,9 +60,8 @@
                 </div>
 
                 <div class="nav">
-                    <label for="img2" class="up leftjianbian">
-                        << /label>
-                            <label for="img4" class="down rightjianbian">></label>
+                    <label for="img2" class="up leftjianbian"></label>
+                    <label for="img4" class="down rightjianbian"></label>
                 </div>
             </div>
             <!--//4-->
@@ -73,9 +72,8 @@
                     </div>
                 </div>
                 <div class="nav">
-                    <label for="img3" class="up leftjianbian">
-                        << /label>
-                            <label for="img5" class="down rightjianbian">></label>
+                    <label for="img3" class="up leftjianbian"></label>
+                    <label for="img5" class="down rightjianbian"></label>
                 </div>
             </div>
             <!--//5-->
@@ -86,9 +84,8 @@
                     </div>
                 </div>
                 <div class="nav">
-                    <label for="img4" class="up leftjianbian">
-                        << /label>
-                            <label for="img6" class="down rightjianbian">></label>
+                    <label for="img4" class="up leftjianbian"></label>
+                    <label for="img6" class="down rightjianbian"></label>
                 </div>
             </div>
             <!--//6-->
@@ -99,9 +96,8 @@
                     </div>
                 </div>
                 <div class="nav">
-                    <label for="img5" class="up leftjianbian">
-                        << /label>
-                            <label for="img1" class="down rightjianbian">></label>
+                    <label for="img1" class="up leftjianbian"></label>
+                    <label for="img5" class="down rightjianbian"></label>
                 </div>
             </div>
             <div class="dots">
@@ -120,11 +116,8 @@
         </audio>
         <img class="music_img" src="static/img/213.png" alt="图片1">
     </div>
-
-    <input type=button value=选择路径
-        onclick='javascript: new ActiveXObject("Shell.Application").BrowseForFolder(0, "请选择路径", 0, "")'>
-
 </body>
+
 <script>
     let mucics = document.getElementById('audio')
     document.body.addEventListener('mousemove', function () {

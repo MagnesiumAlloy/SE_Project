@@ -1,7 +1,7 @@
 package util
 
 import (
-	"SE_Project/pkg/model"
+	"SE_Project/internal/model"
 	"errors"
 )
 

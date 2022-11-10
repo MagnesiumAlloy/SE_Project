@@ -1,8 +1,8 @@
 package service
 
 import (
+	"SE_Project/internal/model"
 	"SE_Project/pkg/handler"
-	"SE_Project/pkg/model"
 	"errors"
 
 	"golang.org/x/crypto/bcrypt"

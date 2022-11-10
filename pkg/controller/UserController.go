@@ -1,12 +1,11 @@
 package Controller
 
 import (
-	"SE_Project/pkg/model"
+	"SE_Project/internal/model"
 	svc "SE_Project/pkg/service"
+	"log"
 	"net/http"
 	"strconv"
-
-	"log"
 
 	"github.com/gin-gonic/gin"
 )

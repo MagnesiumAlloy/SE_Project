@@ -344,6 +344,10 @@ table td {
     border-color: #a9c6c9;
 }
 
+td {
+    border: 0px;
+}
+
 .oddrowcolor {
     background-color: #d4e3e5;
 }

@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"SE_Project/pkg/model"
-	"SE_Project/pkg/util"
+	"SE_Project/internal/model"
+	"SE_Project/internal/util"
 	"bufio"
 	"crypto/md5"
 	"encoding/hex"
@@ -238,12 +238,15 @@ func ReadAllFileAndDir(root string) ([]model.Data, error) {
 		if info.IsDir() {
 			obj, _ := SysReadFileInfo(file)
 			obj.Path = file
+			obj.Path = obj.Path[len(filepath.Dir(root)):]
 			res = append(res, *obj)
 		} else {
 			obj, _ := SysReadFileInfo(file)
 			obj.Path = file
+			obj.Path = obj.Path[len(filepath.Dir(root)):]
 			res = append(res, *obj)
 		}
+
 		return nil
 	})
 	if err != nil {

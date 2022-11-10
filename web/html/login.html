@@ -18,12 +18,12 @@
                 dataType: "json",
                 url: "/Login" ,
                 type: "POST", 
-                data: $('#form2').serialize(),
+                data: $('#LoginForm').serialize(),
                 success: function (result) {
                     console.log(result);//打印服务端返回的数据(调试用)
                     if (result.status == 200) {
                         localStorage.setItem("USER",result.UserId);
-                        alert("登陆成功");
+                        alert("登录成功");
                        location.href="/zhuye";
                     } else {
                         alert("用户名或密码错误");
@@ -43,7 +43,7 @@
 </head>
 
 <body>
-    <form id="form2">
+    <form id="LoginForm">
         <div class="from">
             <img class="bgc" src="static/img/214.jpg" alt="">
             <div class="submit">
@@ -60,8 +60,7 @@
                     <input type="hidden" class="inputs" type="text" name="usertype" value="Normal">
                 </div>
                 <div class="btn_submit">
-                    <a>
-                        <button type="button" class="btn" onclick="login()">登录</button></a>
+                    <a><button type="button" class="btn" onclick="login()">登录</button></a>
                     <a href="/" class="back"><button type="button" class="home_href">回到首页</button></a>
                 </div>
             </div>
